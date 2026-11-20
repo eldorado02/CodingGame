@@ -1,0 +1,29 @@
+{
+  "phase1.research": {
+    "role": "deep_search",
+    "prompt": "phase1_research.md",
+    "handoff": "dsa/HANDOFF.md",
+    "artifacts": ["dsa/research.md"],
+    "next": "phase1.dsa"
+  },
+  "phase1.dsa": {
+    "role": "code",
+    "prompt": "phase1_dsa.md",
+    "handoff": "dsa/HANDOFF-dsa.md",
+    "artifacts": [
+      "dsa/README.md",
+      "dsa/C/dsa.h",
+      "dsa/CPP/dsa.hpp",
+      "dsa/Rust/src/lib.rs",
+      "dsa/Python/dsa.py"
+    ],
+    "next": "phase2.index"
+  },
+  "phase2.index": {
+    "role": "deep_search",
+    "prompt": "phase2_index.md",
+    "handoff": "challenges/HANDOFF-index.md",
+    "artifacts": ["challenges.json"],
+    "next": "__AFTER_INDEX__"
+  }
+}

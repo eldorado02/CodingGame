@@ -1,0 +1,12 @@
+2026-11-20T19:07:22+00:00 run: etape=phase1.research modele=opencode/deepseek-v4.1-flash-free session=ses-hack-phase1-research
+2026-11-20T19:07:22+00:00 ECHEC phase1.research: quota rc=1 (/home/arafaram/Projects/codingGame/hackathon-2026-12-03/logs/phase1-research-0-0.out)
+2026-11-20T19:07:42+00:00 run: etape=phase1.research modele=opencode/longcat-2.5-free session=ses-hack-phase1-research
+2026-11-20T19:07:43+00:00 ECHEC phase1.research: quota rc=1 (/home/arafaram/Projects/codingGame/hackathon-2026-12-03/logs/phase1-research-0-0.out)
+2026-11-20T19:08:03+00:00 run: etape=phase1.research modele=opencode/hy4-flash-free session=ses-hack-phase1-research
+2026-11-20T19:08:04+00:00 ECHEC phase1.research: quota rc=1 (/home/arafaram/Projects/codingGame/hackathon-2026-12-03/logs/phase1-research-0-0.out)
+2026-11-20T19:08:24+00:00 run: etape=phase1.research modele=opencode/nemotron-3.5-super-vl-free session=ses-hack-phase1-research
+2026-11-20T19:08:24+00:00 ECHEC phase1.research: quota rc=1 (/home/arafaram/Projects/codingGame/hackathon-2026-12-03/logs/phase1-research-0-0.out)
+2026-11-20T19:08:24+00:00 tous les modeles ont echoue, cycle 1: attente 1800s
+2026-11-20T19:08:36+00:00 run: etape=phase1.research modele=opencode/nemotron-3.5-super-vl-free session=ses-hack-phase1-research
+2026-11-20T19:08:37+00:00 ECHEC phase1.research: quota rc=1 (/home/arafaram/Projects/codingGame/hackathon-2026-12-03/logs/phase1-research-0-3-0.out)
+2026-11-20T19:08:37+00:00 tous les modeles ont echoue, cycle 1: attente 1800s

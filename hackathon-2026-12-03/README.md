@@ -70,6 +70,35 @@ Pour chaque challenge :
 |---|---|---|---|---|---|---|---|
 | — | — | *(en attente de la Phase 1)* | | | | | |
 
+## Superviseur (exécution autonome)
+
+Le plan entier est piloté par `tools/supervise.py`, lancé détaché via
+`./tools/run_supervisor.sh`. Il ne dépend pas de la session agent.
+
+```sh
+./tools/run_supervisor.sh          # démarrer / redémarrer en arrière-plan
+tail -f logs/supervisor.log        # suivre l'exécution
+cat STATUS.md                      # état lisible
+touch supervisor.stop              # arrêt propre
+cat logs/phase1-research-*.out     # sortie d'une étape
+```
+
+**Résilience :**
+- Chaque étape tourne dans une session OpenCode dédiée avec un modèle explicite.
+- L'état est écrit atomiquement dans `supervisor_state.json` après chaque événement.
+- Quota épuisé / token coupé / contexte plein / `kill -9` → reprise exacte de
+  l'étape courante dans la même session (ou session neuve avec passation si le
+  contexte est saturé).
+- En cas de quota, descente automatique dans la chaîne de repli de
+  `supervisor.json` (calquée sur `MODELS-RANKING.md`), puis attente de 30 min
+  avant un nouveau cycle — donc reprise automatique quand le quota revient.
+
+**Passation de contexte (limite 250 K) :** chaque étape écrit un `HANDOFF.md`
+de 3 000 caractères maximum. Le superviseur n'injecte que ce fichier et la liste
+des étapes terminées dans le prompt de l'étape suivante : jamais l'historique
+complet d'une session n'est rechargé.
+
 ## Progression
 
-- **État actuel :** Phase 1 lancée.
+- **État actuel :** superviseur démarré, en attente du rétablissement du quota
+  gratuit OpenCode (Phase 1 — recherche DSA).
