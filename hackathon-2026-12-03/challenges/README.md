@@ -61,6 +61,7 @@ challenges/<année>-<id>/
 | 21 | 2022-06-16 | `green-circle` | ✅ 4 langages + 1210 cas verts + 17/18 test games gagnés |
 | 22 | 2022-09-19 | `cultist-wars` | ✅ 4 langages + 210 cas verts + test games Bronze joués |
 | 23 | 2024-06-11 | `summer-challenge-2024-olymbits` | ✅ 4 langages + 210 cas verts + 7/7 test games gagnés (21–7–7) |
+| 24 | 2024-12-19 | `winter-challenge-2024` | ✅ 4 langages + 210 cas verts + 19/19 test games gagnés (15–14) |
 
 Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
 `unleash-the-geek-amadeus`) sont ignorés de la séquence.
