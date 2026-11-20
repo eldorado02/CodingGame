@@ -47,6 +47,9 @@ challenges/<année>-<id>/
 | 9 | 2018-03-02 | `botters-of-the-galaxy` | ✅ 4 langages + 208 cas verts + win vs DoubleHulk |
 | 10 | 2018-04-20 | `code-royale` | ✅ 4 langages + 207 cas verts + 2 wins (dont Duchess Boss) |
 | 11 | 2018-06-15 | `code-of-kutulu` | ✅ 4 langages + 206 cas verts + win vs boss Davy Jones & rang 1/2 |
+| — | 2018-07-25 | `legends-of-code-and-magic` | ⏭ non rejouable via API |
+| — | 2018-07-27 | `legends-of-code-and-magic-marathon` | ⏭ non rejouable via API |
+| 12 | 2018-10-19 | `a-star-craft` | ✅ 4 langages + 206 cas verts + 30/30 testcases, 2487 points |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
