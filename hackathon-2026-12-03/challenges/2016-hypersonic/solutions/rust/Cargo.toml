@@ -1,0 +1,11 @@
+[package]
+name = "hypersonic_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "hypersonic_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 2
