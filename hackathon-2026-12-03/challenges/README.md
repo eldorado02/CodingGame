@@ -36,7 +36,7 @@ challenges/<année>-<id>/
 |---|---|---|---|
 | 1 | 2016-04-30 | `smash-the-code` | ✅ research/plan/critique + 4 langages + 206 cas verts |
 | — | 2016-02-27 | `coders-strike-back` | ⏭ non rejouable via API (statement indisponible) |
-| 2 | 2016-06-25 | `codebusters` | à faire |
+| 2 | 2016-06-25 | `codebusters` | ✅ research/plan/critique + 4 langages + 208 cas verts |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son

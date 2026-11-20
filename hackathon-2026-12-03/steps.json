@@ -40,6 +40,6 @@
     ],
     "next": "phase2.challenge",
     "sequence": "challenges.json ordre chronologique, un seul challenge à la fois",
-    "completed": ["2016-smash-the-code"]
+    "completed": ["2016-smash-the-code", "2016-codebusters"]
   }
 }
