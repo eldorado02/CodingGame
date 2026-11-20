@@ -47,11 +47,12 @@ hackathon-2026-12-03/
 
 ## Phase 1 — Socle DSA commun (préalable obligatoire)
 
-- [ ] Deep search : dépôts de référence pour les templates DSA dans les 4 langages
-      (`krahets/hello-algo`, etc.)
-- [ ] Définir la liste commune des structures couvertes
-- [ ] Implémenter le socle dans les 4 langages, même niveau de qualité
-- [ ] Documenter `dsa/README.md`
+- [x] Deep search : dépôts de référence pour les templates DSA dans les 4 langages
+      (`krahets/hello-algo`, etc.) → `dsa/research.md`
+- [x] Définir la liste commune des structures couvertes
+- [x] Implémenter le socle dans les 4 langages, même niveau de qualité
+- [x] Documenter `dsa/README.md`
+- [x] Tests locaux des 4 langages → `dsa/run_tests.sh` (C, C++, Python, Rust 6/6)
 
 ## Phase 2 — Challenges 2016 → 2026 (séquentiel, jamais en parallèle)
 
@@ -100,5 +101,9 @@ complet d'une session n'est rechargé.
 
 ## Progression
 
-- **État actuel :** superviseur démarré, en attente du rétablissement du quota
-  gratuit OpenCode (Phase 1 — recherche DSA).
+- **État actuel :** **Phase 1 terminée localement** dans la session `big-pickle`
+  (socle DSA complet + tests verts dans les 4 langages). Le superviseur reste
+  arrêté : toute nouvelle session OpenCode renvoie `Free usage limit reached`,
+  y compris avec `big-pickle`. Son état a été avancé à `phase2.index` : il
+  suffira de le relancer avec `./tools/run_supervisor.sh` quand le quota sera
+  rétabli pour enchaîner sur la liste des challenges 2016→2026.

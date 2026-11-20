@@ -6,3 +6,4 @@ supervisor.stop
 __pycache__/
 *.pyc
 **/HANDOFF*.md
+**/target/
