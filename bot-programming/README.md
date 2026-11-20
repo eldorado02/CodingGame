@@ -5,7 +5,8 @@ Everything the agent plays lives here, one folder per game under `games/<pretty_
 
 - `tools/cg.py` — API client (list, show rules, stub generator, test, submit, progress).
 - `games.json` — raw index of the 100 bot programming games.
-- [MODELS.md](MODELS.md) — which available model is strongest for research/code, with benchmark sources.
+- [MODELS.md](MODELS.md) — all available models compared, with benchmark sources.
+- [MODELS-RANKING.md](MODELS-RANKING.md) — 1→N ranking of the **free** OpenCode models for deep search and code.
 - Token: `~/.config/codingame/token` (never in this repo).
 
 ## Workflow per game

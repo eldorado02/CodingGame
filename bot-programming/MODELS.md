@@ -1,7 +1,13 @@
 # Choix des modèles disponibles dans cet environnement
 
 > Snapshot du **20 novembre 2026**. Catalogue lu via `tools.opencode.models()`
-> (`opencode`, 40 modèles). Benchmarks lus le 19–20 novembre 2026.
+> (`opencode`, 38 modèles). Benchmarks lus le 19–20 novembre 2026.
+>
+> ⚠️ **Mise à jour importante :** le catalogue a changé en cours de journée.
+> `deepseek-v4.1-flash-free` est devenu **payant** (`opencode/deepseek-v4.1-flash`)
+> et `nemotron-3.5-lightning-free` a été retiré. Le tableau "modèles gratuits"
+> ci-dessous reflète l'ancien snapshot ; pour le classement 1→N **à jour des 9
+> modèles réellement gratuits**, voir [MODELS-RANKING.md](MODELS-RANKING.md).
 
 ## TL;DR
 
