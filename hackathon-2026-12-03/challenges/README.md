@@ -56,6 +56,7 @@ challenges/<année>-<id>/
 | 16 | 2020-03-20 | `ocean-of-code` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
 | 17 | 2020-05-07 | `spring-challenge-2020` | ✅ 4 langages + 210 cas verts + 9/9 test games gagnés |
 | 18 | 2020-11-12 | `fall-challenge-2020` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
+| 19 | 2021-05-06 | `spring-challenge-2021` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
 
 Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
 `unleash-the-geek-amadeus`) sont ignorés de la séquence.
