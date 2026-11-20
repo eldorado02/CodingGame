@@ -1,0 +1,8 @@
+logs/
+*.lock
+supervisor_state.json
+STATUS.md
+supervisor.stop
+__pycache__/
+*.pyc
+**/HANDOFF*.md
