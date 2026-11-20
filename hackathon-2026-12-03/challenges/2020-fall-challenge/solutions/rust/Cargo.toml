@@ -1,0 +1,11 @@
+[package]
+name = "fall_challenge_2020_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "fall_challenge_2020_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 2
