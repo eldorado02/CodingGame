@@ -58,6 +58,7 @@ challenges/<année>-<id>/
 | 18 | 2020-11-12 | `fall-challenge-2020` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
 | 19 | 2021-05-06 | `spring-challenge-2021` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
 | 20 | 2022-04-21 | `spring-challenge-2022` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
+| 21 | 2022-06-16 | `green-circle` | ✅ 4 langages + 1210 cas verts + 17/18 test games gagnés |
 
 Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
 `unleash-the-geek-amadeus`) sont ignorés de la séquence.
