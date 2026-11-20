@@ -7,6 +7,32 @@
 - Current submission: `41768678` (drift-compensated heuristic with BOOST),
   re-ranking in Bronze: score climbed from 12.5 at 10% to ~32 in Wood.
 
+## Autonomous driver (runs for days)
+
+`tools/autoplay.py` + `tools/run_autoplay.sh` drive the league cycle without
+the agent session. Launch with:
+
+```sh
+cd bot-programming && ./tools/run_autoplay.sh
+```
+
+It is detached (`setsid nohup`), so it keeps running if the session ends or the
+model rate-limits. It checkpoints every phase in `autoplay_state.json`, reads
+`limits[].resets_in_seconds`, sleeps through 429s, and retries the *same*
+action instead of dropping it. A `kill -9` restarts from the saved phase.
+
+Config is `autoplay.json`:
+
+- `test_games: 4`, `min_wins: 3` — submit only after 3+ wins vs the boss;
+- `stop_on_promotion: false` — on a new league it saves
+  `logs/statements/<league>.md` and continues with the configured bot;
+- `league_bots` — `bot.py` (Python3) until Silver, `bot_gold.cpp` (C++) in
+  Gold/Legend.
+
+Inspect with `tail -f games/mad-pod-racing/logs/autoplay.log`. Stop by
+creating `games/mad-pod-racing/autoplay.stop`. If the bot cannot reach
+`min_wins`, the driver exits with code 2 instead of submitting a weak bot.
+
 ## Statement changes by league
 
 | League | Change | Input / output |

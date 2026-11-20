@@ -1,0 +1,17 @@
+{
+  "test_games": 4,
+  "min_wins": 3,
+  "poll_seconds": 30,
+  "retry_margin_seconds": 3,
+  "restart_delay_seconds": 30,
+  "stop_on_promotion": false,
+  "league_bots": {
+    "Wood 3": ["bot.py", "Python3"],
+    "Wood 2": ["bot.py", "Python3"],
+    "Wood 1": ["bot.py", "Python3"],
+    "Bronze": ["bot.py", "Python3"],
+    "Silver": ["bot.py", "Python3"],
+    "Gold": ["bot_gold.cpp", "C++"],
+    "Legend": ["bot_gold.cpp", "C++"]
+  }
+}
