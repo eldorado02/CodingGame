@@ -41,7 +41,9 @@ challenges/<année>-<id>/
 | — | 2016-10-01 | `the-accountant` | ⏭ non rejouable via API |
 | 4 | 2016-11-26 | `fantastic-bits` | ✅ 4 langages + 207 cas verts + win 4–0 |
 | 5 | 2017-02-25 | `ghost-in-the-cell` | ✅ 4 langages + 206 cas verts + win 346–5 |
-| 6 | 2017-04-14 | `coders-of-the-caribbean` | à faire |
+| 6 | 2017-04-14 | `coders-of-the-caribbean` | ✅ 4 langages + 207 cas verts + rang 1/2 |
+| 7 | 2017-06-23 | `wondev-woman` | ✅ 4 langages + 206 cas verts + win 1–0 |
+| 8 | 2017-11-17 | `mean-max` | ✅ 4 langages + 206 cas verts + win 50–20–21 |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
