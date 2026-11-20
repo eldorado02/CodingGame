@@ -1,0 +1,11 @@
+# Artefacts de build / runtime
+**/target/
+__pycache__/
+*.pyc
+*.lock
+*.out
+logs/
+STATUS.md
+supervisor_state.json
+supervisor.stop
+**/HANDOFF*.md

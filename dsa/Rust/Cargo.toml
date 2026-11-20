@@ -1,0 +1,7 @@
+[package]
+name = "hackathon_dsa"
+version = "0.1.0"
+edition = "2021"
+description = "Socle de structures de donnees pour les challenges CodinGame"
+
+[dependencies]

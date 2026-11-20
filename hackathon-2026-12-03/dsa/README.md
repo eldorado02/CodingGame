@@ -1,5 +1,9 @@
 # Socle DSA commun — Phase 1 ✅
 
+> **Miroir du superviseur.** La copie de travail canonique est
+> `codingGame/dsa/` (à la racine du dépôt). Toute modification doit y être
+> faite puis recopiée ici.
+
 Base réutilisable pour toutes les implémentations de challenges. Les mêmes
 structures sont disponibles dans les 4 langages, avec le même niveau de
 qualité et chacun selon ses conventions idiomatiques (pas de traduction mot à mot).
