@@ -46,6 +46,7 @@ challenges/<année>-<id>/
 | 8 | 2017-11-17 | `mean-max` | ✅ 4 langages + 206 cas verts + win 50–20–21 |
 | 9 | 2018-03-02 | `botters-of-the-galaxy` | ✅ 4 langages + 208 cas verts + win vs DoubleHulk |
 | 10 | 2018-04-20 | `code-royale` | ✅ 4 langages + 207 cas verts + 2 wins (dont Duchess Boss) |
+| 11 | 2018-06-15 | `code-of-kutulu` | ✅ 4 langages + 206 cas verts + win vs boss Davy Jones & rang 1/2 |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
