@@ -1,0 +1,11 @@
+[package]
+name = "botters_of_the_galaxy_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "botters_of_the_galaxy_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 2
