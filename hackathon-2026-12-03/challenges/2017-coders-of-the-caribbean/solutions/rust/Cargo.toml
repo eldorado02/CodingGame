@@ -1,0 +1,11 @@
+[package]
+name = "coders_of_the_caribbean_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "coders_of_the_caribbean_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 2

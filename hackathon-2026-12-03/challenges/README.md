@@ -39,7 +39,9 @@ challenges/<année>-<id>/
 | 2 | 2016-06-25 | `codebusters` | ✅ research/plan/critique + 4 langages + 208 cas verts |
 | 3 | 2016-09-24 | `hypersonic` | ✅ research/plan/critique + 4 langages + 208 cas verts + win réel |
 | — | 2016-10-01 | `the-accountant` | ⏭ non rejouable via API |
-| 4 | 2016-11-26 | `fantastic-bits` | à faire |
+| 4 | 2016-11-26 | `fantastic-bits` | ✅ 4 langages + 207 cas verts + win 4–0 |
+| 5 | 2017-02-25 | `ghost-in-the-cell` | ✅ 4 langages + 206 cas verts + win 346–5 |
+| 6 | 2017-04-14 | `coders-of-the-caribbean` | à faire |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
