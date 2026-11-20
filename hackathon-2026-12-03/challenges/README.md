@@ -52,7 +52,7 @@ challenges/<année>-<id>/
 | 12 | 2018-10-19 | `a-star-craft` | ✅ 4 langages + 206 cas verts + 30/30 testcases, 2487 points |
 | 13 | 2018-12-07 | `xmas-rush` | ✅ 4 langages + 206 cas verts + 4/4 test games gagnés |
 | 14 | 2019-03-08 | `code-a-la-mode` | ✅ 4 langages + 206 cas verts + 4/4 test games gagnés |
+| 15 | 2019-05-17 | `a-code-of-ice-and-fire` | ✅ 4 langages + 210 cas verts + 10/10 test games gagnés |
 
-Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
-`challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
-tour chronologique arrivera.
+Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
+`unleash-the-geek-amadeus`) sont ignorés de la séquence.

@@ -1,0 +1,11 @@
+[package]
+name = "a_code_of_ice_and_fire_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "a_code_of_ice_and_fire_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 2
