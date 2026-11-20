@@ -53,6 +53,7 @@ challenges/<année>-<id>/
 | 13 | 2018-12-07 | `xmas-rush` | ✅ 4 langages + 206 cas verts + 4/4 test games gagnés |
 | 14 | 2019-03-08 | `code-a-la-mode` | ✅ 4 langages + 206 cas verts + 4/4 test games gagnés |
 | 15 | 2019-05-17 | `a-code-of-ice-and-fire` | ✅ 4 langages + 210 cas verts + 10/10 test games gagnés |
+| 16 | 2020-03-20 | `ocean-of-code` | ✅ 4 langages + 210 cas verts + 8/8 test games gagnés |
 
 Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
 `unleash-the-geek-amadeus`) sont ignorés de la séquence.

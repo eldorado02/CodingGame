@@ -1,0 +1,46 @@
+15 15 0
+..........xxx..
+..........xx...
+..........x....
+...xx.xxx......
+....xxxx.......
+....xxxxx..xx..
+............xx.
+....x.x....xxx.
+.xxxxxx........
+.xxxxxx........
+.xxx..xx......x
+.xxxxxxxx..xx.x
+...xxxxxx..xxxx
+...xxx.xx...xxx
+x.x...xxx...xx.
+1 5 6 5 3 2 -1 -1
+Y
+TORPEDO 7 7
+3 2 6 4 2 2 -1 -1
+NA
+MOVE S
+3 1 6 4 1 2 -1 -1
+NA
+SURFACE 9|MSG coucou
+5 6 6 2 0 2 -1 -1
+Y
+MOVE W|TORPEDO 12 2
+4 14 6 0 0 2 -1 -1
+Y
+NA
+11 9 6 0 3 2 -1 -1
+N
+MOVE N
+10 3 6 0 2 2 -1 -1
+NA
+MOVE E|TORPEDO 3 5
+11 10 6 0 1 2 -1 -1
+NA
+SURFACE 4
+12 4 5 0 0 2 -1 -1
+N
+TORPEDO 7 7
+2 2 4 0 0 2 -1 -1
+Y
+MOVE S
