@@ -22,13 +22,13 @@ constexpr int BOOST_THRUST = 650;
 constexpr int MAX_ROT = 18;
 constexpr int SHIELD_COOLDOWN = 4; // shield turn + 3
 constexpr int FIRST_TURN_MS = 450;
-constexpr int TURN_MS = 70;
+constexpr int TURN_MS = 60;
 constexpr float CP_R2 = 600.f * 600.f;
 constexpr float POD_R2 = 400.f * 400.f;
 constexpr float MIN_IMPULSE = 120.f;
 constexpr float FRICTION = 0.85f;
 constexpr float PI = 3.14159265f;
-constexpr float SAFETY = 0.95f;
+constexpr float SAFETY = 0.90f;
 
 struct Vec {
     float x = 0.f, y = 0.f;
@@ -185,9 +185,11 @@ struct Sim {
         const Pod& oppRacer = os0 > os1 ? pods[2] : pods[3];
         if (racer.passed >= maxPassed) return numeric_limits<float>::infinity();
         if (oppRacer.passed >= maxPassed) return -numeric_limits<float>::infinity();
+        // Sum of both own pods minus both opponents, plus a light blocker term.
+        // Local 4-pod harness beat the strict racer/blocker formula with this.
         const float ahead = s0 + s1 - os0 - os1;
         const float block = -dist(blocker.pos, cps[oppRacer.cpId]);
-        return 2.f * ahead + block;
+        return 2.f * ahead + 0.5f * block;
     }
 };
 
