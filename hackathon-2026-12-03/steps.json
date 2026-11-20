@@ -23,7 +23,23 @@
     "role": "deep_search",
     "prompt": "phase2_index.md",
     "handoff": "challenges/HANDOFF-index.md",
-    "artifacts": ["challenges.json"],
-    "next": "__AFTER_INDEX__"
+    "artifacts": ["challenges.json", "challenges/README.md"],
+    "next": "phase2.challenge"
+  },
+  "phase2.challenge": {
+    "role": "code",
+    "prompt": "phase2_challenge.md",
+    "handoff": "challenges/<id>/HANDOFF.md",
+    "artifacts": [
+      "challenges/<id>/statement.md",
+      "challenges/<id>/research.md",
+      "challenges/<id>/plan.md",
+      "challenges/<id>/critique.md",
+      "challenges/<id>/solutions/",
+      "challenges/<id>/tests/"
+    ],
+    "next": "phase2.challenge",
+    "sequence": "challenges.json ordre chronologique, un seul challenge à la fois",
+    "completed": ["2016-smash-the-code"]
   }
 }

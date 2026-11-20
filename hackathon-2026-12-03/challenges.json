@@ -1,0 +1,362 @@
+[
+  {
+    "year": 2016,
+    "date": "2016-02-27",
+    "id": "coders-strike-back",
+    "name": "Coders Strike Back",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2016,
+    "date": "2016-04-30",
+    "id": "smash-the-code",
+    "name": "Smash the Code",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2016,
+    "date": "2016-06-25",
+    "id": "codebusters",
+    "name": "CodeBusters",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2016,
+    "date": "2016-09-24",
+    "id": "hypersonic",
+    "name": "Hypersonic",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2016,
+    "date": "2016-10-01",
+    "id": "the-accountant",
+    "name": "The Accountant",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2016,
+    "date": "2016-11-26",
+    "id": "fantastic-bits",
+    "name": "Fantastic Bits",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2017,
+    "date": "2017-02-25",
+    "id": "ghost-in-the-cell",
+    "name": "Ghost in the Cell",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2017,
+    "date": "2017-04-14",
+    "id": "coders-of-the-caribbean",
+    "name": "Coders of the Caribbean",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2017,
+    "date": "2017-05-12",
+    "id": "code4life",
+    "name": "Code4Life",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2017,
+    "date": "2017-06-23",
+    "id": "wondev-woman",
+    "name": "Wondev Woman",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2017,
+    "date": "2017-11-17",
+    "id": "mean-max",
+    "name": "Mean Max",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-03-02",
+    "id": "botters-of-the-galaxy",
+    "name": "Botters of the Galaxy",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-04-20",
+    "id": "code-royale",
+    "name": "Code Royale",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-06-15",
+    "id": "code-of-kutulu",
+    "name": "Code of Kutulu",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-07-25",
+    "id": "legends-of-code-and-magic",
+    "name": "Legends of Code and Magic (S)",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-07-27",
+    "id": "legends-of-code-and-magic-marathon",
+    "name": "Legends of Code and Magic (M)",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-10-19",
+    "id": "a-star-craft",
+    "name": "A*Craft",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2018,
+    "date": "2018-12-07",
+    "id": "xmas-rush",
+    "name": "Xmas Rush",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2019,
+    "date": "2019-03-08",
+    "id": "code-a-la-mode",
+    "name": "Code a la Mode",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2019,
+    "date": "2019-05-17",
+    "id": "a-code-of-ice-and-fire",
+    "name": "A Code of Ice & Fire",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2019,
+    "date": "2019-07-20",
+    "id": "detective-pikaptcha",
+    "name": "Detective Pikaptcha",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2019,
+    "date": "2019-10-04",
+    "id": "unleash-the-geek-amadeus",
+    "name": "Unleash the Geek",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2020,
+    "date": "2020-03-20",
+    "id": "ocean-of-code",
+    "name": "Ocean of Code",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2020,
+    "date": "2020-05-07",
+    "id": "spring-challenge-2020",
+    "name": "Spring Challenge 2020",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2020,
+    "date": "2020-11-12",
+    "id": "fall-challenge-2020",
+    "name": "Fall Challenge 2020",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2021,
+    "date": "2021-05-06",
+    "id": "spring-challenge-2021",
+    "name": "Spring Challenge 2021",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2021,
+    "date": "2021-10-28",
+    "id": "fall-challenge-2021",
+    "name": "Fall Challenge 2021",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2022,
+    "date": "2022-04-21",
+    "id": "spring-challenge-2022",
+    "name": "Spring Challenge 2022",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2022,
+    "date": "2022-06-16",
+    "id": "green-circle",
+    "name": "Green Circle",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2022,
+    "date": "2022-09-19",
+    "id": "cultist-wars",
+    "name": "Cultist Wars",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2022,
+    "date": "2022-12-12",
+    "id": "fall-challenge-2022",
+    "name": "Fall Challenge 2022",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2023,
+    "date": "2023-03-16",
+    "id": "winter-challenge-2023",
+    "name": "Winter Challenge 2023",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2023,
+    "date": "2023-05-25",
+    "id": "spring-challenge-2023",
+    "name": "Spring Challenge 2023",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2023,
+    "date": "2023-09-12",
+    "id": "summer-challenge-2023",
+    "name": "Summer Challenge 2023",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2023,
+    "date": "2023-12-18",
+    "id": "fall-challenge-2023",
+    "name": "Fall Challenge 2023",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2024,
+    "date": "2024-03-26",
+    "id": "spring-challenge-2024-fiverr",
+    "name": "Fiverr - Spring Challenge 2024",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2024,
+    "date": "2024-06-11",
+    "id": "summer-challenge-2024-olymbits",
+    "name": "Summer Challenge 2024 with Fiverr - Olymbits",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2024,
+    "date": "2024-10-03",
+    "id": "fall-challenge-2024",
+    "name": "Fall Challenge 2024",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2024,
+    "date": "2024-12-19",
+    "id": "winter-challenge-2024",
+    "name": "Winter Challenge 2024",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2025,
+    "date": "2025-04-03",
+    "id": "spring-challenge-2025",
+    "name": "Spring Challenge 2025",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2025,
+    "date": "2025-07-17",
+    "id": "summer-challenge-2025-coderpad-play",
+    "name": "Summer Challenge 2025",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2026,
+    "date": "2026-03-10",
+    "id": "winter-challenge-2026-exotec",
+    "name": "Winter Challenge 2026",
+    "playable": false,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2026,
+    "date": "2026-05-12",
+    "id": "spring-challenge-2026-troll-farm",
+    "name": "Spring Challenge 2026",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2026,
+    "date": "2026-09-07",
+    "id": "summer-challenge-2026-back-track-king",
+    "name": "Summer Challenge 2026",
+    "playable": true,
+    "challenge_public_id": null
+  },
+  {
+    "year": 2026,
+    "date": "2026-11-02",
+    "id": "fall-challenge-2026",
+    "name": "Fall Challenge 2026",
+    "playable": false,
+    "challenge_public_id": null
+  }
+]

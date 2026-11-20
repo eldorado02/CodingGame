@@ -1,7 +1,9 @@
 # Artefacts de build / runtime
 **/target/
 __pycache__/
+**/__pycache__/
 *.pyc
+**/*.pyc
 *.lock
 *.out
 logs/
