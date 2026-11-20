@@ -45,6 +45,7 @@ challenges/<année>-<id>/
 | 7 | 2017-06-23 | `wondev-woman` | ✅ 4 langages + 206 cas verts + win 1–0 |
 | 8 | 2017-11-17 | `mean-max` | ✅ 4 langages + 206 cas verts + win 50–20–21 |
 | 9 | 2018-03-02 | `botters-of-the-galaxy` | ✅ 4 langages + 208 cas verts + win vs DoubleHulk |
+| 10 | 2018-04-20 | `code-royale` | ✅ 4 langages + 207 cas verts + 2 wins (dont Duchess Boss) |
 
 Le challenge `2019-code-a-la-mode` amorcé avant l’index a été conservé dans
 `challenges/2019-code-a-la-mode/` (statement seul), il sera traité quand son
