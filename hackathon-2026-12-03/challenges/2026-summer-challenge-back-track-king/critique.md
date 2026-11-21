@@ -47,3 +47,18 @@
   `partOfActiveConnections` variés ; 210/210 cas différentiels identiques.
 - Nouvelle soumission officielle : `41773207` (déjà promue, rang 1/193 en
   Wood 1 au moment de l’écriture).
+
+## Montée en ligue Bronze (soumission officielle `41773849`)
+- Nouvelle stratégie : lecture des connexions **actives** depuis l'entrée (4e
+  champ de chaque case), construction de la paire désirée non active la moins
+  chère (Dijkstra ornée : rail existant = 0, case libre = coût terrain + 1), et
+  DISRUPT ciblé sur la région non-ville où l'adversaire possède le plus de rails,
+  avec priorité aux régions traversées par une connexion active.
+- Point décisif : quand toutes les connexions sont actives (~75 % de la partie,
+  comme le confirment les post-mortems publics), le bot ne gaspille plus sa
+  peinture : il pose jusqu'à 3 rails adjacents aux chemins qui paient, ce qui
+  détourne le tie-break N/E/S/O et vole des points au boss.
+- Validation : **8/10 victoires** contre le boss Bronze `6767605` (scores
+  14442–13825, 5647–5384, 24787–22023, 2552–1976, 9457–7015, 9560–7421,
+  32020–24725, 3161–2971). 210/210 cas différentiels identiques dans 4 langages.
+- Soumission officielle : `41773849`.

@@ -71,3 +71,33 @@ rend la sortie identique dans les quatre langages.
 | Budget paint insuffisant | Bornes du plateau : moins de 100 tours même au coût maximal. |
 | Connexion non désirée | On ne choisit que des paires présentes dans `desiredConnections`. |
 | Adversaire en ligue supérieure | Hors périmètre Wood 1 : le boss passe son tour. |
+
+## Recherche externe post-promotion Bronze (21/11/2026)
+Dépôts publics consultés :
+- `aautin/back_track_king` — bot C++ simple et efficace : il lit les
+  `active_connexions` depuis l'entrée (4e champ de chaque case), construit en
+  priorité la paire désirée **non encore active** la plus proche (Manhattan), et
+  disrupte la région non-ville non-encrée où l'adversaire a **plus** de rails que
+  nous, avec priorité aux régions traversées par une connexion active puis à
+  l'instabilité.
+- `I-M20/codingame_back_track_king-usefultips` — beam search (largeur 20,
+  profondeur 10) avec heuristique « gap à fermer » et bonus pour les rails
+  adjacents à un chemin qui paie (le tie-break N/E/S/O permet de voler un point
+  à l'adversaire). ~75 % d'une partie se joue **après** que toutes les
+  connexions sont actives.
+- `Pduhard/back-track-king-postmortem` — 3e du contest : PPO + réseau de
+  24 plans 30×20, distillation puis recherche à 2–4 plans/turn. Confirme que
+  le signal est l'écart de revenu par tour, pas le nombre de rails posés.
+
+Leçon appliquée au prototype Bronze : ne pas recomputer l'activité des
+connexions, la lire dans l'entrée ; cibler le DISRUPT sur la région avec le plus
+de rails ennemis (et non seulement la plus instable).
+
+## Résultat du vol de chemins en fin de partie
+Le post-mortem `I-M20` indiquait qu'une fois toutes les connexions désirées
+actives, placer un rail adjacent à un chemin qui paie vaut +1, et +2 si la case
+voisine du chemin appartient à l'adversaire : le départage déterministe
+N/E/S/O permet de faire recomputer le chemin le plus court à notre profit.
+Le prototype qui ajoute 3 `PLACE_TRACKS` par tour dans cette phase passe de
+~2/5 à **8/10** victoires contre le boss Bronze. C'est donc la règle dominante
+en Bronze, devant le choix du DISRUPT.

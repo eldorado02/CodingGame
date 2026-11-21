@@ -36,13 +36,19 @@ def make_case(seed: int) -> str:
         wanted = "x" if not desired[town_id] else ",".join(map(str, desired[town_id]))
         lines.append(f"{town_id} {x} {y} {wanted}")
 
+    pairs = [(u, v) for u in range(town_count) for v in range(u + 1, town_count)
+             if v in desired[u]]
     for _ in range(2):
         lines.append(f"{rng.randrange(0, 40)} {rng.randrange(0, 40)}")
         for _ in range(width * height):
             owner = rng.choice((-1, -1, 0, 0, 1, 1, 2))
             instability = rng.randrange(0, 12)
             inked = rng.choice(("0", "0", "0", "1", "false", "true"))
-            active = rng.choice(("0", "1", "x"))
+            if pairs and rng.random() < 0.25:
+                chosen = rng.sample(pairs, min(len(pairs), rng.randrange(1, 3)))
+                active = ",".join(f"{a}-{b}" for a, b in chosen)
+            else:
+                active = "x"
             lines.append(f"{owner} {instability} {inked} {active}")
     return "\n".join(lines) + "\n"
 
