@@ -100,3 +100,11 @@ quota gratuit.
 - Action : score de formation `3*hv + 2*c + s`, plafond 3 trolls, port C/C++/Rust, fuzz 210/210.
 - Résultat : 4/4 victoires vs rank 2, ~4/9 vs boss. Soumission C++ en attente du quota test games.
 - Leçon : tester une variable à la fois puis combiner ; le prototype PLANT et le CHOP ont été rejetés malgré leur intuition initiale.
+
+### 2026-11-21 — Wondev Woman — correction du protocole (bot planté)
+- Constat : score −1,55, rang 193 en Wood 1 ; le bot plantait au tour 1 sur `int('4 2')` car l'énoncé archivé dit 1 unité alors que le stub en annonce 2, et il n'envoyait qu'une ligne pour l'unité 0.
+- Hypothèse : le plant venait du parsing et du nombre de lignes de sortie, pas de la stratégie.
+- Sources : `cg.py stub wondev-woman`, log de test game `.../wondev-woman/logs/test-20261121-171943.log`, referee officiel `CodinGame/WondevWoman/Referee.java` (`outputs[0]` seulement, `FINAL_HEIGHT - 1 = 3`, `ACCEPT-DEFEAT` valide).
+- Action : parser 2 unités par camp + legalActions indexées ; une seule action globale en sortie ; grille de score v2 (victoire 1e6, déni 5e4, tremplin 3e3, adjacent-case3 1.5e3) ; port C/C++/Rust ; fuzz 210 cas.
+- Résultat : fuzz 210/210 identique ; 4 victoires + 1 nulle sur 5 vs boss 1393115 ; soumission C++ 41778172.
+- Leçon : pour un puzzle ancien, le stub généré et le referee priment toujours sur l'énoncé archivé. Vérifier le nombre de lignes de sortie attendues avant d'optimiser la stratégie.

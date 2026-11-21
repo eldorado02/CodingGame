@@ -38,3 +38,26 @@ case de hauteur 3.
 | Adversaire gagne en premier | Déni : retirer sa case de niveau 3 si possible. |
 | Timeout 50 ms | ≤ 64 actions, grille ≤ 7×7 → trivial. |
 | Divergence entre langages | Même grille de score entière, fuzz différentiel. |
+
+## Correctif protocole (2026-11-21) — source = stub officiel + referee
+
+Le bot initial plantait au tour 1 (`ValueError: invalid literal for int():
+'4 2'`) et finissait avec un score de **−1,55**. Deux sources ont fait foi :
+
+1. `cg.py stub wondev-woman` → `read unitsPerPlayer:int` puis **deux** lignes
+   de positions par camp, puis `read legalActions:int` et autant de lignes
+   `atype index dir1 dir2`.
+2. Referee officiel
+   [`CodinGame/WondevWoman/Referee.java`](https://github.com/CodinGame/WondevWoman/blob/master/Referee.java) :
+   - `getInputs()` envoie `unitsPerPlayer` lignes par joueur (Wood 1 réel :
+     **2 unités**, pas 1 comme dans l'énoncé archivé) ;
+   - `handlePlayerOutput()` ne lit que **`outputs[0]`** → une seule action par
+     tour, même avec 2 unités ;
+   - `computeMove()` : `if (targetHeight == FINAL_HEIGHT - 1) scorePoint = true`
+     → **marcher** sur une case de hauteur 3 marque un point (construire dessus
+     la fait passer à 4 = case retirée) ;
+   - `ACCEPT-DEFEAT` est une commande valide, `WAIT` ne l'est pas.
+
+Conséquence : la grille de score a été réécrite (montée `400*h`, case de score
+adjacente `+1500`, tremplin 2→3 `+3000`, déni près de l'adversaire `+50 000`,
+victoire `+1 000 000`) et la sortie est une seule ligne.

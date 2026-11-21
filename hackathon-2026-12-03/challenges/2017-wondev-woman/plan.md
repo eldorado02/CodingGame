@@ -35,3 +35,13 @@ Init : `size`, `unitsPerPlayer` (1). Puis chaque tour :
 - `solutions/c/bot.c`, `solutions/cpp/bot.cpp`, `solutions/rust/bot.rs`,
   `solutions/python/bot.py`.
 - `tests/gen_cases.py`, `tests/*.in`, `tests/run.sh`, `critique.md`.
+
+## itération 2 — correction du protocole (2026-11-21)
+
+1. Lire `unitsPerPlayer` lignes pour nous **et** autant pour l'adversaire.
+2. Lire `legalActions` puis les lignes `atype index dir1 dir2` (index d'unité).
+3. Évaluer **toutes** les actions de **toutes** les unités avec une grille de
+   score entière ; choisir la meilleure (égalité → première action du referee).
+4. Émettre **une seule ligne** (le referee ignore les suivantes) ;
+   `ACCEPT-DEFEAT` si aucune action.
+5. Porter en C/C++/Rust et étendre le harnais à 10 cas déterministes + 200 fuzz.

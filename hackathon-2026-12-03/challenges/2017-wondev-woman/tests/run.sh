@@ -17,8 +17,10 @@ fi
 "$CARGO" build --release --manifest-path solutions/rust/Cargo.toml --quiet
 cp solutions/rust/target/release/wondev_woman_bot "$BIN/bot_rust"
 
+python3 tests/gen_cases.py
+
 fail=0
-for input in tests/*.in; do
+for input in tests/*.in tests/fuzz/*.in; do
     ref=$(python3 solutions/python/bot.py < "$input")
     for lang in c cpp rust; do
         got=$("$BIN/bot_$lang" < "$input")
@@ -31,6 +33,6 @@ for input in tests/*.in; do
     done
 done
 if [ "$fail" -eq 0 ]; then
-    echo "wondev-woman : tous les cas passent dans tous les langages"
+    echo "wondev-woman : 210/210 cas identiques dans 4 langages"
 fi
 exit "$fail"
