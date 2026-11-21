@@ -1,92 +1,122 @@
-// Olymbits — Hurdle Race : BFS sans jamais atterrir sur une haie.
-use std::collections::VecDeque;
+// Olymbits (Wood 1, 4 courses) — énumération des 4^5 séquences d'actions.
+// Toutes les machines reçoivent la même action ; on minimise la somme des
+// tours restants estimés sur toutes les courses actives.
 use std::io::{self, BufRead, Write};
 
+const HORIZON: usize = 5;
+const POW4: [usize; 5] = [1, 4, 16, 64, 256];
 const NAMES: [&str; 4] = ["LEFT", "DOWN", "RIGHT", "UP"];
-const STEPS: [i32; 4] = [1, 2, 3, 2];
+const STEPS: [usize; 4] = [1, 2, 3, 2];
 const JUMP: [bool; 4] = [false, false, false, true];
 
-/// Position atteinte, ou None si le coureur heurte une haie.
-fn move_pos(track: &[u8], pos: usize, steps: i32, mut jump: bool) -> Option<usize> {
-    let last = track.len() - 1;
-    let mut np = pos;
-    for _ in 0..steps {
-        if np < last {
-            np += 1;
-        }
-        if track[np] == b'#' && !jump {
-            return None;
-        }
-        if np == last {
-            break;
-        }
-        jump = false; // UP n'ignore que la première case.
-    }
-    Some(np)
+struct State {
+    track: Vec<u8>,
+    pos: usize,
+    stun: usize,
+    last: usize,
 }
 
-fn best_action(track: &[u8], pos: usize) -> &'static str {
-    let last = track.len() - 1;
-    if pos >= last {
-        return "LEFT";
+fn step(s: &State, pos: &mut usize, stun: &mut usize, m: usize) {
+    if *stun > 0 {
+        *stun -= 1;
+        return;
     }
-    // parent[p] = Some(chemin depuis pos), None = non visité ; Some((p, a)) = visité.
-    let mut path: Vec<Option<(usize, usize)>> = vec![None; last + 1];
-    let mut queue = VecDeque::new();
-    queue.push_back(pos);
-    path[pos] = Some((pos, usize::MAX));
-    while let Some(p) = queue.pop_front() {
-        for (a, (&steps, &jump)) in STEPS.iter().zip(JUMP.iter()).enumerate() {
-            let np = match move_pos(track, p, steps, jump) {
-                Some(v) => v,
-                None => continue,
-            };
-            if path[np].is_some() {
-                continue;
-            }
-            let first = if p == pos { a } else { path[p].unwrap().1 };
-            path[np] = Some((p, first));
-            if np == last {
-                return NAMES[first];
-            }
-            queue.push_back(np);
+    if JUMP[m] {
+        let mut np = *pos + 2;
+        if np > s.last {
+            np = s.last;
+        }
+        *stun = if *pos + 2 < s.last && s.track[*pos + 2] == b'#' {
+            3
+        } else {
+            0
+        };
+        *pos = np;
+        return;
+    }
+    for k in 1..=STEPS[m] {
+        if *pos + k > s.last {
+            *pos = s.last;
+            *stun = 0;
+            return;
+        }
+        if s.track[*pos + k] == b'#' {
+            *pos += k;
+            *stun = 3;
+            return;
         }
     }
-    "LEFT"
+    *pos += STEPS[m];
+    *stun = 0;
 }
 
 fn main() {
     let stdin = io::stdin();
     let mut lines = stdin.lock().lines().map_while(Result::ok);
-    let player: usize = lines.next().and_then(|l| l.trim().parse().ok()).unwrap_or(0);
-    let games: usize = lines.next().and_then(|l| l.trim().parse().ok()).unwrap_or(0);
+    let player: usize = lines
+        .next()
+        .and_then(|l| l.trim().parse().ok())
+        .unwrap_or(0);
+    let games: usize = lines
+        .next()
+        .and_then(|l| l.trim().parse().ok())
+        .unwrap_or(0);
 
     let stdout = io::stdout();
     let mut out = io::BufWriter::new(stdout.lock());
     while (0..3).all(|_| lines.next().is_some()) {
-        let mut gpu = String::new();
-        let mut reg = [0i32; 7];
-        let mut count = 0;
+        let mut states = Vec::new();
         for _ in 0..games {
             let line = match lines.next() {
                 Some(v) => v,
-                None => return,
+                None => break,
             };
-            let mut parts = line.split_whitespace();
-            if let Some(token) = parts.next() {
-                gpu = token.to_string();
-                for (i, value) in parts.by_ref().take(7).enumerate() {
-                    reg[i] = value.parse().unwrap_or(0);
+            let f: Vec<&str> = line.split_whitespace().collect();
+            if f.len() < 8 || f[0] == "GAME_OVER" {
+                continue;
+            }
+            let pos: usize = f[1 + player].parse().unwrap_or(0);
+            let stun: usize = f[4 + player].parse().unwrap_or(0);
+            let track = f[0].as_bytes().to_vec();
+            let last = track.len() - 1;
+            states.push(State {
+                track,
+                pos,
+                stun,
+                last,
+            });
+        }
+
+        let mut best: i64 = -1;
+        let mut best_first = 0usize;
+        for code in 0..1024usize {
+            let mut total: i64 = 0;
+            for s in &states {
+                let mut pos = s.pos;
+                let mut stun = s.stun;
+                let mut done: i64 = -1;
+                for t in 0..HORIZON {
+                    let m = (code / POW4[HORIZON - 1 - t]) % 4;
+                    step(s, &mut pos, &mut stun, m);
+                    if pos >= s.last {
+                        done = (t + 1) as i64;
+                        break;
+                    }
                 }
-                count += 1;
+                if done < 0 {
+                    done = HORIZON as i64 + (s.last as i64 - pos as i64);
+                }
+                total += done;
+            }
+            if best < 0 || total < best {
+                best = total;
+                best_first = (code / POW4[HORIZON - 1]) % 4;
+                if best == 0 {
+                    break;
+                }
             }
         }
-        let answer = if count == 0 || gpu == "GAME_OVER" {
-            "LEFT"
-        } else {
-            best_action(gpu.as_bytes(), reg[player] as usize)
-        };
-        writeln!(out, "{}", answer).unwrap();
+        writeln!(out, "{}", NAMES[best_first]).unwrap();
         out.flush().unwrap();
     }
 }

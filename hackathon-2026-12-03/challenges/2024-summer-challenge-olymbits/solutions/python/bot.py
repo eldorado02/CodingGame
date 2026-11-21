@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Olymbits — Hurdle Race : chemin minimal sans jamais heurter un obstacle."""
-import sys
-from collections import deque
+"""Olymbits (Wood 1, 4 courses simultanées) — énumération de séquences courtes.
 
-# LEFT=+1, DOWN=+2, RIGHT=+3, UP=+2 en sautant la première case.
-ACTIONS = (
-    ("LEFT", 1, False),
-    ("DOWN", 2, False),
-    ("RIGHT", 3, False),
-    ("UP", 2, True),
-)
+Toutes les machines reçoivent la MÊME action à chaque tour. On énumère les
+4^5 séquences d'actions possibles, on simule les 4 courses sur 5 tours, et on
+choisit la séquence qui minimise la somme des tours restants estimés. On joue
+le premier pas de cette séquence.
+
+`UP` saute la première haie et avance de 2 ; heurter une haie immobilise 3 tours.
+"""
+import itertools
+import sys
+
+MOVES = ((1, False), (2, False), (3, False), (2, True))  # LEFT DOWN RIGHT UP
+NAMES = ("LEFT", "DOWN", "RIGHT", "UP")
+HORIZON = 5
 
 
 def rd() -> str:
@@ -17,61 +21,64 @@ def rd() -> str:
     return line.strip() if line else ""
 
 
-def move(track: str, pos: int, steps: int, jump: bool) -> int | None:
-    """Position après l'action, ou None si le coureur heurte une haie."""
+def step(track: str, pos: int, stun: int, steps: int, jump: bool) -> tuple[int, int]:
+    """Applique une action ; renvoie (position, stun)."""
+    if stun > 0:
+        return pos, stun - 1
     last = len(track) - 1
+    if jump:
+        np = min(last, pos + 2)
+        if pos + 2 < last and track[pos + 2] == "#":
+            return np, 3
+        return np, 0
     np = pos
-    for k in range(1, steps + 1):
-        np = min(last, np + 1)
-        if track[np] == "#" and not jump:
-            return None
-        if np == last:
-            break
-        jump = False
-    return np
-
-
-def best_action(track: str, pos: int) -> str:
-    """Premier pas d'un plus court chemin vers la dernière case."""
-    goal = len(track) - 1
-    if pos >= goal:
-        return "LEFT"
-    q = deque([pos])
-    first = {pos: ""}
-    while q:
-        p = q.popleft()
-        for name, steps, jump in ACTIONS:
-            np = move(track, p, steps, jump)
-            if np is None or np in first:
-                continue
-            first[np] = name if p == pos else first[p]
-            if np == goal:
-                return first[np]
-            q.append(np)
-    return "LEFT"
+    for s in range(1, steps + 1):
+        if pos + s > last:
+            return last, 0
+        if track[pos + s] == "#":
+            return pos + s, 3
+        np = pos + s
+    return np, 0
 
 
 def main() -> None:
-    player_idx = int(rd())
-    nb_games = int(rd())
+    player = int(rd())
+    nb = int(rd())
     while True:
-        info = [rd() for _ in range(3)]
-        if not info[0]:
+        infos = [rd() for _ in range(3)]
+        if not infos[0]:
             return
-        regs = [rd() for _ in range(nb_games)]
-        if not regs:
-            print("LEFT")
-            sys.stdout.flush()
-            continue
-        f = regs[0].split()
-        if not f or f[0] == "GAME_OVER":
-            print("LEFT")
-            sys.stdout.flush()
-            continue
-        track = f[0]
-        pos = int(f[1 + player_idx])
-        print(best_action(track, pos))
-        sys.stdout.flush()
+        games = [rd().split() for _ in range(nb)]
+        states = []
+        for f in games:
+            if len(f) < 8 or f[0] == "GAME_OVER":
+                states.append(None)
+                continue
+            states.append((f[0], int(f[1 + player]), int(f[4 + player])))
+
+        best = None
+        best_seq = None
+        for seq in itertools.product(range(4), repeat=HORIZON):
+            total = 0
+            for st in states:
+                if st is None:
+                    continue
+                track, pos, stun = st
+                done = -1
+                for t, m in enumerate(seq):
+                    pos, stun = step(track, pos, stun, *MOVES[m])
+                    if pos >= len(track) - 1:
+                        done = t + 1
+                        break
+                if done < 0:
+                    done = HORIZON + (len(track) - 1 - pos)
+                total += done
+            if best is None or total < best:
+                best = total
+                best_seq = seq
+                if best == 0:
+                    break
+        print(NAMES[best_seq[0]] if best_seq else "LEFT", flush=True)
 
 
 if __name__ == "__main__":

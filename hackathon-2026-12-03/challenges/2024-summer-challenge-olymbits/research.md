@@ -41,3 +41,36 @@ et se cognent aux haies.
 | Se faire étourdir | Transitions interdisant les cases `#`. |
 | Tour de reset sans entrée valide | Action `LEFT` inoffensive si `GPU == "GAME_OVER"`. |
 | Décalage de lecture des registres | 3 lignes de score puis `nbGames` lignes, lues à chaque tour. |
+
+## Recherche externe Wood 1 (21/11/2026)
+Dépôts publics consultés :
+- `JakubDotPy/codingame_olymbits` (`master`) : en Bronze/Silver, les 4 machines
+  sont 4 mini-jeux **différents** (Hurdle, Archery, Roller, Diving) avec des
+  registres de sens différents, et le score final est le **produit** des 4 scores.
+  Le bot pondère le vote de chaque jeu selon ses médailles déjà obtenues.
+- `UAKobzar/Olymbits` (`master`) : énumère 4^8 séquences d'actions et minimise
+  le jeu le plus faible (index déterminé par `nb_gold*3 + nb_silver`).
+
+⚠️ Ces stratégies visent les ligues **supérieures**. L'énoncé Wood 1 lu via
+l'API confirme que les 4 machines y jouent **la même course d'obstacles** ;
+les registres `reg0..reg5` sont position/stun des 3 joueurs. Le vrai levier
+Wood 1 est donc le **classement relatif** dans chaque course : deux joueurs à
+égalité reçoivent tous deux l'or, le dernier reçoit le bronze, et un score
+0 dans un seul jeu annule le produit entier.
+
+## Résultat de l'énumération de séquences (21/11/2026)
+Comparaison menée contre `5507122` (BOSS 2) et `5507574` :
+| Approche | Victoires / 5 |
+|---|---|
+| toujours `UP` (référence) | 0/5 |
+| BFS classement relatif + pondération médailles | 2/5 |
+| look-ahead 3 cases + vote majoritaire | 2/5 |
+| énumération horizon 6 | 0/5 (timeout, `scores: 0=-1`) |
+| énumération horizon 4 | 1/5 |
+| **énumération horizon 5** | **5/5 + 5/5** |
+
+Le point clé est que l'action est **partagée** entre les 4 machines : il faut
+donc évaluer une séquence sur toutes les pistes simultanément, et non choisir
+le meilleur coup de chaque piste. Le modèle d'étourdissement (3 tours d'immobilité
+après collision) est déterminant : le boss joue `UP` en boucle et reste
+récurrentément étourdi sur les haies de la deuxième case.
