@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Génère des scénarios Cellularena déterministes (10 cas + fuzz).
 
-Les organes BASIC sont explicitement générés : c'est un piège classique,
-leur type commence par 'B' comme la protéine B.
+Couvre les organes BASIC et HARVESTER des deux camps, les quatre types de
+protéines et des stocks C/D non nuls (pour déclencher le placement HARVESTER).
 """
 from pathlib import Path
 import random
@@ -32,44 +32,42 @@ def make_case(seed: int) -> str:
         (my_root[0], my_root[1], 1, "ROOT", 1, 0, 1),
         (opp_root[0], opp_root[1], 0, "ROOT", 2, 0, 2),
     ]
-    # Quelques organes BASIC des deux camps, avec des types qui piègent
-    # un parseur comparant seulement le premier caractère (B/C/D).
     next_id = 3
     for owner, root_id in ((1, 1), (0, 2)):
         for _ in range(rng.randrange(2, 9)):
             pos = next(p for p in free if p not in occupied)
             occupied.add(pos)
-            organs.append((pos[0], pos[1], owner, "BASIC", next_id,
+            kind = "HARVESTER" if rng.random() < 0.25 else "BASIC"
+            organs.append((pos[0], pos[1], owner, kind, next_id,
                            rng.randrange(4), root_id))
             next_id += 1
 
-    sources = set()
+    sources: dict[tuple[int, int], str] = {}
     for pos in free:
         if pos in occupied:
             continue
         if rng.random() < 0.16:
-            sources.add(pos)
-    # Au moins une source A atteignable, sinon le cas est trivial.
-    if not any(p[1] < 4 for p in sources):
+            sources[pos] = rng.choice("AAAABCD")
+    if not any(kind == "A" for kind in sources.values()):
         candidates = [p for p in free if p not in occupied and p[1] < 4]
         if candidates:
-            sources.add(candidates[0])
+            sources[candidates[0]] = "A"
 
     entities = []
     for x in range(W):
         for y in range(H):
             if (x, y) in blocked:
                 entities.append(f"{x} {y} WALL -1 0 X 0 0")
-    for x, y in sorted(sources):
-        entities.append(f"{x} {y} A -1 0 X 0 0")
+    for (x, y), kind in sorted(sources.items()):
+        entities.append(f"{x} {y} {kind} -1 0 X 0 0")
     for x, y, owner, kind, oid, direction, root in organs:
         entities.append(f"{x} {y} {kind} {owner} {oid} {DIRS[direction]} {root} {root}")
 
-    my_a = rng.randrange(1, 13)
-    opp_a = rng.randrange(1, 13)
+    my = [rng.randrange(1, 13), rng.randrange(4), rng.randrange(4), rng.randrange(4)]
+    opp = [rng.randrange(1, 13), 0, 0, 0]
     lines = [f"{W} {H}", str(len(entities))] + entities
-    lines.append(f"{my_a} 0 0 0")
-    lines.append(f"{opp_a} 0 0 0")
+    lines.append(" ".join(map(str, my)))
+    lines.append(" ".join(map(str, opp)))
     lines.append("1")
     return "\n".join(lines) + "\n"
 

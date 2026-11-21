@@ -65,3 +65,32 @@ BFS multi-source depuis **tous** nos organes vers toutes les cases libres, relan
 chaque tour ; on retient la source `A` atteignable la plus proche (départage
 `distance, y, x`), sinon la case libre la plus proche. Un seul `GROW` adjacent
 est émis, complété par des `WAIT` jusqu'à `requiredActionsCount`.
+
+## Recherche externe Wood 3 HARVESTER (21/11/2026)
+Dépôt public consulté : `aautin/cellularena` (C++).
+Points clés extraits de `src/growth.cpp`, `src/path.cpp` et `src/Map.cpp` :
+- un `HARVESTER` se place sur une case **adjacente** à une protéine, orienté vers
+  elle ; la direction est déterminée par le décalage entre la case de croissance
+  et la source ;
+- une source déjà desservie est mémorisée (`add_generator`) et n'est plus
+  visée : deux harvesters face à la même source ne rapportent qu'1 protéine/
+  tour/ joueur, donc le second gaspille `1 C + 1 D` ;
+- le chemin BFS part de **tous** nos organes (layer 0) et vise la protéine
+  atteignable dans la limite `stock[A] + (peut poser un harvester)` ;
+- `GROW` sur une case protéine rapporte 3 protéines du type correspondant ;
+- priorité : HARVESTER si `C && D`, puis BASIC vers une source A, puis BASIC
+  sur n'importe quelle case libre adjacente.
+
+## Résultat du blocage des sources harvesées (21/11/2026)
+| Variante | Résultat vs `5736695` |
+|---|---|
+| BFS greedy initial (14–18 organes) | ~0/5 |
+| HARVESTER sans suivi des sources | 0/5 (16–17, absorption de sa propre source) |
+| HARVESTER + sources exclues des objectifs | 3/5 |
+| **HARVESTER + sources bloquées dans le BFS** | **9/9** |
+
+Le suivi des sources doit être **structurel** (case infranchissable), pas
+seulement **déclaratif** (case non ciblée) : le GROW crée l'organe sur le
+premier pas du chemin, donc une source traversée est absorbée. C'est l'erreur
+que les dépôts publics évitent en retirant la source du graphe dès qu'un
+`add_generator` est posé.
