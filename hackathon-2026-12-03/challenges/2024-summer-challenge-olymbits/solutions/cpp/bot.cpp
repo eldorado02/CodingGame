@@ -231,7 +231,7 @@ int main() {
         for (int a = 1; a < 4; ++a) {
             if (total[a] > total[best]) best = a;
         }
-        std::cout << kNames[best] << '\n';
+        std::cout << kNames[best] << '\n' << std::flush;
     }
     return 0;
 }

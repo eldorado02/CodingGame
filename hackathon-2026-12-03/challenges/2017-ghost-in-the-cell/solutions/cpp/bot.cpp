@@ -307,7 +307,7 @@ int main() {
             if (i) out += ';';
             out += orders[i];
         }
-        std::cout << (out.empty() ? "WAIT" : out) << '\n';
+        std::cout << (out.empty() ? "WAIT" : out) << '\n' << std::flush;
         ++turn;
     }
     return 0;

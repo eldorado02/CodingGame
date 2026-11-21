@@ -86,3 +86,10 @@ Validation : **210/210 cas différentiels** identiques dans 4 langages (généra
 - Bug de portage détecté par le fuzz : la liste des adversaires de roller
   contenait un 0 fantôme dans les 3 langages compilés, ce qui créait une
   collision illusoire quand `pos=0`. Corrigé en passant la longueur réelle.
+
+### Correctif sortie C++ (2026-11-21)
+La première soumission C++timeoutait dès le frame 3 (`$0 has not provided 1 lines
+in time`) alors que Python et le fuzz passaient : `std::cout` avec
+`sync_with_stdio(false)` ne vide pas son tampon sur `'\n'`. Ajout de
+`<< std::flush` et resoumission (`41778911` / `41778912`). Test game C++
+Olymbits repassé de `-1` à `7280`.

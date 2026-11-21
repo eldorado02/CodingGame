@@ -48,3 +48,10 @@ Nouvelle stratégie (inspirée du post-mortem d'Agade) :
 Validation : prototype Python **4 victoires / 5** en vérification indépendante
 (boss à 0 dans les victoires), 5/5 annoncés par la recherche initiale, puis
 portage 4 langages et fuzz **206/206** identiques. Soumission C++ `41778890`.
+
+### Correctif sortie C++ (2026-11-21)
+La première soumission C++timeoutait dès le frame 3 (`$0 has not provided 1 lines
+in time`) alors que Python et le fuzz passaient : `std::cout` avec
+`sync_with_stdio(false)` ne vide pas son tampon sur `'\n'`. Ajout de
+`<< std::flush` et resoumission (`41778911` / `41778912`). Test game C++
+Olymbits repassé de `-1` à `7280`.

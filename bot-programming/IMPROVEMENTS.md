@@ -164,3 +164,11 @@ quota gratuit.
 - Action : prototype `ice_def.py`, 12 parties contre le boss 2425714.
 - Résultat : 0/12 victoires, score adverse 194–297, aucun crash de notre côté.
 - Leçon : il faut un mur de tours/L3 opérationnel vers le tour 10, ce que l'économie actuelle ne permet pas de financer ; autre angle à trouver avant de réessayer.
+
+### 2026-11-21 — Olymbits/Ghost — timeout C++ par sortie non flushée
+- Constat : Olymbits 41778730 converge vers -8,32 (rang 1592/1598) alors que le même bot gagne 3/5 en test games ; Ghost 41778890 démarre à 0.
+- Hypothèse : divergence de décision entre Python et C++ sur des entrées réelles.
+- Sources : logs de test game (`summary: $0 has not provided 1 lines in time`, frame 3), stderr du binaire de debug montrant tous les DBG mais aucune stdout.
+- Action : ajout de `<< std::flush` après chaque ligne produite dans les deux `solutions/cpp/bot.cpp` ; fuzz 210/210 et 206/206 rejoués ; resoumissions C++ 41778911 (Olymbits) et 41778912 (Ghost).
+- Résultat : test game C++ Olymbits repassé de -1 à 7280 (victoire).
+- Leçon : avec `sync_with_stdio(false)`, `'\n'` ne vide pas le tampon ; CodinGame tue le processus avant la fin du tour. Toujours flusher explicitement la sortie dans les bots C++.
