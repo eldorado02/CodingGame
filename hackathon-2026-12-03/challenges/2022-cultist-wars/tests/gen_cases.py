@@ -56,3 +56,11 @@ if __name__ == "__main__":
     for seed in range(1, 11):
         with open(os.path.join(OUT, f"{seed:02d}.in"), "w") as f:
             f.write(gen(seed))
+    fuzz = os.path.join(OUT, "fuzz")
+    os.makedirs(fuzz, exist_ok=True)
+    for old in os.listdir(fuzz):
+        if old.endswith(".in"):
+            os.remove(os.path.join(fuzz, old))
+    for seed in range(200):
+        with open(os.path.join(fuzz, f"case_{seed:03d}.in"), "w") as f:
+            f.write(gen(1000 + seed))

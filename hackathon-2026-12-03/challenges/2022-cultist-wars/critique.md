@@ -19,3 +19,9 @@
 - Limite de l'approche : la stratégie est réactive et ne coordonne pas les
   cultistes pour encercler le leader adverse. Amélioration possible : réserver
   deux culistes à la chasse du leader ennemi pendant que le leader convertit.
+
+## 2026-11-21 — correctif sortie C++ (soumission 41778956)
+Le bot C++ ne vidait pas `cout` (`sync_with_stdio(false)` + `'\n'`) et était
+tué avant son premier tour (`scores: 0=-1`). Ajout de `<< flush` sur toutes
+les sorties, fuzz 210/210 identique dans 4 langages, resoumission C++
+`41778956`. Test games : 2 victoires / 5 contre le boss (3–7 pts).

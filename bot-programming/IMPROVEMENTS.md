@@ -172,3 +172,11 @@ quota gratuit.
 - Action : ajout de `<< std::flush` après chaque ligne produite dans les deux `solutions/cpp/bot.cpp` ; fuzz 210/210 et 206/206 rejoués ; resoumissions C++ 41778911 (Olymbits) et 41778912 (Ghost).
 - Résultat : test game C++ Olymbits repassé de -1 à 7280 (victoire).
 - Leçon : avec `sync_with_stdio(false)`, `'\n'` ne vide pas le tampon ; CodinGame tue le processus avant la fin du tour. Toujours flusher explicitement la sortie dans les bots C++.
+
+### 2026-11-21 — Cultist Wars — timeout C++ identique corrigé
+- Constat : soumission C++ précédente notée -1 en test game (score ligue 12,27 mais rang 49/266).
+- Hypothèse : même absence de `flush` que Olymbits/Ghost.
+- Sources : `solutions/cpp/bot.cpp`, test game `cg.py test cultist-wars`.
+- Action : `<< flush` sur toutes les sorties, fuzz porté à 210/210, soumission C++ 41778956.
+- Résultat : test game passé de -1 à 3–7 points (2 victoires / 5 contre le boss).
+- Leçon : auditer systématiquement `sync_with_stdio(false)` sans `flush` dans toutes les soumissions C++.

@@ -148,7 +148,7 @@ int main() {
         if (!threats.empty()) {
             auto [c, v] = find_shot(&threats);
             if (c >= 0) {
-                cout << units[c].id << " SHOOT " << units[v].id << '\n';
+                cout << units[c].id << " SHOOT " << units[v].id << '\n' << flush;
                 continue;
             }
         }
@@ -166,7 +166,7 @@ int main() {
                 }
             }
             if (target >= 0) {
-                cout << units[leader].id << " CONVERT " << units[target].id << '\n';
+                cout << units[leader].id << " CONVERT " << units[target].id << '\n' << flush;
                 continue;
             }
         }
@@ -182,7 +182,7 @@ int main() {
                 }
             }
             if (target >= 0) {
-                cout << units[leader].id << " CONVERT " << units[target].id << '\n';
+                cout << units[leader].id << " CONVERT " << units[target].id << '\n' << flush;
                 continue;
             }
         }
@@ -191,7 +191,7 @@ int main() {
         {
             auto [c, v] = find_shot(nullptr);
             if (c >= 0) {
-                cout << units[c].id << " SHOOT " << units[v].id << '\n';
+                cout << units[c].id << " SHOOT " << units[v].id << '\n' << flush;
                 continue;
             }
         }
@@ -213,10 +213,10 @@ int main() {
                     best_d = d; e = ei;
                 }
             }
-            cout << units[c].id << " SHOOT " << units[e].id << '\n';
+            cout << units[c].id << " SHOOT " << units[e].id << '\n' << flush;
             continue;
         }
-        cout << "WAIT\n";
+        cout << "WAIT\n" << flush;
     }
     return 0;
 }
