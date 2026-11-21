@@ -132,3 +132,19 @@ quota gratuit.
 - Action : prototype `sc22_v2` testé sur 5 parties ; harnais porté à 210 cas ; resoumission C++ du bot validé (41778517).
 - Résultat : prototype 0/5 victoires contre 5/5 pour le bot validé → rejeté.
 - Leçon : les monstres changent de cap près de la base ; une extrapolation longue est contre-productive, seule la prédiction à 1 tour est fiable.
+
+### 2026-11-21 — Olymbits Silver — décision jointe 4 mini-jeux (soumission 41778730)
+- Constat : après montée en Silver, le bot Bronze traite tous les registres comme des pistes de haies ; score ligue 5,8 (rang 1227) contre boss 18,93.
+- Hypothèse : classifier les 4 machines et additionner des scores par action permet de jouer l'action commune optimale.
+- Sources : énoncé officiel Silver (`GPU`, `reg0`..`reg6`), referee Java `CGjupoulton/SummerChallenge2024Olymbits`, bot `UAKobzar/Olymbits/Player.cs`.
+- Action : prototype `oly_v2` (pondérations 3/1/2/2), portage 4 langages, générateur de fuzz étendu aux 4 types ; soumission C++ 41778730.
+- Résultat : 3/5 victoires contre boss+rank1 (ancien bot 0/5), fuzz 210/210.
+- Leçon : l'égalité bit-à-bit entre langages a révélé un 0 fantôme dans la liste des adversaires roller ; le fuzz doit couvrir chaque format de registres, pas seulement la piste de haies.
+
+### 2026-11-21 — A Code of Ice and Fire Silver — prototype économie/tours rejeté
+- Constat : bot Wood 3 score -1 contre le boss Silver 2425714 ; le rush L1 est sans effet face aux L3 et aux coupures de territoire.
+- Hypothèse : mines précoces + tours de défense + unités L2/L3 permettraient de survivre.
+- Sources : starter kit officiel `Azkellas/a-code-of-ice-and-fire`, referee `Referee.java` / `Cell.java`, notes `odoucet/cig-fire/strategies.md`, bot Gold `DollarAkshay/CodinGame`.
+- Action : prototype `/tmp/opencode/ice_silver.py` (mines, tours, upkeep, BFS), 6 test games.
+- Résultat : 6 défaites, QG détruit aux tours 13–16 ; prototype non retenu, bot initial conservé.
+- Leçon : le boss Silver détruit l'économie par coupure de connectivité avant que la production de tours ne rentre en jeu ; il faut d'abord résoudre la défense de connectivité, pas seulement le nombre d'unités.

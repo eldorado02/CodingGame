@@ -25,7 +25,6 @@ compare() {
             echo "  attendu: $ref"
             echo "  obtenu:  $got"
             failed=1
-            return
         fi
     done
 }

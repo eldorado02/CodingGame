@@ -95,3 +95,14 @@ Décision : conserver l'énumération 4^5 déjà validée et corriger uniquement
 gestion des positions négatives, plutôt que de réécrire le bot pour 4 mini-games
 (les prototypes de simulation multi-jeux ont obtenu 3/8 contre le boss, contre
 13/13 pour la version corrigée).
+
+### Silver (2026-11-21)
+- Énoncé officiel récupéré via `GET /puzzles/summer-challenge-2024-olymbits` :
+  les 4 mini-games tournent en parallèle, une seule action est commune.
+- `CGjupoulton/SummerChallenge2024Olymbits` (referee Java) et
+  `UAKobzar/Olymbits/Player.cs` (4^8 séquences) confirment que la décision
+  jointe est le cœur du problème ; l'énumération complète est trop lente en
+  Python, d'où le choix d'une évaluation heuristique par action.
+- Nouveaux prototypes multi-jeux : `oly_v2` (pondération 3/1/2/2) → 3/5
+  victoires, `oly_v3` (roller plus agressif) → 1/5. Version retenue : `oly_v2`
+  réécrite en arithmétique entière pour garantir l'identité des 4 langages.

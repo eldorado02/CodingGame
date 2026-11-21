@@ -62,3 +62,27 @@ Validation : **210/210 cas différentiels** identiques dans 4 langages (généra
 étendu), puis **13/13 parties gagnées** contre le boss Bronze `5507123`
 (adversaire `5507574`), scores 0 contre 0 pour le boss. Soumission officielle :
 `41776913`.
+
+## Montée en Silver — décision jointe sur les 4 mini-jeux (soumission `41778730`)
+- Constat : le bot Bronze traite les 7 registres de **chaque** machine comme
+  une piste de course d'obstacles. En Silver, les 4 machines tournent en
+  parallèle et utilisent des formats différents ; score de ligue effondré à
+  `5,8` (rang 1227) contre `18,93` pour le boss.
+- Nouvelle stratégie : classifier chaque machine d'après `GPU` et `reg6`,
+  calculer un score entier par action possible (LEFT/DOWN/RIGHT/UP) dans
+  chaque mini-jeu, les pondérer (haies ×3, roller ×2, plongée ×2, archerie ×1)
+  et jouer l'action totale maximale.
+  - haies : temps restant estimé par simulation greedy sur 3 tours après le
+    premier pas (`UP` saute, collision ⇒ 3 tours d'étourdissement) ;
+  - archerie : optimisation de la distance euclidienne sous forme de carrés
+    entiers, avec correction greedy sur les 5 prochains vents ;
+  - roller : progression selon l'ordre `GPU` (`ULDR`), pénalité de risque,
+    de collision et de reset ;
+  - plongée : gain du combo si l'action correspond au goal du tour.
+- Validation : **3 victoires / 5** contre le boss Silver `5507124` et le rank 1
+  `6914836` (scores 4320, 5940, 10010) contre **0/5** pour l'ancien bot sur la
+  même fenêtre. Fuzz étendu aux 4 types de machines : **210/210** cas
+  identiques dans 4 langages. Soumission C++ `41778730`.
+- Bug de portage détecté par le fuzz : la liste des adversaires de roller
+  contenait un 0 fantôme dans les 3 langages compilés, ce qui créait une
+  collision illusoire quand `pos=0`. Corrigé en passant la longueur réelle.
