@@ -1,0 +1,10 @@
+[package]
+name = "back_track_king_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "back_track_king_bot"
+path = "bot.rs"
+
+[dependencies]

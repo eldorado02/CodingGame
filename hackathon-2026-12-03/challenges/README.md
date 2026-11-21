@@ -63,9 +63,10 @@ challenges/<année>-<id>/
 | 23 | 2024-06-11 | `summer-challenge-2024-olymbits` | ✅ 4 langages + 210 cas verts + 7/7 test games gagnés (21–7–7) |
 | 24 | 2024-12-19 | `winter-challenge-2024` | ✅ 4 langages + 210 cas verts + 19/19 test games gagnés (15–14) |
 | 25 | 2026-05-12 | `spring-challenge-2026-troll-farm` | ✅ 4 langages + 210 cas verts + 13/13 test games gagnés vs boss Wood `6479367` |
+| 26 | 2026-09-07 | `summer-challenge-2026-back-track-king` | ✅ 4 langages + 210 cas verts + 20/20 test games gagnés vs boss Wood `6767604` |
 
-Prochain challenge rejouable : `summer-challenge-2026-back-track-king`
-(2026-09-07). `fall-challenge-2026` (2026-11-02) n’est pas rejouable via l’API.
+`fall-challenge-2026` (2026-11-02) n’est pas rejouable via l’API : la séquence
+des challenges rejouables 2016→2026 est terminée.
 
 Les challenges 2019 non rejouables via l’API (`detective-pikaptcha`,
 `unleash-the-geek-amadeus`) sont ignorés de la séquence.
