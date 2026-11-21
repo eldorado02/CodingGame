@@ -73,3 +73,15 @@
   est insuffisant, `trained=True` empêche tout entraînement ultérieur.
 - `harvestPower` est le attribut le plus rentable (1 HARVEST = plusieurs fruits).
 - Le fuzz ne détecte pas les erreurs de stratégie : seuls les test games comptent.
+
+## Revert Bronze (2026-11-21)
+
+- Le prototype « 3 trolls + priorité harvestPower » (`41778069`) a convergé
+  vers un score de ligue ~20,5–20,9 (rang ~100–170) alors que le bot initial
+  (1 troll polyvalent entraîné au tour 1, `41776913`) avait convergé vers
+  **22,88 au rang 1**. Les test games à court terme (4/4 vs rank 2) étaient
+  trompeurs : le classement ligue est joué contre toute la salle.
+- Action : restauration des 4 langages depuis le commit `54bffd1`, fuzz
+  **210/210** vert, nouvelle soumission **C++** `41778446`.
+- Leçon : ne pas juger une stratégie uniquement sur le boss ; attendre la
+  convergence du score de ligue (percentage = 100) avant de conclure.

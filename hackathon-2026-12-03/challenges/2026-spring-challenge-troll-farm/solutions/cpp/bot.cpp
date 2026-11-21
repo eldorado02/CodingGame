@@ -37,7 +37,7 @@ int main() {
     for (int d = 0; d < 4; ++d)
         if (walkable(sx + DX[d], sy + DY[d])) drop.push_back(idx(sx + DX[d], sy + DY[d]));
 
-    const int MAX_TROLLS = 3;
+    bool trained = false;
     while (true) {
         std::array<int, 6> inv{};
         if (!(std::cin >> inv[0])) break;
@@ -69,24 +69,23 @@ int main() {
         }
 
         std::vector<std::string> actions;
-        if (static_cast<int>(mine.size()) < MAX_TROLLS) {
+        if (!trained && !mine.empty()) {
             int n = static_cast<int>(mine.size());
-            int best_score = -1, best_cost = 1 << 30, bs = 1, bc = 1, bh = 1;
+            int best_score = -1, bs = 1, bc = 1, bh = 1;
             for (int s = 1; s <= 3; ++s)
                 for (int c = 1; c <= 3; ++c)
                     for (int hv = 1; hv <= 3; ++hv) {
                         int cp = n + s * s, cl = n + c * c, ca = n + hv * hv;
                         if (cp > inv[0] || cl > inv[1] || ca > inv[2]) continue;
-                        int score = 3 * hv + 2 * c + s;
-                        int cost = cp + cl + ca;
-                        if (score > best_score || (score == best_score && cost < best_cost)) {
-                            best_score = score; best_cost = cost;
+                        if (s + c + hv > best_score) {
+                            best_score = s + c + hv;
                             bs = s; bc = c; bh = hv;
                         }
                     }
             if (best_score >= 0)
                 actions.push_back("TRAIN " + std::to_string(bs) + " " +
                                   std::to_string(bc) + " " + std::to_string(bh) + " 0");
+            trained = true;
         }
 
         for (const auto &t : mine) {

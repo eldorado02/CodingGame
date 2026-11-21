@@ -20,7 +20,7 @@ def main() -> None:
                for x, ch in enumerate(row) if ch != "."}
     drop_cells = [(shack[0] + dx, shack[1] + dy) for dx, dy in DIRS
                   if (shack[0] + dx, shack[1] + dy) not in blocked]
-    MAX_TROLLS = 3
+    trained = False
 
     while True:
         inv_line = rd()
@@ -44,7 +44,7 @@ def main() -> None:
                 foe_pos.add((int(f[2]), int(f[3])))
 
         actions = []
-        if len(my_trolls) < MAX_TROLLS:
+        if not trained and my_trolls:
             n = len(my_trolls)
             best = None
             for s in range(1, 4):
@@ -52,11 +52,12 @@ def main() -> None:
                     for hv in range(1, 4):
                         cp, cl, ca = n + s * s, n + c * c, n + hv * hv
                         if cp <= inv[0] and cl <= inv[1] and ca <= inv[2]:
-                            score = (3 * hv + 2 * c + s, -cp - cl - ca)
+                            score = (s + c + hv, -cp - cl - ca)
                             if best is None or score > best[0]:
                                 best = (score, s, c, hv)
             if best:
                 actions.append(f"TRAIN {best[1]} {best[2]} {best[3]} 0")
+            trained = True
 
         occupied = {(t[1], t[2]) for t in my_trolls} | foe_pos
         for tid, x, y, speed, carry, power, load in my_trolls:

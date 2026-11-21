@@ -116,3 +116,11 @@ quota gratuit.
 - Action : 5 prototypes Python testés sur 4–5 parties chacun contre le boss 630129 ; aucun porté dans `solutions/`.
 - Résultat : 0/4 à 1/5 victoires selon les variantes, pas mieux que le bot validé (1/4 sur la même fenêtre). Tous rejetés.
 - Leçon : vérifier l'endurance des fantômes dans la ligue courante avant de transposer une stratégie de la version complète ; ici `state=0`, donc le levier est le débit de captures, pas le recul de 50 unités.
+
+### 2026-11-21 — Troll Farm Bronze — revert du prototype multi-trolls
+- Constat : soumission 41778069 (3 trolls + harvestPower) converge vers score ligue ~20,5 et rang ~100-170, contre 22,88 et rang 1 pour le bot initial.
+- Hypothèse : le gain observé en test games contre le rank 2 ne se généralise pas aux 400 joueurs de la salle ; trop de ressources partent dans l'entraînement.
+- Sources : `GET /puzzles/spring-challenge-2026-troll-farm/progress` (pct 15→24, score 18,3→20,9→20,53), logs de test games.
+- Action : restauration des 4 langages depuis `54bffd1`, fuzz 210/210, soumission C++ 41778446.
+- Résultat : en cours de classement.
+- Leçon : le score de ligue (Elo sur toute la salle) est la seule métrique décisionnelle ; 3/5 victoires vs boss ne garantissent pas une promotion.

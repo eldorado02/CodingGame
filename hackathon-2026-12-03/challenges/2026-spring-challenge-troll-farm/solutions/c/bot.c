@@ -67,7 +67,7 @@ int main(void) {
         if (walkable(nx, ny)) drop[drop_n++] = idx(nx, ny);
     }
 
-    const int MAX_TROLLS = 3;
+    int trained = 0;
     char out[MAXOUT];
     while (1) {
         int inv[6];
@@ -109,24 +109,24 @@ int main(void) {
 
         out[0] = '\0';
         int len = 0;
-        if (mine_n < MAX_TROLLS) {
+        if (!trained && mine_n > 0) {
             int n = mine_n;
-            int best_score = -1, best_cost = 1 << 30, bs = 1, bc = 1, bh = 1;
+            int best_score = -1, bs = 1, bc = 1, bh = 1;
             for (int s = 1; s <= 3; ++s)
                 for (int c = 1; c <= 3; ++c)
                     for (int hv = 1; hv <= 3; ++hv) {
                         int cp = n + s * s, cl = n + c * c, ca = n + hv * hv;
                         if (cp > inv[0] || cl > inv[1] || ca > inv[2]) continue;
-                        int score = 3 * hv + 2 * c + s;
-                        int cost = cp + cl + ca;
-                        if (score > best_score || (score == best_score && cost < best_cost)) {
-                            best_score = score; best_cost = cost;
+                        int score = s + c + hv;
+                        if (score > best_score) {
+                            best_score = score;
                             bs = s; bc = c; bh = hv;
                         }
                     }
             if (best_score >= 0)
                 len += snprintf(out + len, sizeof(out) - (size_t)len,
                                 "TRAIN %d %d %d 0", bs, bc, bh);
+            trained = 1;
         }
 
         for (int k = 0; k < mine_n; ++k) {

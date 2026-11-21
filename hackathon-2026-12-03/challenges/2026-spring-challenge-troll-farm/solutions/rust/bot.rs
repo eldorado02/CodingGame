@@ -60,7 +60,7 @@ fn main() {
         }
     }
 
-    const MAX_TROLLS: usize = 3;
+    let mut trained = false;
     let stdout = io::stdout();
     let mut out = io::BufWriter::new(stdout.lock());
     loop {
@@ -120,9 +120,9 @@ fn main() {
         }
 
         let mut actions: Vec<String> = Vec::new();
-        if mine.len() < MAX_TROLLS {
+        if !trained && !mine.is_empty() {
             let n = mine.len() as i32;
-            let mut best: Option<(i32, i32, i32, i32, i32)> = None;
+            let mut best: Option<(i32, i32, i32, i32)> = None;
             for s in 1..=3 {
                 for c in 1..=3 {
                     for hv in 1..=3 {
@@ -130,20 +130,17 @@ fn main() {
                         if cp > inv[0] || cl > inv[1] || ca > inv[2] {
                             continue;
                         }
-                        let score = 3 * hv + 2 * c + s;
-                        let cost = cp + cl + ca;
-                        let better = best.map_or(true, |b| {
-                            score > b.0 || (score == b.0 && cost < b.4)
-                        });
-                        if better {
-                            best = Some((score, s, c, hv, cost));
+                        let score = s + c + hv;
+                        if best.map_or(true, |b| score > b.0) {
+                            best = Some((score, s, c, hv));
                         }
                     }
                 }
             }
-            if let Some((_, s, c, hv, _)) = best {
+            if let Some((_, s, c, hv)) = best {
                 actions.push(format!("TRAIN {} {} {} 0", s, c, hv));
             }
+            trained = true;
         }
 
         for t in &mine {
