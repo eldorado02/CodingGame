@@ -76,3 +76,11 @@ quota gratuit.
 - Action : prototype `/tmp/opencode/troll_plant.py` (troll le plus lent = PICK + PLANT sur cases voisines de la cabane).
 - Résultat : 2/6 victoires contre le prototype (identique au bot de base, 2/6), scores très bruités → **rejeté**, bot validé conservé.
 - Leçon réutilisable : ne pas remplacer un bot validé par un prototype sur un résultat bruité ; exiger ≥3/5 reproductibles.
+
+### 2026-11-21 — Tron Battle — bot Voronoi validé Wood 2
+- Constat : aucun bot Tron ; deep search terminé (sous-agent hy4-flash-free après quota épuisé sur les 2 premiers modèles).
+- Hypothèse : Voronoi 1-ply + greedy primé suffit en 2 joueurs (le territoire au 1er cut gagne 96–99 % des duels).
+- Sources : vks.ai (78 lignes), a1k0n post-mortem, nathanWolo/tron-codingame, arXiv:1110.3211, thread officiel #49.
+- Action : bot Python + ports C/C++/Rust, harnais fuzz 210 cas, soumission `41777582`.
+- Résultat : 210/210 fuzz identiques 4 langages, 5/5 victoires vs boss 630143 (100–90), rang 1/1621 score 21,14 > boss 18,91. Promotion en attente du cycle.
+- Leçon : le fuzz différentiel a trouvé 4 bugs réels (NEI dupliqué, BFS sauté sur tête bloquée, best_score=-1, joueur mort non consommé) invisibles sur l'exemple officiel. Toujours générer des parties LÉGALES pour le fuzz.
