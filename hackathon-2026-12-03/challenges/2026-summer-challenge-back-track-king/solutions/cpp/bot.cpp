@@ -1,16 +1,11 @@
-// Back Track King (Wood) — une seule connexion suffit : on demande à
-// AUTOPLACE de construire le chemin entre le couple de villes le plus proche.
-#include <cstdlib>
+// Back Track King (Wood 1+) — cible la région ennemie la plus instable.
 #include <iostream>
 #include <string>
-#include <tuple>
-#include <unordered_map>
-#include <utility>
 #include <vector>
 
 namespace {
-int distance(int ax, int ay, int bx, int by) {
-    return std::abs(ax - bx) + std::abs(ay - by);
+bool is_inked(const std::string &s) {
+    return !s.empty() && s[0] != '0' && s[0] != 'f' && s[0] != 'F';
 }
 }  // namespace
 
@@ -20,54 +15,52 @@ int main() {
 
     int my_id, width, height;
     if (!(std::cin >> my_id >> width >> height)) return 0;
-    for (int i = 0; i < width * height; ++i) {
-        int region, type;
-        std::cin >> region >> type;
+    int cells = width * height;
+    std::vector<int> region_at(cells);
+    for (int i = 0; i < cells; ++i) {
+        int type;
+        std::cin >> region_at[i] >> type;
     }
 
     int town_count;
     std::cin >> town_count;
-    std::unordered_map<int, std::pair<int, int>> towns;
-    std::vector<std::pair<int, int>> pairs;  // demandeur, cible
+    std::vector<bool> town_region(4096, false);
     for (int i = 0; i < town_count; ++i) {
         int id, x, y;
         std::string desired;
         std::cin >> id >> x >> y >> desired;
-        towns[id] = {x, y};
-        if (desired == "x") continue;
-        size_t start = 0;
-        while (start <= desired.size()) {
-            size_t comma = desired.find(',', start);
-            std::string token = desired.substr(
-                start, comma == std::string::npos ? std::string::npos : comma - start);
-            pairs.emplace_back(id, std::stoi(token));
-            if (comma == std::string::npos) break;
-            start = comma + 1;
+        int idx = y * width + x;
+        if (idx >= 0 && idx < cells) {
+            int rid = region_at[idx];
+            if (rid >= 0 && rid < static_cast<int>(town_region.size()))
+                town_region[rid] = true;
         }
     }
 
-    auto key = [&](const std::pair<int, int> &p) {
-        const auto &a = towns[p.first];
-        const auto &b = towns[p.second];
-        return std::make_tuple(distance(a.first, a.second, b.first, b.second),
-                               p.first, p.second);
-    };
-    auto best = pairs.front();
-    for (const auto &p : pairs) {
-        if (key(p) < key(best)) best = p;
-    }
-    const auto &from = towns[best.first];
-    const auto &to = towns[best.second];
-
+    int opponent = 1 - my_id;
     int my_score, foe_score;
     while (std::cin >> my_score >> foe_score) {
-        for (int i = 0; i < width * height; ++i) {
+        int best_region = -1, best_instability = -1;
+        for (int i = 0; i < cells; ++i) {
             int owner, instability;
             std::string inked, active;
             std::cin >> owner >> instability >> inked >> active;
+            int rid = region_at[i];
+            if (owner != opponent || rid < 0 ||
+                rid >= static_cast<int>(town_region.size()) ||
+                town_region[rid] || is_inked(inked)) {
+                continue;
+            }
+            if (instability > best_instability ||
+                (instability == best_instability &&
+                 (best_region < 0 || rid < best_region))) {
+                best_instability = instability;
+                best_region = rid;
+            }
         }
-        std::cout << "AUTOPLACE " << from.first << ' ' << from.second << ' '
-                  << to.first << ' ' << to.second << '\n'
+        std::cout << (best_region >= 0 ? "DISRUPT " + std::to_string(best_region)
+                                       : std::string("WAIT"))
+                  << '\n'
                   << std::flush;
     }
     return 0;

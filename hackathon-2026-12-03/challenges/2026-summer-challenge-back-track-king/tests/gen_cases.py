@@ -36,12 +36,14 @@ def make_case(seed: int) -> str:
         wanted = "x" if not desired[town_id] else ",".join(map(str, desired[town_id]))
         lines.append(f"{town_id} {x} {y} {wanted}")
 
-    for turn in range(2):
+    for _ in range(2):
         lines.append(f"{rng.randrange(0, 40)} {rng.randrange(0, 40)}")
         for _ in range(width * height):
-            owner = rng.choice((-1, -1, -1, 0, 1, 2))
-            lines.append(f"{owner} 0 0 x")
-        del turn
+            owner = rng.choice((-1, -1, 0, 0, 1, 1, 2))
+            instability = rng.randrange(0, 12)
+            inked = rng.choice(("0", "0", "0", "1", "false", "true"))
+            active = rng.choice(("0", "1", "x"))
+            lines.append(f"{owner} {instability} {inked} {active}")
     return "\n".join(lines) + "\n"
 
 

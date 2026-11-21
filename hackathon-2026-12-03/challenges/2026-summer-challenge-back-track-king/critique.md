@@ -32,3 +32,18 @@
   collisions, la disruption (`DISRUPT`) et les POI. En ligue supérieure il
   faudra construire une vraie optimisation de chemins, contester les tracks
   adverses et gérer l’instabilité des régions.
+
+## Montée en ligue Wood 1 (soumission officielle)
+- Le bot Wood 0 (`AUTOPLACE`) a été promu en Wood 1, où l’objectif change :
+  il faut désormais **`DISRUPT`** une région contenant un track adverse pour
+  l’encre et détruire ses tracks. Le bot Wood 0 perdait 5–5 contre le boss
+  `6767616`.
+- Nouvelle stratégie : mémoriser la `regionId` de chaque case et les régions
+  contenant une ville, puis chaque tour cibler la région ennemie non encrée et
+  non-ville la plus instable (départage par `regionId` croissant) avec
+  `DISRUPT`. Quatre disruptions suffisent à encrer la région.
+- Validation : **5/5 victoires** contre `6767616` (`0 – -1` à chaque fois).
+  Le générateur produit désormais des `owner`, `instability`, `inked` et
+  `partOfActiveConnections` variés ; 210/210 cas différentiels identiques.
+- Nouvelle soumission officielle : `41773207` (déjà promue, rang 1/193 en
+  Wood 1 au moment de l’écriture).

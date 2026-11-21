@@ -1,131 +1,194 @@
-/* Troll Farm (Wood) — récolte de l'arbre fruitier le plus proche, puis retour
- * au plus près de la cabane pour déposer. */
+/* Troll Farm (Wood 1+) — entraîne un troll polyvalent, récolte, dépose. */
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-#define MAXW 32
-#define MAXH 16
-#define MAXCELL (MAXW * MAXH)
-#define MAXTREE 128
-#define MAXTROLL 32
-#define INF 1000000000
+#define MAXC 1024
+#define MAXT 512
+#define MAXOUT 8192
 
-static int W, H;
-static char grid[MAXH][MAXW];
-static int dista[MAXH][MAXW], firstx[MAXH][MAXW], firsty[MAXH][MAXW];
-static int qx[MAXCELL], qy[MAXCELL];
 static const int DX[4] = {0, 1, 0, -1};
 static const int DY[4] = {-1, 0, 1, 0};
 
+static int w, h, shack_x, shack_y;
+static char grid[24][32];
+static unsigned char blocked[MAXC], occupied[MAXC];
+static int dista[MAXC], first_step[MAXC], queue[MAXC];
+
+static int idx(int x, int y) { return y * w + x; }
 static int walkable(int x, int y) {
-    /* Cell.isWalkable() : seule la case GRASS est praticable, pas la cabane. */
-    return x >= 0 && x < W && y >= 0 && y < H && grid[y][x] == '.';
+    return x >= 0 && x < w && y >= 0 && y < h && grid[y][x] == '.';
+}
+
+static void bfs(int sx, int sy) {
+    for (int i = 0; i < w * h; ++i) dista[i] = -1;
+    int head = 0, tail = 0;
+    int start = idx(sx, sy);
+    dista[start] = 0;
+    first_step[start] = start;
+    queue[tail++] = start;
+    while (head < tail) {
+        int cur = queue[head++];
+        int cx = cur % w, cy = cur / w;
+        for (int d = 0; d < 4; ++d) {
+            int nx = cx + DX[d], ny = cy + DY[d];
+            if (!walkable(nx, ny) || occupied[idx(nx, ny)]) continue;
+            int ni = idx(nx, ny);
+            if (dista[ni] >= 0) continue;
+            dista[ni] = dista[cur] + 1;
+            first_step[ni] = (cur == start) ? ni : first_step[cur];
+            queue[tail++] = ni;
+        }
+    }
+}
+
+static int step_toward(int goal, int speed) {
+    if (dista[goal] <= speed) return goal;
+    int cur = goal;
+    while (dista[cur] > speed) cur = first_step[cur];
+    return cur;
 }
 
 int main(void) {
-    if (scanf("%d %d", &W, &H) != 2) return 0;
-    int sx = -1, sy = -1;
-    for (int y = 0; y < H; ++y) {
-        if (scanf("%31s", grid[y]) != 1) return 0;
-        for (int x = 0; x < W; ++x) {
-            if (grid[y][x] == '0') { sx = x; sy = y; }
+    if (scanf("%d %d", &w, &h) != 2) return 0;
+    for (int y = 0; y < h; ++y) {
+        int got = scanf("%31s", grid[y]);
+        (void)got;
+        for (int x = 0; x < w; ++x) {
+            if (grid[y][x] == '0') {
+                shack_x = x;
+                shack_y = y;
+            }
+            blocked[idx(x, y)] = grid[y][x] != '.';
         }
     }
+    int drop[4], drop_n = 0;
+    for (int d = 0; d < 4; ++d) {
+        int nx = shack_x + DX[d], ny = shack_y + DY[d];
+        if (walkable(nx, ny)) drop[drop_n++] = idx(nx, ny);
+    }
 
-    for (;;) {
-        for (int i = 0; i < 12; ++i) {
-            int v;
-            if (scanf("%d", &v) != 1) return 0;
+    int trained = 0;
+    char out[MAXOUT];
+    while (1) {
+        int inv[6];
+        if (scanf("%d %d %d %d %d %d", &inv[0], &inv[1], &inv[2],
+                  &inv[3], &inv[4], &inv[5]) != 6) break;
+        for (int k = 0; k < 6; ++k) { int tmp; int got = scanf("%d", &tmp); (void)got; }
+
+        int tree_n;
+        if (scanf("%d", &tree_n) != 1) break;
+        static char kind[MAXT][16];
+        static int tx[MAXT], ty[MAXT], fruit[MAXT];
+        for (int i = 0; i < tree_n; ++i) {
+            int size, health, cooldown;
+            int got = scanf("%15s %d %d %d %d %d %d", kind[i], &tx[i], &ty[i],
+                            &size, &health, &fruit[i], &cooldown);
+            (void)got;
         }
-        int ntree;
-        if (scanf("%d", &ntree) != 1) return 0;
-        if (ntree > MAXTREE) ntree = MAXTREE;
-        int tx[MAXTREE], ty[MAXTREE], fruits[MAXTREE];
-        for (int i = 0; i < ntree; ++i) {
-            char kind[16];
-            int _health, _cd;
-            if (scanf("%15s %d %d %d %d %d %d", kind, &tx[i], &ty[i],
-                      &_health, &_health, &fruits[i], &_cd) != 7) return 0;
-        }
-        int ntroll;
-        if (scanf("%d", &ntroll) != 1) return 0;
-        if (ntroll > MAXTROLL) ntroll = MAXTROLL;
-        int id = -1, px = -1, py = -1, carry = 0;
-        for (int i = 0; i < ntroll; ++i) {
-            int tid, owner, x, y, speed, capacity, power, chop;
-            int c[6];
-            if (scanf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-                      &tid, &owner, &x, &y, &speed, &capacity, &power, &chop,
-                      &c[0], &c[1], &c[2], &c[3], &c[4], &c[5]) != 14) return 0;
-            if (owner == 0) {
-                id = tid; px = x; py = y;
-                carry = c[0] + c[1] + c[2] + c[3];
+
+        int troll_n;
+        if (scanf("%d", &troll_n) != 1) break;
+        static int id[MAXT], px[MAXT], py[MAXT], speed[MAXT], carry[MAXT], load[MAXT];
+        memset(occupied, 0, sizeof(occupied));
+        int mine[MAXT], mine_n = 0;
+        for (int i = 0; i < troll_n; ++i) {
+            int player, power, reserved, a, b, c, d, e, f;
+            int got = scanf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+                            &id[i], &player, &px[i], &py[i], &speed[i], &carry[i],
+                            &power, &reserved, &a, &b, &c, &d, &e, &f);
+            (void)got;
+            int ci = idx(px[i], py[i]);
+            if (player == 0) {
+                mine[mine_n++] = i;
+                load[i] = a + b + c + d;
+            } else {
+                occupied[ci] = 1;
             }
         }
-        if (id < 0) { puts("WAIT"); fflush(stdout); continue; }
+        for (int k = 0; k < mine_n; ++k) occupied[idx(px[mine[k]], py[mine[k]])] = 1;
 
-        for (int y = 0; y < H; ++y)
-            for (int x = 0; x < W; ++x)
-                dista[y][x] = firstx[y][x] = firsty[y][x] = -1;
-        int head = 0, tail = 0;
-        dista[py][px] = 0; firstx[py][px] = px; firsty[py][px] = py;
-        qx[tail] = px; qy[tail] = py; ++tail;
-        while (head < tail) {
-            int x = qx[head], y = qy[head]; ++head;
-            for (int k = 0; k < 4; ++k) {
-                int nx = x + DX[k], ny = y + DY[k];
-                if (!walkable(nx, ny) || dista[ny][nx] >= 0) continue;
-                dista[ny][nx] = dista[y][x] + 1;
-                if (dista[y][x] == 0) {
-                    firstx[ny][nx] = nx; firsty[ny][nx] = ny;
-                } else {
-                    firstx[ny][nx] = firstx[y][x];
-                    firsty[ny][nx] = firsty[y][x];
-                }
-                qx[tail] = nx; qy[tail] = ny; ++tail;
-            }
+        out[0] = '\0';
+        int len = 0;
+        if (!trained && mine_n > 0) {
+            int n = mine_n;
+            int best_score = -1, bs = 1, bc = 1, bh = 1;
+            for (int s = 1; s <= 3; ++s)
+                for (int c = 1; c <= 3; ++c)
+                    for (int hv = 1; hv <= 3; ++hv) {
+                        int cp = n + s * s, cl = n + c * c, ca = n + hv * hv;
+                        if (cp > inv[0] || cl > inv[1] || ca > inv[2]) continue;
+                        int score = s + c + hv;
+                        if (score > best_score) {
+                            best_score = score;
+                            bs = s; bc = c; bh = hv;
+                        }
+                    }
+            if (best_score >= 0)
+                len += snprintf(out + len, sizeof(out) - (size_t)len,
+                                "TRAIN %d %d %d 0", bs, bc, bh);
+            trained = 1;
         }
 
-        int bx = -1, by = -1, bd = INF, bf = 0;
-        if (carry > 0) {
-            if (abs(px - sx) + abs(py - sy) == 1) {
-                printf("DROP %d\n", id);
-                fflush(stdout);
+        for (int k = 0; k < mine_n; ++k) {
+            int t = mine[k];
+            if (len) len += snprintf(out + len, sizeof(out) - (size_t)len, ";");
+            int here = idx(px[t], py[t]);
+            bfs(px[t], py[t]);
+
+            int on_fruit = 0;
+            for (int i = 0; i < tree_n; ++i)
+                if (fruit[i] > 0 && tx[i] == px[t] && ty[i] == py[t]) on_fruit = 1;
+            if (on_fruit && load[t] < carry[t]) {
+                len += snprintf(out + len, sizeof(out) - (size_t)len,
+                                "HARVEST %d", id[t]);
                 continue;
             }
-            for (int k = 0; k < 4; ++k) {
-                int nx = sx + DX[k], ny = sy + DY[k];
-                if (nx < 0 || nx >= W || ny < 0 || ny >= H || dista[ny][nx] < 0) continue;
-                int d = dista[ny][nx];
-                if (d < bd || (d == bd && (ny < by || (ny == by && nx < bx)))) {
-                    bd = d; bx = nx; by = ny;
+            if (load[t] > 0) {
+                int adjacent = 0;
+                for (int d = 0; d < drop_n; ++d)
+                    if (drop[d] == here) adjacent = 1;
+                if (adjacent) {
+                    len += snprintf(out + len, sizeof(out) - (size_t)len,
+                                    "DROP %d", id[t]);
+                    continue;
+                }
+                int best = -1, bd = 0, bx = 0, by = 0;
+                for (int d = 0; d < drop_n; ++d) {
+                    int cell = drop[d], dd = dista[cell];
+                    int x = cell % w, y = cell / w;
+                    if (dd >= 0 && (best < 0 || dd < bd || (dd == bd && (y < by || (y == by && x < bx))))) {
+                        best = cell; bd = dd; bx = x; by = y;
+                    }
+                }
+                if (best < 0) {
+                    len += snprintf(out + len, sizeof(out) - (size_t)len, "WAIT");
+                } else {
+                    int st = step_toward(best, speed[t]);
+                    len += snprintf(out + len, sizeof(out) - (size_t)len,
+                                    "MOVE %d %d %d", id[t], st % w, st / w);
+                }
+                continue;
+            }
+            int best = -1, bd = 0, bf = 0, bx = 0, by = 0;
+            for (int i = 0; i < tree_n; ++i) {
+                if (fruit[i] <= 0) continue;
+                int cell = idx(tx[i], ty[i]), dd = dista[cell];
+                if (dd < 0) continue;
+                if (best < 0 || dd < bd ||
+                    (dd == bd && (fruit[i] > bf ||
+                     (fruit[i] == bf && (ty[i] < by || (ty[i] == by && tx[i] < bx)))))) {
+                    best = cell; bd = dd; bf = fruit[i]; bx = tx[i]; by = ty[i];
                 }
             }
-        } else {
-            for (int i = 0; i < ntree; ++i) {
-                if (fruits[i] <= 0) continue;
-                if (tx[i] == px && ty[i] == py) {
-                    printf("HARVEST %d\n", id);
-                    fflush(stdout);
-                    goto next_turn;
-                }
-                int d = (tx[i] >= 0 && tx[i] < W && ty[i] >= 0 && ty[i] < H)
-                            ? dista[ty[i]][tx[i]] : INF;
-                if (d < 0) d = INF;
-                int f = -fruits[i];
-                if (d < bd || (d == bd && (f < bf ||
-                    (f == bf && (ty[i] < by || (ty[i] == by && tx[i] < bx)))))) {
-                    bd = d; bf = f; bx = tx[i]; by = ty[i];
-                }
+            if (best < 0) {
+                len += snprintf(out + len, sizeof(out) - (size_t)len, "WAIT");
+            } else {
+                int st = step_toward(best, speed[t]);
+                len += snprintf(out + len, sizeof(out) - (size_t)len,
+                                "MOVE %d %d %d", id[t], st % w, st / w);
             }
         }
-        if (bx >= 0 && bx < W && by >= 0 && by < H && dista[by][bx] >= 0) {
-            printf("MOVE %d %d %d\n", id, firstx[by][bx], firsty[by][bx]);
-        } else {
-            puts("WAIT");
-        }
-    next_turn:
+        puts(len ? out : "WAIT");
         fflush(stdout);
     }
     return 0;

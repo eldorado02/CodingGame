@@ -40,3 +40,16 @@
   en Wood, où un seul troll par camp récolte et dépose un fruit à la fois ; en
   Bronze il faudra gérer rivière, rochers, fer, vitesses/supports variables,
   plusieurs trolls, conflits de récolte et la montée en taille des arbres.
+
+## Montée en ligue Wood 1 (soumission officielle)
+- Après promotion automatique, le boss Wood 1 (`6479368`) dispose de 3 trolls
+  et plante des arbres : le bot Wood 0 perdait 0/3 (scores 77–110, 87–116,
+  85–128).
+- Nouvelle stratégie : `TRAIN` d’un troll polyvalent au premier tour (choix du
+  triplet `movementSpeed / carryCapacity / harvestPower` maximum abordable),
+  contrôle de **tous** les trolls, récolte prioritaire, retour vers une case
+  adjacente à la cabane, déplacement BFS multi-source avec évitement des cases
+  occupées.
+- Validation : **5/5 victoires** contre `6479368` (155–128, 136–133, 137–123,
+  123–108, 149–92). 210/210 cas différentiels identiques dans les 4 langages.
+- Nouvelle soumission officielle : `41773233`.

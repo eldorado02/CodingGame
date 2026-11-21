@@ -1,69 +1,65 @@
-/* Back Track King (Wood) — construit en boucle la connexion entre le couple
- * de villes (demandeur, cible) dont la distance de Manhattan est minimale. */
+/* Back Track King (Wood 1+) — ink la région ennemie la plus instable.
+   Quatre DISRUPT successifs sur une région l'encrent et détruisent ses tracks. */
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-#define MAXTOWN 32
-#define MAXTARGET 256
-#define MAXWORD 300
+#define MAXCELL 1024
+#define MAXREG 8192
 
-static int town_x[MAXTOWN], town_y[MAXTOWN];
+static int region_at[MAXCELL];
+static unsigned char town_region[MAXREG];
 
-static int absi(int v) { return v < 0 ? -v : v; }
+static int is_inked(const char *s) {
+    return s[0] != '0' && s[0] != 'f' && s[0] != 'F';
+}
 
 int main(void) {
     int my_id, width, height;
     if (scanf("%d %d %d", &my_id, &width, &height) != 3) return 0;
-    for (int i = 0; i < width * height; ++i) {
-        int region, type;
-        if (scanf("%d %d", &region, &type) != 2) return 0;
+    int cells = width * height;
+    for (int i = 0; i < cells && i < MAXCELL; ++i) {
+        int type;
+        if (scanf("%d %d", &region_at[i], &type) != 2) return 0;
     }
 
     int town_count;
     if (scanf("%d", &town_count) != 1) return 0;
-    if (town_count > MAXTOWN) town_count = MAXTOWN;
-    int wanted_u[MAXTARGET], wanted_v[MAXTARGET], target_count = 0;
     for (int i = 0; i < town_count; ++i) {
         int id, x, y;
-        char desired[MAXWORD];
-        if (scanf("%d %d %d %299s", &id, &x, &y, desired) != 4) return 0;
-        town_x[id] = x;
-        town_y[id] = y;
-        if (strcmp(desired, "x") == 0) continue;
-        for (char *tok = strtok(desired, ","); tok; tok = strtok(NULL, ",")) {
-            if (target_count >= MAXTARGET) break;
-            wanted_u[target_count] = id;
-            wanted_v[target_count] = atoi(tok);
-            ++target_count;
+        char desired[512];
+        if (scanf("%d %d %d %511s", &id, &x, &y, desired) != 4) return 0;
+        int idx = y * width + x;
+        if (idx >= 0 && idx < cells) {
+            int rid = region_at[idx];
+            if (rid >= 0 && rid < MAXREG) town_region[rid] = 1;
         }
     }
 
-    int best_u = wanted_u[0], best_v = wanted_v[0];
-    int best_d = absi(town_x[best_u] - town_x[best_v])
-               + absi(town_y[best_u] - town_y[best_v]);
-    for (int i = 1; i < target_count; ++i) {
-        int u = wanted_u[i], v = wanted_v[i];
-        int d = absi(town_x[u] - town_x[v]) + absi(town_y[u] - town_y[v]);
-        if (d < best_d || (d == best_d &&
-            (u < best_u || (u == best_u && v < best_v)))) {
-            best_d = d;
-            best_u = u;
-            best_v = v;
-        }
-    }
-    int x1 = town_x[best_u], y1 = town_y[best_u];
-    int x2 = town_x[best_v], y2 = town_y[best_v];
-
+    int opponent = 1 - my_id;
     int my_score, foe_score;
     while (scanf("%d %d", &my_score, &foe_score) == 2) {
-        for (int i = 0; i < width * height; ++i) {
+        int best_region = -1, best_instability = -1;
+        for (int i = 0; i < cells; ++i) {
             int owner, instability;
-            char inked[MAXWORD], active[MAXWORD];
-            if (scanf("%d %d %299s %299s", &owner, &instability,
+            char inked[32], active[512];
+            if (scanf("%d %d %31s %511s", &owner, &instability,
                       inked, active) != 4) return 0;
+            int rid = region_at[i];
+            if (owner != opponent || rid < 0 || rid >= MAXREG ||
+                town_region[rid] || is_inked(inked)) {
+                continue;
+            }
+            if (instability > best_instability ||
+                (instability == best_instability &&
+                 (best_region < 0 || rid < best_region))) {
+                best_instability = instability;
+                best_region = rid;
+            }
         }
-        printf("AUTOPLACE %d %d %d %d\n", x1, y1, x2, y2);
+        if (best_region >= 0)
+            printf("DISRUPT %d\n", best_region);
+        else
+            puts("WAIT");
         fflush(stdout);
     }
     return 0;

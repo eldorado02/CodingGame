@@ -1,96 +1,117 @@
 #!/usr/bin/env python3
-"""Troll Farm (Wood) — un troll : récolte l'arbre fruitier le plus proche,
-puis rentre déposer au plus près de la cabane."""
+"""Troll Farm Wood 1 — entraîne un troll polyvalent, récolte et dépose."""
 import sys
 from collections import deque
 
 DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
-
-
-def rd() -> str:
-    line = sys.stdin.readline()
-    return line.strip() if line else ""
-
-
-def bfs(w: int, h: int, blocked: set[tuple[int, int]], start: tuple[int, int]):
-    """Distances et premier pas depuis start vers toutes les cases praticables."""
-    dist = {start: 0}
-    first: dict[tuple[int, int], tuple[int, int]] = {}
-    q = deque([start])
-    while q:
-        x, y = q.popleft()
-        for dx, dy in DIRS:
-            nxt = (x + dx, y + dy)
-            if (0 <= nxt[0] < w and 0 <= nxt[1] < h and nxt not in blocked
-                    and nxt not in dist):
-                dist[nxt] = dist[(x, y)] + 1
-                first[nxt] = nxt if dist[(x, y)] == 0 else first[(x, y)]
-                q.append(nxt)
-    return dist, first
+KINDS = ("PLUM", "LEMON", "APPLE", "BANANA")
 
 
 def main() -> None:
-    w, h = map(int, rd().split())
-    lines = [rd() for _ in range(h)]
-    shack = next((x, y) for y, row in enumerate(lines)
+    rd = sys.stdin.readline
+    line = rd()
+    if not line:
+        return
+    w, h = map(int, line.split())
+    grid = [rd().strip() for _ in range(h)]
+    shack = next((x, y) for y, row in enumerate(grid)
                  for x, ch in enumerate(row) if ch == "0")
-    # Seules les cases GRASS sont praticables : la cabane elle-même ne l'est pas.
-    blocked = {(x, y) for y, row in enumerate(lines)
+    blocked = {(x, y) for y, row in enumerate(grid)
                for x, ch in enumerate(row) if ch != "."}
+    drop_cells = [(shack[0] + dx, shack[1] + dy) for dx, dy in DIRS
+                  if (shack[0] + dx, shack[1] + dy) not in blocked]
+    trained = False
 
     while True:
-        if not rd():
+        inv_line = rd()
+        if not inv_line:
             return
-        rd()  # inventaire adverse
+        inv = list(map(int, inv_line.split()))
+        rd()  # foe inventory
         trees = []
         for _ in range(int(rd())):
-            kind, xs, ys, size, health, fruits, cooldown = rd().split()
-            trees.append((int(xs), int(ys), int(size), int(fruits), int(cooldown)))
-        my_troll = None
+            f = rd().split()
+            trees.append((f[0], int(f[1]), int(f[2]), int(f[5]), int(f[6])))
+        my_trolls = []
+        foe_pos = set()
         for _ in range(int(rd())):
-            fields = rd().split()
-            if int(fields[1]) == 0:
-                my_troll = fields
-        if my_troll is None:
-            print("WAIT", flush=True)
-            continue
-
-        tid = int(my_troll[0])
-        x, y = int(my_troll[2]), int(my_troll[3])
-        carrying = sum(int(v) for v in my_troll[8:12])
-        here = (x, y)
-        dist, first = bfs(w, h, blocked, here)
-
-        if carrying:
-            if (abs(x - shack[0]) + abs(y - shack[1])) == 1:
-                print(f"DROP {tid}", flush=True)
-                continue
-            goals = [(shack[0] + dx, shack[1] + dy) for dx, dy in DIRS
-                     if (shack[0] + dx, shack[1] + dy) in dist]
-            if not goals:
-                print("WAIT", flush=True)
-                continue
-            goal = min(goals, key=lambda p: (dist[p], p[1], p[0]))
-            step = first[goal]
-            print(f"MOVE {tid} {step[0]} {step[1]}", flush=True)
-            continue
-
-        fruit_trees = [(tx, ty, f) for tx, ty, _s, f, _cd in trees if f > 0]
-        if fruit_trees and (x, y) in [(tx, ty) for tx, ty, _ in fruit_trees]:
-            print(f"HARVEST {tid}", flush=True)
-            continue
-        if fruit_trees:
-            target = min(fruit_trees, key=lambda t: (dist.get((t[0], t[1]), 10**9),
-                                                     -t[2], t[1], t[0]))
-            if (target[0], target[1]) in first:
-                step = first[(target[0], target[1])]
-                print(f"MOVE {tid} {step[0]} {step[1]}", flush=True)
+            f = rd().split()
+            if int(f[1]) == 0:
+                my_trolls.append((int(f[0]), int(f[2]), int(f[3]),
+                                  int(f[4]), int(f[5]), int(f[6]),
+                                  sum(int(v) for v in f[8:12])))
             else:
-                print("WAIT", flush=True)
-            continue
+                foe_pos.add((int(f[2]), int(f[3])))
 
-        # Aucun fruit : on attend près d'un arbre mature prêt à produire.
-        print("WAIT", flush=True)
+        actions = []
+        if not trained and my_trolls:
+            n = len(my_trolls)
+            best = None
+            for s in range(1, 4):
+                for c in range(1, 4):
+                    for hv in range(1, 4):
+                        cp, cl, ca = n + s * s, n + c * c, n + hv * hv
+                        if cp <= inv[0] and cl <= inv[1] and ca <= inv[2]:
+                            score = (s + c + hv, -cp - cl - ca)
+                            if best is None or score > best[0]:
+                                best = (score, s, c, hv)
+            if best:
+                actions.append(f"TRAIN {best[1]} {best[2]} {best[3]} 0")
+            trained = True
+
+        occupied = {(t[1], t[2]) for t in my_trolls} | foe_pos
+        for tid, x, y, speed, carry, power, load in my_trolls:
+            here = (x, y)
+            # BFS distances / first steps over walkable cells.
+            dist = {here: 0}
+            first = {here: here}
+            q = deque([here])
+            while q:
+                px, py = q.popleft()
+                for dx, dy in DIRS:
+                    nxt = (px + dx, py + dy)
+                    if (0 <= nxt[0] < w and 0 <= nxt[1] < h and nxt not in blocked
+                            and nxt not in occupied and nxt not in dist):
+                        dist[nxt] = dist[(px, py)] + 1
+                        first[nxt] = nxt if (px, py) == here else first[(px, py)]
+                        q.append(nxt)
+
+            fruit = [(tx, ty, nf) for _k, tx, ty, nf, _cd in trees if nf > 0]
+            on_fruit = [t for t in fruit if (t[0], t[1]) == here]
+            if on_fruit and load < carry:
+                actions.append(f"HARVEST {tid}")
+                continue
+            if load > 0:
+                if (x, y) in [(sx, sy) for sx, sy in drop_cells]:
+                    actions.append(f"DROP {tid}")
+                    continue
+                goals = [p for p in drop_cells if p in dist]
+                if goals:
+                    goal = min(goals, key=lambda p: (dist[p], p[1], p[0]))
+                    step = _step(goal, speed, dist, first)
+                    actions.append(f"MOVE {tid} {step[0]} {step[1]}")
+                else:
+                    actions.append(f"WAIT")
+                continue
+            targets = [p for p in fruit if (p[0], p[1]) in dist]
+            if targets:
+                goal = min(targets, key=lambda p: (dist[(p[0], p[1])], -p[2], p[1], p[0]))
+                step = _step((goal[0], goal[1]), speed, dist, first)
+                actions.append(f"MOVE {tid} {step[0]} {step[1]}")
+            else:
+                actions.append("WAIT")
+
+        print(";".join(actions) if actions else "WAIT", flush=True)
+
+
+def _step(goal, speed, dist, first):
+    """Case à `speed` pas au plus sur le chemin vers goal."""
+    if dist[goal] <= speed:
+        return goal
+    cur = goal
+    while dist[cur] > speed:
+        cur = first[cur]
+    return cur
 
 
 if __name__ == "__main__":

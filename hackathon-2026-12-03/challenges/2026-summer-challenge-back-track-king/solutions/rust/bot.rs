@@ -1,6 +1,5 @@
-// Back Track King (Wood) — une connexion active suffit : AUTOPLACE construit
-// progressivement le chemin entre le couple de villes le plus proche.
-use std::collections::{HashMap, VecDeque};
+// Back Track King (Wood 1+) — ink la région ennemie la plus instable.
+use std::collections::VecDeque;
 use std::io::{self, BufRead, Write};
 
 fn main() {
@@ -19,48 +18,57 @@ fn main() {
     });
     let mut token = || tokens.next();
 
-    token();  // myId
+    let my_id: i32 = token().unwrap().parse().unwrap_or(0);
     let width: usize = token().unwrap().parse().unwrap_or(0);
     let height: usize = token().unwrap().parse().unwrap_or(0);
-    for _ in 0..width * height {
-        token();  // regionId
-        token();  // type
+    let cells = width * height;
+    let mut region_at = Vec::with_capacity(cells);
+    for _ in 0..cells {
+        region_at.push(token().unwrap().parse::<i32>().unwrap_or(0));
+        token(); // type
     }
 
     let town_count: usize = token().unwrap().parse().unwrap_or(0);
-    let mut towns: HashMap<i32, (i32, i32)> = HashMap::new();
-    let mut pairs: Vec<(i32, i32)> = Vec::new();
+    let mut town_region = vec![false; 4096];
     for _ in 0..town_count {
-        let id: i32 = token().unwrap().parse().unwrap_or(0);
-        let x: i32 = token().unwrap().parse().unwrap_or(0);
-        let y: i32 = token().unwrap().parse().unwrap_or(0);
-        let desired = token().unwrap();
-        towns.insert(id, (x, y));
-        if desired == "x" {
-            continue;
-        }
-        for wanted in desired.split(',') {
-            pairs.push((id, wanted.parse().unwrap_or(0)));
+        token(); // townId
+        let x: usize = token().unwrap().parse().unwrap_or(0);
+        let y: usize = token().unwrap().parse().unwrap_or(0);
+        token(); // desiredConnections
+        if let Some(&rid) = region_at.get(y * width + x) {
+            if rid >= 0 && (rid as usize) < town_region.len() {
+                town_region[rid as usize] = true;
+            }
         }
     }
 
-    let key = |&(u, v): &(i32, i32)| -> (i32, i32, i32) {
-        let (ax, ay) = towns[&u];
-        let (bx, by) = towns[&v];
-        ((ax - bx).abs() + (ay - by).abs(), u, v)
-    };
-    let best = pairs.iter().min_by_key(|&&p| key(&p)).copied().unwrap_or((0, 0));
-    let (x1, y1) = towns[&best.0];
-    let (x2, y2) = towns[&best.1];
-
+    let opponent = 1 - my_id;
     let stdout = io::stdout();
     let mut out = io::BufWriter::new(stdout.lock());
     while token().is_some() {
-        token();  // foeScore
-        for _ in 0..width * height * 4 {
-            token();
+        token(); // foeScore
+        let mut best: Option<(i32, i32)> = None; // (instability, -regionId)
+        for &rid in &region_at {
+            let owner: i32 = token().unwrap().parse().unwrap_or(0);
+            let instability: i32 = token().unwrap().parse().unwrap_or(0);
+            let inked = token().unwrap();
+            token(); // partOfActiveConnections
+            if owner != opponent || rid < 0 || town_region[rid as usize] {
+                continue;
+            }
+            let first = inked.as_bytes().first().copied().unwrap_or(b'0');
+            if first != b'0' && first != b'f' && first != b'F' {
+                continue;
+            }
+            let key = (instability, -rid);
+            if best.is_none() || key > best.unwrap() {
+                best = Some(key);
+            }
         }
-        writeln!(out, "AUTOPLACE {} {} {} {}", x1, y1, x2, y2).unwrap();
+        match best {
+            Some((_, rid)) => writeln!(out, "DISRUPT {}", -rid).unwrap(),
+            None => writeln!(out, "WAIT").unwrap(),
+        }
         out.flush().unwrap();
     }
 }

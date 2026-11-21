@@ -1,63 +1,62 @@
 #!/usr/bin/env python3
-"""Back Track King (Wood) — relier deux villes dès que possible.
+"""Back Track King (Wood 2) — ink une région contenant un track adverse.
 
-Le boss Wood passe son tour : il suffit de construire une connexion active.
-`AUTOPLACE` trace le chemin le moins cher par tranches de 3 points de peinture ;
-on réémet la même commande jusqu'à la fin de la partie.
+Chaque tour : cibler la région ennemie non town la plus instable ; 4 `DISRUPT`
+consécutifs l'encrent et détruisent les tracks, ce qui remplit l'objectif.
 """
 import sys
 from collections import deque
 
 
 def main() -> None:
-    buffered: deque[str] = deque()
+    buf: deque[str] = deque()
 
     def token() -> str:
-        while not buffered:
+        while not buf:
             line = sys.stdin.readline()
             if not line:
                 raise EOFError
-            buffered.extend(line.split())
-        return buffered.popleft()
+            buf.extend(line.split())
+        return buf.popleft()
 
     try:
-        token()  # myId
-        width = int(token())
-        height = int(token())
+        my_id = int(token())
+        width, height = int(token()), int(token())
+        region_at = []
         for _ in range(width * height):
-            token()  # regionId
+            region_at.append(int(token()))
             token()  # type
 
         town_count = int(token())
-        towns: dict[int, tuple[int, int]] = {}
-        targets: list[tuple[int, int]] = []
+        town_regions: set[int] = set()
         for _ in range(town_count):
-            town_id = int(token())
+            token()  # townId
             x, y = int(token()), int(token())
-            towns[town_id] = (x, y)
-            desired = token()
-            if desired != "x":
-                targets.extend((town_id, int(wanted)) for wanted in desired.split(","))
+            town_regions.add(region_at[y * width + x])
+            token()  # desiredConnections
     except EOFError:
         return
 
-    best = min(targets, key=lambda pair: (
-        abs(towns[pair[0]][0] - towns[pair[1]][0])
-        + abs(towns[pair[0]][1] - towns[pair[1]][1]),
-        pair[0], pair[1],
-    ))
-    (x1, y1), (x2, y2) = towns[best[0]], towns[best[1]]
-    command = f"AUTOPLACE {x1} {y1} {x2} {y2}"
-
+    opponent = 1 - my_id
     while True:
+        best: tuple[int, int] | None = None
         try:
             token()  # myScore
             token()  # foeScore
-            for _ in range(width * height * 4):
-                token()  # trackOwner, instability, inked, partOfActiveConnections
+            for cell in range(width * height):
+                owner = int(token())
+                instability = int(token())
+                inked = token().lower() not in ("0", "false")
+                token()  # partOfActiveConnections
+                rid = region_at[cell]
+                if owner != opponent or inked or rid in town_regions:
+                    continue
+                key = (instability, -rid)
+                if best is None or key > best:
+                    best = key
         except EOFError:
             return
-        print(command, flush=True)
+        print(f"DISRUPT {-best[1]}" if best is not None else "WAIT", flush=True)
 
 
 if __name__ == "__main__":

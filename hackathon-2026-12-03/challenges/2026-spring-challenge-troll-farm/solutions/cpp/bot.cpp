@@ -1,145 +1,181 @@
-// Troll Farm (Wood) — BFS depuis le troll, cible fruitière puis retour au shack.
+// Troll Farm (Wood 1+) — entraîne un troll polyvalent, récolte, dépose.
 #include <array>
-#include <cstdlib>
+#include <deque>
 #include <iostream>
-#include <queue>
 #include <string>
-#include <tuple>
-#include <utility>
 #include <vector>
 
 namespace {
-constexpr int INF = 1'000'000'000;
 const int DX[4] = {0, 1, 0, -1};
 const int DY[4] = {-1, 0, 1, 0};
+
+struct Tree {
+    int x, y, fruits;
+};
+struct Troll {
+    int id, x, y, speed, carry, load;
+};
 }  // namespace
 
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    int width, height;
-    if (!(std::cin >> width >> height)) return 0;
-    std::vector<std::string> grid(height);
-    int shack_x = -1, shack_y = -1;
-    for (int y = 0; y < height; ++y) {
-        std::cin >> grid[y];
-        for (int x = 0; x < width; ++x) {
-            if (grid[y][x] == '0') {
-                shack_x = x;
-                shack_y = y;
-            }
-        }
-    }
+    int w, h;
+    if (!(std::cin >> w >> h)) return 0;
+    std::vector<std::string> grid(h);
+    for (auto &row : grid) std::cin >> row;
+    int sx = 0, sy = 0;
+    for (int y = 0; y < h; ++y)
+        for (int x = 0; x < w; ++x)
+            if (grid[y][x] == '0') { sx = x; sy = y; }
     auto walkable = [&](int x, int y) {
-        // Cell.isWalkable() : seule la case GRASS est praticable.
-        return x >= 0 && x < width && y >= 0 && y < height && grid[y][x] == '.';
+        return x >= 0 && x < w && y >= 0 && y < h && grid[y][x] == '.';
     };
+    auto idx = [w](int x, int y) { return y * w + x; };
+    std::vector<int> drop;
+    for (int d = 0; d < 4; ++d)
+        if (walkable(sx + DX[d], sy + DY[d])) drop.push_back(idx(sx + DX[d], sy + DY[d]));
 
+    bool trained = false;
     while (true) {
-        for (int i = 0; i < 12; ++i) {
-            int v;
-            if (!(std::cin >> v)) return 0;
-        }
-        int tree_count;
-        if (!(std::cin >> tree_count)) return 0;
-        std::vector<std::array<int, 3>> trees;  // x, y, fruits
-        for (int i = 0; i < tree_count; ++i) {
-            std::string type;
-            int x, y, size, health, fruits, cooldown;
-            std::cin >> type >> x >> y >> size >> health >> fruits >> cooldown;
-            trees.push_back({x, y, fruits});
-        }
-        int troll_count;
-        if (!(std::cin >> troll_count)) return 0;
-        int id = -1, px = -1, py = -1, carrying = 0;
-        for (int i = 0; i < troll_count; ++i) {
-            int tid, owner, x, y, speed, capacity, power, chop;
-            std::array<int, 6> carry{};
-            std::cin >> tid >> owner >> x >> y >> speed >> capacity >> power >> chop;
-            for (int &v : carry) std::cin >> v;
-            if (owner == 0) {
-                id = tid;
-                px = x;
-                py = y;
-                for (int k = 0; k < 4; ++k) carrying += carry[k];
-            }
-        }
-        if (id < 0) {
-            std::cout << "WAIT\n" << std::flush;
-            continue;
+        std::array<int, 6> inv{};
+        if (!(std::cin >> inv[0])) break;
+        for (int k = 1; k < 6; ++k) std::cin >> inv[k];
+        for (int k = 0; k < 6; ++k) { int tmp; std::cin >> tmp; }
+
+        int tree_n;
+        if (!(std::cin >> tree_n)) break;
+        std::vector<Tree> trees(tree_n);
+        for (auto &t : trees) {
+            std::string kind;
+            int size, health, cooldown;
+            std::cin >> kind >> t.x >> t.y >> size >> health >> t.fruits >> cooldown;
         }
 
-        std::vector<std::vector<int>> dist(height, std::vector<int>(width, -1));
-        std::vector<std::vector<std::pair<int, int>>> first(
-            height, std::vector<std::pair<int, int>>(width, {-1, -1}));
-        std::queue<std::pair<int, int>> q;
-        dist[py][px] = 0;
-        first[py][px] = {px, py};
-        q.push({px, py});
-        while (!q.empty()) {
-            auto [x, y] = q.front();
-            q.pop();
-            for (int k = 0; k < 4; ++k) {
-                int nx = x + DX[k], ny = y + DY[k];
-                if (!walkable(nx, ny) || dist[ny][nx] >= 0) continue;
-                dist[ny][nx] = dist[y][x] + 1;
-                first[ny][nx] = dist[y][x] == 0
-                                    ? std::make_pair(nx, ny)
-                                    : first[y][x];
-                q.push({nx, ny});
+        int troll_n;
+        if (!(std::cin >> troll_n)) break;
+        std::vector<Troll> mine;
+        std::vector<char> occupied(w * h, 0);
+        for (int i = 0; i < troll_n; ++i) {
+            int id, player, x, y, speed, carry, power, reserved;
+            int a, b, c, d, e, f;
+            std::cin >> id >> player >> x >> y >> speed >> carry >> power >> reserved
+                     >> a >> b >> c >> d >> e >> f;
+            if (player == 0) {
+                mine.push_back({id, x, y, speed, carry, a + b + c + d});
             }
+            occupied[idx(x, y)] = 1;
         }
 
-        auto at = [&](int x, int y) {
-            return x >= 0 && x < width && y >= 0 && y < height;
-        };
-        // Clé commune : (distance, -fruits, y, x). Pour un retour au shack,
-        // le nombre de fruits ne joue pas (toujours 0).
-        std::tuple<int, int, int, int> best{INF, INF, INF, INF};
-        int bx = -1, by = -1;
-        bool harvest = false;
-        if (carrying > 0) {
-            if (std::abs(px - shack_x) + std::abs(py - shack_y) == 1) {
-                std::cout << "DROP " << id << '\n' << std::flush;
+        std::vector<std::string> actions;
+        if (!trained && !mine.empty()) {
+            int n = static_cast<int>(mine.size());
+            int best_score = -1, bs = 1, bc = 1, bh = 1;
+            for (int s = 1; s <= 3; ++s)
+                for (int c = 1; c <= 3; ++c)
+                    for (int hv = 1; hv <= 3; ++hv) {
+                        int cp = n + s * s, cl = n + c * c, ca = n + hv * hv;
+                        if (cp > inv[0] || cl > inv[1] || ca > inv[2]) continue;
+                        if (s + c + hv > best_score) {
+                            best_score = s + c + hv;
+                            bs = s; bc = c; bh = hv;
+                        }
+                    }
+            if (best_score >= 0)
+                actions.push_back("TRAIN " + std::to_string(bs) + " " +
+                                  std::to_string(bc) + " " + std::to_string(bh) + " 0");
+            trained = true;
+        }
+
+        for (const auto &t : mine) {
+            std::vector<int> dist(w * h, -1), first(w * h, -1);
+            std::deque<int> q;
+            int start = idx(t.x, t.y);
+            dist[start] = 0;
+            first[start] = start;
+            q.push_back(start);
+            while (!q.empty()) {
+                int cur = q.front(); q.pop_front();
+                int x = cur % w, y = cur / w;
+                for (int d = 0; d < 4; ++d) {
+                    int nx = x + DX[d], ny = y + DY[d];
+                    if (!walkable(nx, ny)) continue;
+                    int ni = idx(nx, ny);
+                    if (occupied[ni] || dist[ni] >= 0) continue;
+                    dist[ni] = dist[cur] + 1;
+                    first[ni] = (cur == start) ? ni : first[cur];
+                    q.push_back(ni);
+                }
+            }
+            auto step = [&](int goal) {
+                if (dist[goal] <= t.speed) return goal;
+                int cur = goal;
+                while (dist[cur] > t.speed) cur = first[cur];
+                return cur;
+            };
+
+            bool on_fruit = false;
+            for (const auto &tr : trees)
+                if (tr.fruits > 0 && tr.x == t.x && tr.y == t.y) on_fruit = true;
+            if (on_fruit && t.load < t.carry) {
+                actions.push_back("HARVEST " + std::to_string(t.id));
                 continue;
             }
-            for (int k = 0; k < 4; ++k) {
-                int nx = shack_x + DX[k], ny = shack_y + DY[k];
-                if (!at(nx, ny) || dist[ny][nx] < 0) continue;
-                auto key = std::make_tuple(dist[ny][nx], 0, ny, nx);
-                if (key < best) {
-                    best = key;
-                    bx = nx;
-                    by = ny;
+            if (t.load > 0) {
+                bool adjacent = false;
+                for (int cell : drop) if (cell == start) adjacent = true;
+                if (adjacent) {
+                    actions.push_back("DROP " + std::to_string(t.id));
+                    continue;
                 }
+                int best = -1;
+                for (int cell : drop) {
+                    if (dist[cell] < 0) continue;
+                    int x = cell % w, y = cell / w;
+                    int bx = best < 0 ? 0 : best % w, by = best < 0 ? 0 : best / w;
+                    if (best < 0 || dist[cell] < dist[best] ||
+                        (dist[cell] == dist[best] &&
+                         (y < by || (y == by && x < bx)))) {
+                        best = cell;
+                    }
+                }
+                if (best < 0) actions.push_back("WAIT");
+                else {
+                    int st = step(best);
+                    actions.push_back("MOVE " + std::to_string(t.id) + " " +
+                                      std::to_string(st % w) + " " + std::to_string(st / w));
+                }
+                continue;
             }
-        } else {
-            for (const auto &t : trees) {
-                if (t[2] <= 0) continue;
-                if (t[0] == px && t[1] == py) {
-                    harvest = true;
-                    break;
-                }
-                int d = at(t[0], t[1]) ? dist[t[1]][t[0]] : INF;
-                if (d < 0) d = INF;
-                auto key = std::make_tuple(d, -t[2], t[1], t[0]);
-                if (key < best) {
-                    best = key;
-                    bx = t[0];
-                    by = t[1];
-                }
+            int best = -1;
+            std::vector<int> fruits(w * h, 0);
+            for (const auto &tr : trees) fruits[idx(tr.x, tr.y)] = tr.fruits;
+            for (const auto &tr : trees) {
+                if (tr.fruits <= 0) continue;
+                int cell = idx(tr.x, tr.y);
+                if (dist[cell] < 0) continue;
+                int bx = best < 0 ? 0 : best % w, by = best < 0 ? 0 : best / w;
+                bool better = best < 0 || dist[cell] < dist[best] ||
+                              (dist[cell] == dist[best] &&
+                               (tr.fruits > fruits[best] ||
+                                (tr.fruits == fruits[best] &&
+                                 (tr.y < by || (tr.y == by && tr.x < bx)))));
+                if (better) best = cell;
+            }
+            if (best < 0) actions.push_back("WAIT");
+            else {
+                int st = step(best);
+                actions.push_back("MOVE " + std::to_string(t.id) + " " +
+                                  std::to_string(st % w) + " " + std::to_string(st / w));
             }
         }
-        if (harvest) {
-            std::cout << "HARVEST " << id << '\n';
-        } else if (at(bx, by) && dist[by][bx] >= 0) {
-            auto [fx, fy] = first[by][bx];
-            std::cout << "MOVE " << id << ' ' << fx << ' ' << fy << '\n';
-        } else {
-            std::cout << "WAIT\n";
+        if (actions.empty()) actions.push_back("WAIT");
+        for (size_t i = 0; i < actions.size(); ++i) {
+            if (i) std::cout << ';';
+            std::cout << actions[i];
         }
-        std::cout.flush();
+        std::cout << '\n' << std::flush;
     }
     return 0;
 }
