@@ -25,12 +25,12 @@ soumission suivent, du plus ancien au plus récent.
 
 | # | pretty_id | Titre | Ligue actuelle | Rang ligue | État | Cible |
 |---|---|---|---|---|---|---|
-| 1 | `a-code-of-ice-and-fire` | A Code of Ice And Fire | Silver | 184/323 | À AMÉLIORER | Legend |
-| 2 | `summer-challenge-2026-back-track-king` | Back Track King — Summer Challenge 2026 | Silver | 484/720 | À AMÉLIORER | Legend |
-| 3 | `spring-challenge-2026-troll-farm` | Troll Farm - Spring Challenge 2026 | Bronze | 1/402 | À AMÉLIORER | Legend |
+| 1 | `a-code-of-ice-and-fire` | A Code of Ice And Fire | Silver | 170/323 | À AMÉLIORER | Legend |
+| 2 | `summer-challenge-2026-back-track-king` | Back Track King — Summer Challenge 2026 | Silver | 483/720 | À AMÉLIORER | Legend |
+| 3 | `spring-challenge-2026-troll-farm` | Troll Farm - Spring Challenge 2026 | Bronze | 400/401 | À AMÉLIORER | Legend |
 | 4 | `summer-challenge-2024-olymbits` | Olymbits - Summer Challenge 2024 | Bronze | 1/577 | À AMÉLIORER | Legend |
 | 5 | `xmas-rush` | Xmas Rush | Bronze | 21/51 | À AMÉLIORER | Legend |
-| 6 | `cultist-wars` | Cultist Wars | Bronze | 49/266 | À AMÉLIORER | Legend |
+| 6 | `cultist-wars` | Cultist Wars | Bronze | 50/266 | À AMÉLIORER | Legend |
 | 7 | `ocean-of-code` | Ocean of Code | Bronze | 169/443 | À AMÉLIORER | Legend |
 | 8 | `code-of-kutulu` | Code of Kutulu | Bronze | 294/678 | À AMÉLIORER | Legend |
 | 9 | `mean-max` | Mean Max | Bronze | 460/1290 | À AMÉLIORER | Legend |
@@ -44,12 +44,12 @@ soumission suivent, du plus ancien au plus récent.
 | 17 | `spring-challenge-2022` | Spider Attack | Wood 1 | 1/993 | À AMÉLIORER | Legend |
 | 18 | `fantastic-bits` | Fantastic Bits | Wood 1 | 152/816 | À AMÉLIORER | Legend |
 | 19 | `green-circle` | Green Circle | Wood 1 | 188/303 | À AMÉLIORER | Legend |
-| 20 | `wondev-woman` | Wondev Woman | Wood 1 | 193/238 | À AMÉLIORER | Legend |
+| 20 | `wondev-woman` | Wondev Woman | Wood 1 | 83/238 | À AMÉLIORER | Legend |
 | 21 | `spring-challenge-2021` | Spring Challenge 2021 | Wood 1 | 316/580 | À AMÉLIORER | Legend |
 | 22 | `smash-the-code` | Smash The Code | Wood 1 | 653/1161 | À AMÉLIORER | Legend |
 | 23 | `ghost-in-the-cell` | Ghost in the Cell | Wood 1 | 708/1129 | À AMÉLIORER | Legend |
 | 24 | `fall-challenge-2020` | Fall Challenge 2020 | Wood 1 | 2541/2875 | À AMÉLIORER | Legend |
-| 25 | `tron-battle` | Tron Battle | — | — | ACTIF | Legend |
+| 25 | `tron-battle` | Tron Battle | Wood 2 | 1/1621 | ACTIF | Legend |
 | 26 | `shobu` | Shobu | — | — | À FAIRE | Legend |
 | 27 | `brandubh` | Brandubh | — | — | À FAIRE | Legend |
 | 28 | `elemental-wars` | Elemental Wars | — | — | À FAIRE | Legend |
@@ -98,7 +98,7 @@ soumission suivent, du plus ancien au plus récent.
 | 71 | `atari-go` | Atari Go | — | — | À FAIRE | Legend |
 | 72 | `othello-1` | Othello | — | — | À FAIRE | Legend |
 | 73 | `yinsh` | Yinsh | — | — | À FAIRE | Legend |
-| 74 | `spring-challenge-2020` | Spring Challenge 2020 | — | — | À FAIRE | Legend |
+| 74 | `spring-challenge-2020` | Spring Challenge 2020 | Wood 1 | 1220/1290 | À FAIRE | Legend |
 | 75 | `tulips-and-daisies` | Tulips and Daisies | — | — | À FAIRE | Legend |
 | 76 | `crystal-rush` | Crystal Rush | — | — | À FAIRE | Legend |
 | 77 | `coders-of-the-realm` | Coders of the Realm | — | — | À FAIRE | Legend |
@@ -118,7 +118,7 @@ soumission suivent, du plus ancien au plus récent.
 | 91 | `legends-of-code-magic` | Legends of Code & Magic | — | — | À FAIRE | Legend |
 | 92 | `tic-tac-toe` | Ultimate Tic-Tac-Toe | — | — | À FAIRE | Legend |
 | 93 | `code4life` | Code4Life | — | — | À FAIRE | Legend |
-| 94 | `mad-pod-racing` | Mad Pod Racing | — | — | À FAIRE | Legend |
+| 94 | `mad-pod-racing` | Mad Pod Racing | Gold | 15591/22154 | À FAIRE | Legend |
 | 95 | `back-to-the-code` | Back to the Code | — | — | À FAIRE | Legend |
 | 96 | `great-escape` | Great escape | — | — | À FAIRE | Legend |
 | 97 | `platinum-rift-episode-2` | Platinum Rift - Episode 2 | — | — | À FAIRE | Legend |
