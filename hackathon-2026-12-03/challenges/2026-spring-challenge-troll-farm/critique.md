@@ -85,3 +85,16 @@
   **210/210** vert, nouvelle soumission **C++** `41778446`.
 - Leçon : ne pas juger une stratégie uniquement sur le boss ; attendre la
   convergence du score de ligue (percentage = 100) avant de conclure.
+
+
+## Bronze — 3 trolls entraînés séquentiellement (2026-11-21, rejeté)
+
+- Nouveau test : conserver l'attribution équilibrée `movementSpeed/carryCapacity/harvestPower`
+  et autoriser jusqu'à **3 entraînements** au fil des tours (au lieu d'un seul).
+- Python : **10 victoires / 14** test games contre le boss `6479370` (vs 2/9 pour
+  le bot à 1 troll). 4 trolls : 1/6 → rejeté.
+- Port C/C++/Rust effectué, fuzz **210/210** identique.
+- Mais C++ : 2/5, 1/5, 4/9 puis 0/5, soit **7/24** — aucun lot à ≥3/5.
+  Conformément au critère de soumission, la variante est rejetée.
+- Action : retour au bot validé `41778446` dans les 4 langages ; le commit de
+  cette itération doit être annulé pour les fichiers de solution.
