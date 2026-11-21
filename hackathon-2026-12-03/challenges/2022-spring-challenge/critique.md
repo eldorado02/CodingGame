@@ -27,3 +27,17 @@
 - Amélioration possible : regrouper les héros pour infliger 4 ou 6 dégâts à un
   monstre résistant, et intercepter les monstres non-ciblants avant qu'ils
   n'atteignent le rayon de 5000.
+
+## 2026-11-21 — test de prédiction vélocité (rejeté)
+
+- Prototype `sc22_v2` : extrapolation 3 tours des monstres via `vx,vy`, tri par
+  ETA vers la base, affectation des héros au point d'interception.
+- Résultat : **0/5 victoires** contre le boss `4258167`, contre **5/5** pour le
+  bot validé sur la même fenêtre. Cause probable : les monstres changent de cap
+  quand ils approchent de la base (`nearBase=1`), donc l'extrapolation les fait
+  viser trop loin et désorganise la défense.
+- Décision : conserver le bot validé (prédiction `vx,vy` 1 tour quand
+  `nearBase=0`, cap vers la base sinon).
+- Harnais : ajout de 200 cas de fuzz (210/210 identiques dans 4 langages).
+- Nouvelle soumission C++ `41778517` du bot validé pour rafraîchir le score de
+  ligue (19,42 < boss 20,8 malgré le rang 1).

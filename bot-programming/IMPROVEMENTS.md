@@ -124,3 +124,11 @@ quota gratuit.
 - Action : restauration des 4 langages depuis `54bffd1`, fuzz 210/210, soumission C++ 41778446.
 - Résultat : en cours de classement.
 - Leçon : le score de ligue (Elo sur toute la salle) est la seule métrique décisionnelle ; 3/5 victoires vs boss ne garantissent pas une promotion.
+
+### 2026-11-21 — Spring Challenge 2022 — prédiction longue rejetée
+- Constat : bot rang 1 mais score 19,42 < boss 20,8.
+- Hypothèse : extrapoler 3 tours la trajectoire des monstres améliorerait les interceptions.
+- Sources : stub officiel (`vx`,`vy`,`nearBase`,`threatFor`), test games vs boss 4258167.
+- Action : prototype `sc22_v2` testé sur 5 parties ; harnais porté à 210 cas ; resoumission C++ du bot validé (41778517).
+- Résultat : prototype 0/5 victoires contre 5/5 pour le bot validé → rejeté.
+- Leçon : les monstres changent de cap près de la base ; une extrapolation longue est contre-productive, seule la prédiction à 1 tour est fiable.
