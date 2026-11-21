@@ -55,3 +55,38 @@ in time`) alors que Python et le fuzz passaient : `std::cout` avec
 `sync_with_stdio(false)` ne vide pas son tampon sur `'\n'`. Ajout de
 `<< std::flush` et resoumission (`41778911` / `41778912`). Test game C++
 Olymbits repassé de `-1` à `7280`.
+
+## 2026-11-21 — Promotion Bronze : nouvelle règle INC
+
+- Promotion de Wood 1 vers Bronze confirmée par `/puzzles/ghost-in-the-cell/progress`.
+- Énoncé relu : nouveauté Bronze, `INC factory` sacrifie 10 cyborgs pour
+  augmenter durablement la production d'une usine (max 3/tour).
+- Le bot validé en Wood 1 n'émet jamais `INC` : il faut ajouter une décision
+  d'investissement avant de viser la Ligue Silver.
+- Pistes : inciter les usines à production 0/1/2 dès que le stock dépasse un
+  seuil et qu'aucune attaque immédiate n'est prioritaire ; ne jamais sacrifier
+  sous 10 unités ni sur une usine frontalière menacée.
+
+## 2026-11-21 — Bronze : tentatives INC (toutes rejetées)
+
+Boss Bronze : `Bossaki` (agent `1094665`, score 26.06). Bot Wood 1 conservé.
+
+| variante | politique | résultats vs boss |
+|---|---|---|
+| v1 | 2 INC/tour, spare ≥ 25, tours ≤ 100, usines prod 0–3 | 3 victoires / 10 |
+| v2 | 1 INC/tour, tours ≤ 20, spare ≥ 20 | 2 / 9 |
+| v3 | 1 INC/tour, arrière-ligne (distance ennemie max), prod 1–2, spare 15, horizon défense 10, pas d'INC si avance de prod ≥ 2 | 6 / 17 |
+| v4a | v3 avec score d'INC pondéré par `value[i]` | 0 / 6 |
+| v5 | v3 avec `value = prod² + …` | 1 / 7 |
+| v6 | v3 + réserve de 8 unités par usine lors des attaques | 0 / 9 |
+| v7 | v3 + une seule cible d'attaque par tour (concentration) | 2 / 5 |
+
+Le rejeu avec seed fixe `729611684` et traces `stderr` montre que nos usines
+restent à 3 unités (leur production) parce que leursUnités sont en transit ; ce
+n'est donc pas une simple gaspillage de garnison. Le véritable écart vient de la
+concentration adverse (22 unités sur une seule usine productrice dès le tour 2)
+et de notre dispersion en plusieurs petits MOVE. Les variantes qui réduisent la
+dispersion (v6, v7) n'ont pas amélioré le taux de victoire sur ces échantillons.
+
+Décision : ne pas soumettre de nouvelle version pour l'instant ; journaliser et
+passer au jeu suivant. Le bot validé Wood 1 (`41778912`) reste en place.

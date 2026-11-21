@@ -215,3 +215,31 @@ quota gratuit.
   identiques chez les deux joueurs). Pour comparer deux ports, utiliser un
   rejeu `game_options`/`replay_game_id` et des traces `stderr`, pas seulement
   des cas aléatoires.
+
+### 2026-11-21 — Ghost in the Cell — promotion Bronze
+- Constat : score Wood 1 supérieur au boss, promotion vers Bronze effective ;
+  nouveau score 19,29 contre boss 26,12 (classement en cours).
+- Hypothèse : la nouvelle règle Bronze `INC` (10 cyborgs pour +1 production,
+  max 3) n'est pas exploitée par le bot Wood 1.
+- Sources : énoncé relu via `cg.py show ghost-in-the-cell`, `statement.md`.
+- Action : documenter la règle, préparer une décision INC conditionnelle.
+- Résultat : en attente.
+- Leçon : relire l'énoncé après chaque promotion ; la première nouveauté de
+  ligue est souvent la levier le plus direct.
+
+### 2026-11-21 — Ghost in the Cell Bronze — rule INC : research + 7 prototypes rejected
+- Constat : promotion Bronze ; le bot Wood 1 n'émet jamais INC et score ~20 contre
+  un boss à 26.06.
+- Hypothèse : investir 10 unités pour +1 production (rentable en ~10 tours)
+  devrait combler l'écart ; la littérature recommande un seul INC/tour sur une
+  usine arrière sûre.
+- Sources : referee officiel, postmortem Agade, bots Kodle/Tbigman/RoboStac/martin,
+  fil de stratégie CodinGame (voir `research.md`).
+- Action : 7 variantes Python testées en 5–17 test games contre `1094665` ;
+  rejeu même seed avec traces `stderr` pour analyser les défaites.
+- Résultat : meilleure variante v3 à 6/17, pas de gain significatif vs le bot
+  Wood 1 (~37 %) ; v4a/v5/v6/v7 franchement moins bons. Aucune soumission.
+- Leçon : l'INC n'est pas le facteur limitant ici ; le boss gagne par
+  concentration de force et notre bot disperse ses MOVE. Tester des idées sur
+  un échantillon ≥10 avant de porter en 4 langages ; les lots de 5 sont trop
+  bruités. Ne pas confondre quota épuisé et erreur réseau dans les logs.

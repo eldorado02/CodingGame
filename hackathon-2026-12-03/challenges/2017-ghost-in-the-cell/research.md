@@ -54,3 +54,28 @@ Sources consultées et retenues :
 Décision : remplacer l'heuristique locale par la projection temporelle et les
 multi-ordres ; les variantes « défense serrée » testées en cours de recherche
 ont donné 2/6 et ont été rejetées.
+
+## 2026-11-21 — recherche approfondie Bronze (règle INC)
+
+Sources consultées :
+- Referee officiel : https://github.com/dreignier/cg-referee-ghost-in-the-cell/blob/master/src/main/java/Referee.java
+- Agade (postmortem du vainqueur) : https://github.com/Agade09/Agade-Ghost-in-the-Cell-Postmortem/blob/master/Agade_GitC_Postmortem.md
+- Kodle / devYaoYH (`viable_upgrade`, horizon 10) : https://github.com/devYaoYH/CodinGame_GitC/blob/master/parsimonyLegend.py
+- Tbigman (1 INC/tour, spare > 10) : https://github.com/Tbigman/CG-GitC/blob/master/main.cpp
+- RoboStac (#22, backline) : https://github.com/RoboStac/ghost-in-the-cell
+- martin (#18, hub arrière) : forum https://forum.codingame.com/t/ghost-in-the-cell-feedback-strategy/2634
+- eulerscheZahl (#6, distance hostile ≥ 3) : même fil
+- PED (#3, pas d'INC quand on a ≥2 production d'avance) : même fil
+- dyatlov (#19, blitzkrieg sans INC) : même fil
+- Churchill & Buro, *Build Order Optimization in StarCraft*, AIIDE 2011 : https://davechurchill.ca/publications/pdf/aiide11-bo.pdf
+
+Mécanique confirmée par le referee : `INC f` coûte 10 unités **après** les MOVE,
+augmente la production de 1 (plafond 3), s'applique dès le tour courant, et est
+silencieusement ignorée si stock < 10 ou production déjà maximale. Plusieurs INC
+par tour sont légaux. INC sur une usine non possédée = défaite immédiate.
+
+Économie : coût immédiat net −9 unités, gain +1/tour → rentabilité en ~10 tours.
+Règles retenues (intersection des sources) : un seul INC par tour, usine amère
+avec production 1–2, stock ≥ 15 après MOVE et défense à 10 tours, aucune usine
+ennemie à moins de 3 tours, pas d'INC si notre production dépasse celle de
+l'adversaire de ≥2, pas d'INC sur l'usine 0 en début de partie.
