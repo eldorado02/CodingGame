@@ -53,3 +53,23 @@
 - Validation : **5/5 victoires** contre `6479368` (155–128, 136–133, 137–123,
   123–108, 149–92). 210/210 cas différentiels identiques dans les 4 langages.
 - Nouvelle soumission officielle : `41773233`.
+
+## Bronze — itération HV+multi (2026-11-21)
+
+- Constat : bot Bronze initial (1 seul entraînement au tour 1) bloqué à
+  score 22,88 < boss 22,96 malgré le rang 1/401.
+- Hypothèses testées (une seule à la fois, puis combinée) :
+  - `PLANT` jardinier près de la cabane : **rejeté** (2/6, bruité).
+  - `CHOP` sur arbre épuisé : **rejeté** (1/6).
+  - Entraînement multiple (5 trolls) : 3/6, bat le rank 2 (2/2) mais perd vs boss.
+  - Priorité `harvestPower` (3×) + `carryCapacity` (2×) sur un seul troll : 8/18.
+  - **Retenu** : combinaison entraînement jusqu'à 3 trolls + priorité HV →
+    4/4 vs rank 2 `6910022`, ~4/9 vs boss `6479370`.
+- Fuzz : 210/210 cas identiques dans 4 langages après port.
+- Soumission : C++ (nouvelle règle de campagne), en attente du quota de test games.
+
+### Leçons
+- Un seul entraînement au tour 1 est un plafond dur : si l'inventaire initial
+  est insuffisant, `trained=True` empêche tout entraînement ultérieur.
+- `harvestPower` est le attribut le plus rentable (1 HARVEST = plusieurs fruits).
+- Le fuzz ne détecte pas les erreurs de stratégie : seuls les test games comptent.

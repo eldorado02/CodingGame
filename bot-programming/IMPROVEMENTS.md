@@ -92,3 +92,11 @@ quota gratuit.
 - Action : PROGRESS.md et PLAYBOOK.md réécrits (Légende pour tous, rotation après promotion, 4 langages codés mais **soumission C++**, documentation renforcée).
 - Résultat : en cours.
 - Leçon : ne pas confondre « bot validé en Python » et « bot soumis » — la référence de soumission est désormais C++.
+
+### 2026-11-21 — Troll Farm Bronze — entraînement multiple + priorité harvestPower
+- Constat : bot rang 1 mais score 22,88 < boss 22,96 ; une seule formation au tour 1 plafonne la récolte.
+- Hypothèse : former jusqu'à 3 trolls et privilégier harvestPower/carryCapacity augmente le débit de fruits.
+- Sources : logs de test games vs boss 6479370, rank2 6910022, rank3 6480078 ; énoncé Bronze (coûts de TRAIN).
+- Action : score de formation `3*hv + 2*c + s`, plafond 3 trolls, port C/C++/Rust, fuzz 210/210.
+- Résultat : 4/4 victoires vs rank 2, ~4/9 vs boss. Soumission C++ en attente du quota test games.
+- Leçon : tester une variable à la fois puis combiner ; le prototype PLANT et le CHOP ont été rejetés malgré leur intuition initiale.
