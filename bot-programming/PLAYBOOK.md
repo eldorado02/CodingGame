@@ -2,8 +2,25 @@
 
 Ce document est la **consigne de travail** appliquée à chaque challenge de
 `PROGRESS.md`. Il est lu avant chaque deep search, chaque plan, chaque critique
-et chaque implémentation. Objectif : **gagner contre le boss de ligue puis
-monter jusqu'en Légende**, pas seulement « faire tourner » un bot.
+et chaque implémentation. Objectif : **amener les 100 jeux en Ligue Légende**,
+pas seulement « faire tourner » un bot, ni s'arrêter à Gold.
+
+## 0. Règles globales de campagne
+
+- **Objectif final : Légende pour les 100 jeux** `bot-programming`. Gold n'est
+  qu'une étape intermédiaire.
+- **Boucle tournante** : travailler un challenge, le faire monter d'une ligue,
+  puis **passer immédiatement aux autres challenges** et revenir plus tard.
+  Ne pas s'épuiser sur un seul jeu bloqué. Reprendre au premier challenge de
+  `PROGRESS.md` dont la ligue a changé ou qui n'est pas encore Légende.
+- **4 langages implémentés systématiquement** (`solutions/{python,c,cpp,rust}`),
+  fuzz différentiel ≥200 cas sur les 4. **Mais c'est toujours la version C++
+  qui est soumise** (`cg.py submit <id> .../solutions/cpp/bot.cpp --language C++`).
+  Les 3 autres servent de référence de correction et de portabilité.
+- **Documentation obligatoire** : `README.md`, `statement.md`, `research.md`,
+  `plan.md`, `critique.md`, commentaires dans le code, et journal
+  `IMPROVEMENTS.md`. Le README doit permettre à une autre IA de reprendre sans
+  deviner.
 
 ---
 
@@ -110,6 +127,8 @@ empiler les changements : un seul changement à la fois, re-testé.
 - Un seul point de sortie : `print(...)`/`puts`/`cout`/`writeln!` — et le nombre
   exact de lignes par tour (Olymbits/Winter： `required - 1` lignes `WAIT`).
 - Commiter uniquement après fuzz vert **et** test game ≥3/5.
+- **Soumettre le C++** (`--language C++`) même si le prototype a été écrit en
+  Python ; le Python reste la référence de fuzz.
 
 ### C (`gcc -O2 -std=c11 -Wall -Wextra`)
 - `snake_case`, structs + fonctions, tableaux statiques dimensionnés aux

@@ -84,3 +84,11 @@ quota gratuit.
 - Action : bot Python + ports C/C++/Rust, harnais fuzz 210 cas, soumission `41777582`.
 - Résultat : 210/210 fuzz identiques 4 langages, 5/5 victoires vs boss 630143 (100–90), rang 1/1621 score 21,14 > boss 18,91. Promotion en attente du cycle.
 - Leçon : le fuzz différentiel a trouvé 4 bugs réels (NEI dupliqué, BFS sauté sur tête bloquée, best_score=-1, joueur mort non consommé) invisibles sur l'exemple officiel. Toujours générer des parties LÉGALES pour le fuzz.
+
+### 2026-11-21 — Directive campagne (utilisateur)
+- Constat : Gold comme objectif minimal laissait 100 jeux à traiter sans fin claire.
+- Hypothèse : boucle tournante + objectif Légende maximise les promotions (on ne s'épuise pas sur un jeu bloqué).
+- Sources : directive utilisateur directe.
+- Action : PROGRESS.md et PLAYBOOK.md réécrits (Légende pour tous, rotation après promotion, 4 langages codés mais **soumission C++**, documentation renforcée).
+- Résultat : en cours.
+- Leçon : ne pas confondre « bot validé en Python » et « bot soumis » — la référence de soumission est désormais C++.
