@@ -68,3 +68,11 @@ quota gratuit.
 - Action : objectif réécrit dans `PROGRESS.md` (Gold minimum, Légende stretch), file réordonnée par ligue courante décroissante puis rang de ligue croissant ; les 75 jeux sans soumission suivent.
 - Résultat : 100 jeux suivis, priorité #1 `a-code-of-ice-and-fire` (Silver 184/323), #2 Back Track King (Silver 484/720).
 - Leçon réutilisable : mesurer l'état réel de toutes les ligues avant de fixer l'ordre de travail.
+
+### 2026-11-21 — Troll Farm Bronze — prototype PLANT (rejeté)
+- Constat / défaite : note 22,88 sous le boss 22,96 malgré le rang 1/401 ; le bot perd parfois contre le rank 2 (`6910022`).
+- Hypothèse : le rank 2 plante 17 arbres ; un troll jardinier près de la cabane créerait un verger et augmenterait la note.
+- Sources : logs de test games (`/tmp/opencode/troll_vs_rank2.txt`), referee `eulerscheZahl/Troll-Farm`.
+- Action : prototype `/tmp/opencode/troll_plant.py` (troll le plus lent = PICK + PLANT sur cases voisines de la cabane).
+- Résultat : 2/6 victoires contre le prototype (identique au bot de base, 2/6), scores très bruités → **rejeté**, bot validé conservé.
+- Leçon réutilisable : ne pas remplacer un bot validé par un prototype sur un résultat bruité ; exiger ≥3/5 reproductibles.
