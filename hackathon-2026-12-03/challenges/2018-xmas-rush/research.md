@@ -53,3 +53,34 @@
 | Chemin > 20 pas | On sort les 20 premières directions ; on continue le tour suivant. |
 | Timeout 50 ms | 49 cases × 14 poussées → BFS O(14·49·4). |
 | Divergence 4 langages | Ordre de poussée et départage identiques. |
+
+## 2026-11-21 — recherche approfondie Bronze
+
+Sources complémentaires consultées :
+- [Referee officiel](https://github.com/CodinGameCommunity/XmasRush/blob/master/src/main/java/com/codingame/game/Referee.java) :
+  `checkForFinishedItems()` ne teste que la tuile **sous le joueur** après les actions ;
+  un item sur la tuile tenue en main n'est collecté que si une poussée insère cette
+  tuile sur le plateau **et** que le joueur est sur la ligne poussée (il atterrit
+  alors sur la case d'insertion).
+- [`GameBoard.pushLine`](https://github.com/CodinGameCommunity/XmasRush/blob/master/src/main/java/com/codingame/game/Model/GameBoard.java) :
+  la tuile éjectée devient la tuile du joueur ; un item qui y est présent change
+  donc de camp.
+- [bot `toomyem/xmas-rush`](https://github.com/toomyem/xmas-rush/blob/master/game.py) :
+  restreint les poussées aux 3 lignes voisines du joueur, évalue chaque poussée
+  par la distance de Manhattan minimale atteignable en ≤20 pas, et détecte les
+  poussées répétées (stale) pour éviter les blocages.
+- [bot `vkandoba/xmasrush`](https://github.com/vkandoba/xmasrush/blob/master/main.py) :
+  composante connexe de la quête et recherche de poussée reliant cette composante
+  à la position du joueur.
+
+Constats sur la version validée Wood 2 :
+- Elle suppose 1 quête révélée et ignore le cas `itemX=-1` (quête sur notre tuile),
+  noté `dist=1000` → boucle `PUSH`/`PASS` de ~20 tours observée en Bronze.
+- En Bronze (12 quêtes, ≤3 révélées), le score plafonne à 8–11 contre 12 pour le boss.
+
+Pistes testées :
+- `xmas_v3` : BFS multi-quêtes en 20 pas + rapprochement si aucun chemin → 0/5 victoires (8–10 contre 12).
+- `xmas_v4` : gestion correcte des quêtes en main, évaluation des poussées par
+  BFS + connectivité → 2/5 victoires, deux défaites 11–12.
+- `xmas_v4b` : priorité anti-éjection + rapprochement généralisé → 1/5 victoire, quatre 10–12.
+- `xmas_v5` : poussées locales, distance de Manhattan atteignable, anti-stale → en cours de validation.
