@@ -24,8 +24,17 @@ monter jusqu'en Légende**, pas seulement « faire tourner » un bot.
    `https://api.github.com/search/repositories?q=<game>+codingame`,
    `.../search/code?q=<game>+language:python`, puis `git/trees/<branch>?recursive=1`
    et `raw.githubusercontent.com`. Toujours lire le code, pas seulement le README.
-5. **Post-mortems/blogs** (CodingGame, Medium, DEV, Reddit) pour les astuces de
-   départage et les pièges de parsing.
+5. **Post-mortems/blogs** (CodingGame, Medium, DEV, Reddit, Hashnode, Stack
+   Exchange) pour les astuces de départage et les pièges de parsing.
+6. **ArXiv / littérature académique** : `https://arxiv.org/search/?query=<sujet>`,
+   `https://api.semanticscholar.org/graph/v1/paper/search?query=<sujet>`,
+   `https://www.google.com/search?q=site%3Aarxiv.org+<sujet>`. Chercher les
+   articles sur la recherche de jeu à information parfaite/imparfaite, MCTS,
+   alpha-beta, minimax parallèle, partage de plateau, allocation de temps,
+   évaluation de positions — et les adapter au budget CodinGame. Noter
+   `arXiv:<id>` dans `research.md` avec l'idée exploitable et la complexité.
+7. **Agrégateurs de code** : Papers with Code, GitHub Gists, Codeforces, Kaggle,
+   Rosetta Code, npm/crates.io pour les implémentations de référence.
 
 ### 1.2 Règle de méfiance
 - Une stratégie venant d'un dépôt public est une **hypothèse**, pas une preuve :
@@ -167,3 +176,24 @@ la même qualité.
 | Winter 2024 | Source harvestée traversée par le BFS | Bloquer la case, pas seulement la cible |
 | Winter 2024 | Énoncé « BASIC only » en Wood 04 | Croire la metadata réelle, pas l'énoncé générique |
 | Général | Sous-agents à court de quota | Repli dans le ranking, puis session principale, reprise auto |
+
+---
+
+## 7. Journal obligatoire de chaque amélioration
+
+**Toute amélioration, même mineure, est écrite dans `bot-programming/IMPROVEMENTS.md`**
+avant d'être considérée comme terminée. Format d'une entrée :
+
+```
+### YYYY-MM-DD — <challenge> — <titre court>
+- Constat / défaite : <signal précis, score ou metadata>
+- Hypothèse : <ce qui est supposé>
+- Sources : <URL GitHub / arXiv:<id> / test game / énoncé / log>
+- Action : <changement exact, 1 seul à la fois>
+- Résultat : <fuzz x/x, test games x/x, ligue, submission_id>
+- Leçon réutilisable : <une phrase>
+```
+
+Le journal est append-only : ne jamais réécrire une entrée passée. Il sert de
+mémoire entre les sessions et de point de reprise quand les sous-agents sont à
+court de quota.
