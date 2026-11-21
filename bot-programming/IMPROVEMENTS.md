@@ -180,3 +180,38 @@ quota gratuit.
 - Action : `<< flush` sur toutes les sorties, fuzz porté à 210/210, soumission C++ 41778956.
 - Résultat : test game passé de -1 à 3–7 points (2 victoires / 5 contre le boss).
 - Leçon : auditer systématiquement `sync_with_stdio(false)` sans `flush` dans toutes les soumissions C++.
+
+### 2026-11-21 — Xmas Rush Bronze — repli MOVE (v6)
+- Constat : `xmas_v5` joue souvent `PASS` sur les tours MOVE alors que des quêtes
+  sont accessibles ; 2/5 victoires environ contre le boss 2209776, alors que
+  le port C++ perdait encore plus souvent (0/10) malgré un fuzz 210/210 vert.
+- Hypothèse : `multi_bfs` ne renvoie un chemin que si un état est strictement
+  meilleur que l'état initial ; sans repli, le bot gaspille le tour. La
+  divergence Python/C++ observée venait de deux erreurs de port : `bfs_dist`
+  décalé de 1 et positions de quêtes dupliquées Indexées sur le dernier indice
+  en Python seulement.
+- Sources : logs de test games (`stdout: PASS` répétés), `Referee.java`,
+  prototypes `/tmp/opencode/xmas_v5.py` et `xmas_v6.py`, `tests/fuzz/`.
+- Action : ajout de `target_path` (BFS vers la quête la plus proche) en repli
+  dans les 4 langages, correction des deux erreurs de port, fuzz 210/210.
+- Résultat : `xmas_v6` Python 8 victoires / 10 test games contre le boss.
+- Leçon : un BFS « strictement améliorant » doit toujours avoir un repli
+  exploitant ; sans cela le bot perd des tours entiers. Vérifier l'égalité des
+  ports sur des entrées réelles, pas seulement sur le fuzz généré.
+
+### 2026-11-21 — Xmas Rush — divergence de parsing C++ (root cause)
+- Constat : avec la même `game_options` (`seed=-7503483396589402000`), le bot
+  Python gagne 12–9 alors que le bot C++ perd 4–12 ; premier PUSH différent
+  dès la frame 1.
+- Hypothèse : divergence de parsing des quêtes, pas de stratégie.
+- Sources : API docs (`game_options` / `replay_game_id`), copies debug des bots
+  écrivant l'état parsé et les scores sur `stderr`, logs de test games.
+- Action : debug sur rejeu même seed → C++ `targets=[]` contre Python
+  `targets=[(5,3),(2,4),(6,3)]`. Correction : ignorer les items dont
+  `itemPlayerId != 0` au lieu de `break` sur le premier nom correspondant.
+- Résultat : rejeu identique 12–9 dans les deux langages ; fuzz 210/210 ;
+  C++ 3/5 victoires ; soumission 41779754.
+- Leçon : le fuzz doit refléter la structure réelle des entrées (ici noms d'items
+  identiques chez les deux joueurs). Pour comparer deux ports, utiliser un
+  rejeu `game_options`/`replay_game_id` et des traces `stderr`, pas seulement
+  des cas aléatoires.

@@ -43,3 +43,31 @@ la boucle (frames 45–88, `PUSH 5 LEFT/RIGHT` + `PASS`).
   mais quatre défaites serrées 10–12.
 - `xmas_v5` ajoute les poussées locales, l'évaluation par distance de Manhattan
   atteignable et l'anti-stale ; validation en cours.
+
+## 2026-11-21 — Bronze : v6 (repli BFS) retenu
+
+- `xmas_v5` plafonne à 2/5 victoires environ : dès que `multi_bfs` ne trouve pas
+  d'état strictement meilleur, le bot joue `PASS` pendant tout le tour MOVE,
+  même quand une quête est accessible. Les logs montrent des séries de `PASS`.
+- `xmas_v6` ajoute un repli : si `multi_bfs` ne renvoie aucun mouvement et que
+  des quêtes sont sur le plateau, un BFS simple vers la quête la plus proche
+  fournit le chemin. Résultat : **8 victoires / 10 test games** contre le boss
+  `2209776` (dont 12–5, 12–11, 12–8, 12–1, 12–10, 12–9).
+- Port 4 langages terminé : fuzz **210/210** identique. Deux divergences
+  découvertes pendant le port et corrigées dans C/C++/Rust :
+  - `bfs_dist` renvoyait `distance + 1` par rapport à Python (off-by-one) ;
+  - `index` de Python associe une position dupliquée au **dernier** indice,
+    alors que les ports positionnaient tous les bits.
+
+### Cause racine de la divergence C++ / Python (trouvée par replay même seed)
+- Rejeu de `seed=-7503483396589402000` avec des copies debug des bots :
+  Python parsait `targets=[(5,3),(2,4),(6,3)]`, C++ parsait `targets=[]`.
+- Le C++ stockait **tous** les items (y compris `itemPlayerId=1`) puis, pour une
+  quête, s'arrêtait au premier item de même nom. Les deux joueurs ayant des
+  items aux mêmes noms, le C++ tombait systématiquement sur l'item adverse et
+  abandonnait la quête. C et Rust filtraient déjà sur `pid == 0`.
+- Correction : `if (pid != 0) continue;` dans la boucle de recherche d'item.
+- Après correction, rejeu même seed : **12–9 dans les deux langages**, décisions
+  identiques. Fuzz 210/210 toujours vert.
+- Validation finale C++ : **3 victoires / 5** (12–11, 12–11, 12–5), 1 nulle,
+  1 défaite ; soumission `41779754`.

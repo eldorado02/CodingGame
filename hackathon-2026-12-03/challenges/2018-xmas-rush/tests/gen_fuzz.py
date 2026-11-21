@@ -21,10 +21,10 @@ def turn(rng: random.Random, tt: int, quests: list[int]) -> str:
                               for _ in range(7)))
     px, py = rng.randrange(7), rng.randrange(7)
     ox, oy = rng.randrange(7), rng.randrange(7)
-    lines.append(f"{rng.randrange(1, 13)} {px} {py} "
-                 "".join(rng.choice("01") for _ in range(4)))
-    lines.append(f"{rng.randrange(1, 13)} {ox} {oy} "
-                 "".join(rng.choice("01") for _ in range(4)))
+    p1 = "".join(rng.choice("01") for _ in range(4))
+    p2 = "".join(rng.choice("01") for _ in range(4))
+    lines.append(f"{rng.randrange(1, 13)} {px} {py} {p1}")
+    lines.append(f"{rng.randrange(1, 13)} {ox} {oy} {p2}")
     items = []
     for i in range(12):
         where = rng.randrange(4)
@@ -41,11 +41,13 @@ def turn(rng: random.Random, tt: int, quests: list[int]) -> str:
     rng.shuffle(items)
     lines.append(str(len(items)))
     lines += items
-    lines.append(str(len(quests)))
+    q_lines = []
     for q in quests:
-        lines.append(f"{NAMES[q]} 0")
+        q_lines.append(f"{NAMES[q]} 0")
         if rng.random() < 0.3:
-            lines.append(f"{NAMES[(q + 1) % 12]}_x 1")
+            q_lines.append(f"{NAMES[(q + 1) % 12]}_x 1")
+    lines.append(str(len(q_lines)))
+    lines += q_lines
     return "\n".join(lines) + "\n"
 
 
