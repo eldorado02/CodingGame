@@ -60,3 +60,11 @@ quota gratuit.
 - Action : génération d'un `README.md` dans les 26 dossiers (contrat E/S, architecture, bilan, cartographie 4 langages, tests, pièges, pistes d'amélioration) + ajout de l'obligation « documenter avant de coder ».
 - Résultat : commit `66df848` poussé, 27 fichiers, 3283 lignes.
 - Leçon réutilisable : une amélioration non documentée dans le README du challenge est incomplète.
+
+### 2026-11-21 — Objectif — Gold minimum pour tous les jeux
+- Constat / défaite : sur 25 jeux déjà soumis, aucun n'atteint Gold (2 Silver, 7 Bronze, 16 Wood).
+- Hypothèse : traiter d'abord les jeux les plus proches de Gold maximise le nombre de jeux au seuil.
+- Sources : `GET /puzzles/<id>/progress` pour les 25 jeux soumis, snapshot `bot-programming/league_state.json`.
+- Action : objectif réécrit dans `PROGRESS.md` (Gold minimum, Légende stretch), file réordonnée par ligue courante décroissante puis rang de ligue croissant ; les 75 jeux sans soumission suivent.
+- Résultat : 100 jeux suivis, priorité #1 `a-code-of-ice-and-fire` (Silver 184/323), #2 Back Track King (Silver 484/720).
+- Leçon réutilisable : mesurer l'état réel de toutes les ligues avant de fixer l'ordre de travail.
