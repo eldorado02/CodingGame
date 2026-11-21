@@ -1,0 +1,3 @@
+solutions/rust/target/
+__pycache__/
+*.pyc
