@@ -108,3 +108,11 @@ quota gratuit.
 - Action : parser 2 unités par camp + legalActions indexées ; une seule action globale en sortie ; grille de score v2 (victoire 1e6, déni 5e4, tremplin 3e3, adjacent-case3 1.5e3) ; port C/C++/Rust ; fuzz 210 cas.
 - Résultat : fuzz 210/210 identique ; 4 victoires + 1 nulle sur 5 vs boss 1393115 ; soumission C++ 41778172.
 - Leçon : pour un puzzle ancien, le stub généré et le referee priment toujours sur l'énoncé archivé. Vérifier le nombre de lignes de sortie attendues avant d'optimiser la stratégie.
+
+### 2026-11-21 — CodeBusters Wood 2 — micro-optimisations rejetées
+- Constat : bot rang 1 mais score 18,53 < boss 19,59 ; le boss gagne la plupart des duels.
+- Hypothèses : recul optimal 1330, dépôt anticipé 1550, affectation globale, double BUST coopératif.
+- Sources : énoncé Wood 2, stub officiel, referee `eulerscheZahl/RefereeCollection`, bots publics GitHub (version complète seulement).
+- Action : 5 prototypes Python testés sur 4–5 parties chacun contre le boss 630129 ; aucun porté dans `solutions/`.
+- Résultat : 0/4 à 1/5 victoires selon les variantes, pas mieux que le bot validé (1/4 sur la même fenêtre). Tous rejetés.
+- Leçon : vérifier l'endurance des fantômes dans la ligue courante avant de transposer une stratégie de la version complète ; ici `state=0`, donc le levier est le débit de captures, pas le recul de 50 unités.
