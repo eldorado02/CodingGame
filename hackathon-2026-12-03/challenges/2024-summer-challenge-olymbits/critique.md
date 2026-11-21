@@ -46,3 +46,19 @@ joue presque toujours `UP` et se cogne.
 Validation : 10 test games consécutifs gagnés, **210/210 cas différentiels**
 identiques dans 4 langages (générateur étendu à `nbGames` 1..4 avec resets
 partiels). Soumission officielle : `41773894`.
+
+## Montée en Bronze — correction du crash sur registres négatifs (soumission `41776913`)
+En Bronze, les 4 mini-games tournent en parallèle et le bot Wood 1 interprète
+tous les registres comme des positions de course d'obstacles. L'archerie stocke
+cependant une **coordonnée x signée** dans `reg[player]` : le bot indexait la
+piste avec une valeur négative et plantait (`IndexError: string index out of
+range`) dans ~30 % des parties, ramenant le score à `-1`.
+
+Correction : ramener toute position négative à `0` avant la simulation, dans
+les 4 langages (Rust parsem déjà les valeurs invalides à 0 via `unwrap_or`). Le
+générateur de fuzz couvre désormais explicitement les registres négatifs.
+
+Validation : **210/210 cas différentiels** identiques dans 4 langages (générateur
+étendu), puis **13/13 parties gagnées** contre le boss Bronze `5507123`
+(adversaire `5507574`), scores 0 contre 0 pour le boss. Soumission officielle :
+`41776913`.

@@ -15,6 +15,9 @@ static const int JUMP[4] = {0, 0, 0, 1};
 static const int POW4[5] = {1, 4, 16, 64, 256};
 
 static void step(const char *track, int last, int *pos, int *stun, int move) {
+    /* Les registres des mini-jeux ne sont pas toujours des positions :
+       l'archerie stocke x/-y, qui peut être négatif. */
+    if (*pos < 0) *pos = 0;
     if (*stun > 0) {
         (*stun)--;
         return;

@@ -26,6 +26,8 @@ def step(track: str, pos: int, stun: int, steps: int, jump: bool) -> tuple[int, 
     if stun > 0:
         return pos, stun - 1
     last = len(track) - 1
+    if pos < 0:
+        pos = 0
     if jump:
         np = min(last, pos + 2)
         if pos + 2 < last and track[pos + 2] == "#":

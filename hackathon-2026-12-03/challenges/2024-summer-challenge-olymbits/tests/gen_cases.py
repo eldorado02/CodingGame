@@ -33,7 +33,11 @@ def make_case(seed: int) -> str:
                 lines.append("GAME_OVER -1 -1 -1 -1 -1 -1 -1")
                 continue
             board = track(rng)
-            positions = [rng.randrange(30) for _ in range(3)]
+            # En Bronze, le registre de position de l'archerie est une
+            # coordonnée x (ou -y) qui peut être négative : le bot doit la
+            # ramener à 0 avant de simuler la course d'obstacles.
+            positions = [rng.randrange(-20, 30) if rng.random() < 0.3
+                         else rng.randrange(30) for _ in range(3)]
             stuns = [rng.randrange(4) for _ in range(3)]
             lines.append(" ".join([board] + [str(v) for v in positions + stuns + [-1]]))
     return "\n".join(lines) + "\n"

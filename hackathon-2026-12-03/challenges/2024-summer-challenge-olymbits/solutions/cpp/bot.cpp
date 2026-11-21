@@ -21,6 +21,8 @@ struct State {
 };
 
 void step(const State &s, int *pos, int *stun, int move) {
+    /* Certains registres (archerie) sont des coordonnées négatives. */
+    if (*pos < 0) *pos = 0;
     if (*stun > 0) {
         --*stun;
         return;

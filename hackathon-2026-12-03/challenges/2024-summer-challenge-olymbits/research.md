@@ -74,3 +74,24 @@ donc évaluer une séquence sur toutes les pistes simultanément, et non choisir
 le meilleur coup de chaque piste. Le modèle d'étourdissement (3 tours d'immobilité
 après collision) est déterminant : le boss joue `UP` en boucle et reste
 récurrentément étourdi sur les haies de la deuxième case.
+
+## Spécificité Bronze (21/11/2026)
+L'énoncé Wood 1 décrit une seule course d'obstacles répétée ; la ligue Bronze
+active **4 mini-games simultanés** (course d'obstacles, archerie, roller,
+plongée) avec une action partagée. Le bot Wood 1 reste compétitif contre le boss
+Bronze à condition de ne pas planter sur les registres signés de l'archerie.
+
+Références externes consultées :
+- `JakubDotPy/codingame_olymbits` (`bronze_league.py`, `dynamic_weights.py`,
+  `silver_league.py`) — stratégies par mini-game et vote pondéré ;
+- `UAKobzar/Olymbits/Player.cs` — énumération de 4^8 séquences et simulation des
+  4 mini-games (trop lent en Python sous la limite de 50 ms, mais confirme que
+  l'action partagée est le cœur du problème) ;
+- `CGjupoulton/SummerChallenge2024Olymbits` — source Java du referee, utilisée
+  pour confirmer que l'archerie stocke des coordonnées signées dans les
+  registres.
+
+Décision : conserver l'énumération 4^5 déjà validée et corriger uniquement la
+gestion des positions négatives, plutôt que de réécrire le bot pour 4 mini-games
+(les prototypes de simulation multi-jeux ont obtenu 3/8 contre le boss, contre
+13/13 pour la version corrigée).
