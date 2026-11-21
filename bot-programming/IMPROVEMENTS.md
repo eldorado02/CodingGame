@@ -148,3 +148,19 @@ quota gratuit.
 - Action : prototype `/tmp/opencode/ice_silver.py` (mines, tours, upkeep, BFS), 6 test games.
 - Résultat : 6 défaites, QG détruit aux tours 13–16 ; prototype non retenu, bot initial conservé.
 - Leçon : le boss Silver détruit l'économie par coupure de connectivité avant que la production de tours ne rentre en jeu ; il faut d'abord résoudre la défense de connectivité, pas seulement le nombre d'unités.
+
+### 2026-11-21 — Ghost in the Cell Wood 4 — projection temporelle (soumission 41778890)
+- Constat : bot initial et prototypes multi-ordres simples plafonnent à 1 victoire sur 7-9 contre le boss 1079501.
+- Hypothèse : projeter l'état de chaque usine sur 6 tours (production, troupes, bombes) et garder une réserve de défense permet d'enchaîner des ordres rentables.
+- Sources : post-mortem Agade, README Legend devYaoYH, bot Lif3line, énoncé/stub officiels.
+- Action : prototype `gic_strong.py`, portage 4 langages, fuzz 206/206, soumission C++ 41778890.
+- Résultat : 4/5 victoires en vérification indépendante (boss à 0), 5/5 lors de la recherche initiale.
+- Leçon : une projection explicite de l'état futur et la mise à jour après chaque ordre comptent plus que le nombre d'attaques ; la variante « défense serrée » a régressé à 2/6.
+
+### 2026-11-21 — A Code of Ice and Fire Silver — deuxième prototype rejeté
+- Constat : le boss Silver détruit le QG aux tours 13-16 ; le rush L1 et l'économie+tours échouent tous deux.
+- Hypothèse : forteresse de tours + coupe de connectivité adverse + L3 tardif pourraient tenir.
+- Sources : referee/engine officiels `Referee.java`, `GameState.java`, `Cell.java`, `Pathfinding.java`, `Constants.java` ; `/tmp/opencode/ice_def_research.md`.
+- Action : prototype `ice_def.py`, 12 parties contre le boss 2425714.
+- Résultat : 0/12 victoires, score adverse 194–297, aucun crash de notre côté.
+- Leçon : il faut un mur de tours/L3 opérationnel vers le tour 10, ce que l'économie actuelle ne permet pas de financer ; autre angle à trouver avant de réessayer.

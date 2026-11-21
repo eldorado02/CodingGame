@@ -41,3 +41,16 @@ troupe.
 | Sous-estimer une défense | Forces effectives incluent les troupes en approche. |
 | Action unique gaspillée | On choisit le meilleur couple source/cible global. |
 | Timeout 50 ms | 15³ Floyd-Warshall en init, 15² par tour → trivial. |
+
+### 2026-11-21 — recherche approfondie Wood 4
+Sources consultées et retenues :
+- [Agade — Ghost in the Cell Postmortem](https://github.com/Agade09/Agade-Ghost-in-the-Cell-Postmortem/blob/master/Agade_GitC_Postmortem.md) :
+  garder assez d'unités pour 5 tours de défense, noter `valeur/(ETA² × coût)`,
+  réévaluer l'état après chaque ordre, bombarder tôt les usines productives ;
+- [devYaoYH — README #13 Legend](https://github.com/devYaoYH/CodinGame_GitC/blob/master/README.md) :
+  simulation future, Floyd–Warshall, ordre renfort → attaque → redistribution ;
+- [Lif3line — pythonBasic.py](https://github.com/Lif3line/ghostInTheCell/blob/master/pythonBasic.py) :
+  coût de capture incluant les renforts ennemis et la production pendant le trajet.
+Décision : remplacer l'heuristique locale par la projection temporelle et les
+multi-ordres ; les variantes « défense serrée » testées en cours de recherche
+ont donné 2/6 et ont été rejetées.

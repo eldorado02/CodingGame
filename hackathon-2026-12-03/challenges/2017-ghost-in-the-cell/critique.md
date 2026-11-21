@@ -26,3 +26,25 @@
 - Conclusion : la stratégie « forces effectives + une action globale » suffit
   largement en Wood 3. Les ligues supérieures demanderont plusieurs actions
   par tour, bombs et upgrade de production.
+
+## 2026-11-21 —Strong bot (soumission `41778890`)
+
+Bot précédent : force effective locale, une seule action par tour, scores 0–227
+contre le boss Wood 4 `1079501` (0 victoire sur 7). Deux prototypes intermédiaires
+(`gic_v2` multi-ordres + prédiction des troupes, `gic_v3` réserve 1 + jusqu'à 5
+attaques par usine) n'ont donné que 1 victoire sur 7 et 1 sur 9.
+
+Nouvelle stratégie (inspirée du post-mortem d'Agade) :
+- `floyd` + centralité (nombre de plus courts chemins passant par chaque usine) ;
+- projection temporelle de chaque usine sur 6 tours : production, troupes
+  arrivantes, bombes et suppression de production, combats résolus tour par tour ;
+- renforts d'abord (usine la plus précieuse en premier, « spare » = stock −
+  troupes déjà envoyées − besoin de défense), puis attaques notées
+  `valeur / ((ETA+0,35)² × coût^0,7)` pour les neutres, `valeur / ((ETA+0,35)²×8)`
+  pour les ennemies, avec mise à jour de l'état après chaque ordre ;
+- bombes tôt sur les usines à forte production que l'ennemi va capturer, puis
+  sur les gros stocks ennemis ; jamais deux bombes sur la même cible.
+
+Validation : prototype Python **4 victoires / 5** en vérification indépendante
+(boss à 0 dans les victoires), 5/5 annoncés par la recherche initiale, puis
+portage 4 langages et fuzz **206/206** identiques. Soumission C++ `41778890`.

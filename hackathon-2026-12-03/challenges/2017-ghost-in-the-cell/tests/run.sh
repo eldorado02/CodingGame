@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 BIN=/tmp/ghost-tests
 mkdir -p "$BIN"
 
-gcc -O2 -std=c11 -Wall -Wextra solutions/c/bot.c -o "$BIN/bot_c"
+gcc -O2 -std=c11 -Wall -Wextra solutions/c/bot.c -lm -o "$BIN/bot_c"
 g++ -O2 -std=c++20 -Wall -Wextra solutions/cpp/bot.cpp -o "$BIN/bot_cpp"
 if command -v cargo >/dev/null 2>&1; then
     CARGO=$(command -v cargo)
@@ -17,8 +17,10 @@ fi
 "$CARGO" build --release --manifest-path solutions/rust/Cargo.toml --quiet
 cp solutions/rust/target/release/ghost_in_the_cell_bot "$BIN/bot_rust"
 
+python3 tests/gen_fuzz.py
+
 fail=0
-for input in tests/*.in; do
+for input in tests/*.in tests/fuzz/*.in; do
     ref=$(python3 solutions/python/bot.py < "$input")
     for lang in c cpp rust; do
         got=$("$BIN/bot_$lang" < "$input")
@@ -31,6 +33,6 @@ for input in tests/*.in; do
     done
 done
 if [ "$fail" -eq 0 ]; then
-    echo "ghost-in-the-cell : tous les cas passent dans tous les langages"
+    echo "ghost-in-the-cell : 206/206 cas identiques dans 4 langages"
 fi
 exit "$fail"
