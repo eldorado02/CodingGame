@@ -52,3 +52,11 @@ quota gratuit.
 - Action : étendre la hiérarchie des sources du playbook (§1.1) avec arXiv, Semantic Scholar, Papers with Code, Gists, Codeforces, Kaggle, Rosetta Code.
 - Résultat : playbook mis à jour ; à appliquer au deep search de `tron-battle`.
 - Leçon réutilisable : toute amélioration du processus doit être journalisée ici avant d'être considérée comme faite.
+
+### 2026-11-21 — Documentation — README IA par challenge
+- Constat / défaite : 26 dossiers de challenge sans mode d'emploi ; une autre IA devait deviner l'architecture et les pièges.
+- Hypothèse : un README normé par challenge permet une reprise sans perte d'information.
+- Sources : `hackathon-2026-12-03/challenges/*/{statement,plan,critique}.md`, `bot-programming/PLAYBOOK.md` §8.
+- Action : génération d'un `README.md` dans les 26 dossiers (contrat E/S, architecture, bilan, cartographie 4 langages, tests, pièges, pistes d'amélioration) + ajout de l'obligation « documenter avant de coder ».
+- Résultat : commit `66df848` poussé, 27 fichiers, 3283 lignes.
+- Leçon réutilisable : une amélioration non documentée dans le README du challenge est incomplète.
