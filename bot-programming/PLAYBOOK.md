@@ -197,3 +197,29 @@ avant d'être considérée comme terminée. Format d'une entrée :
 Le journal est append-only : ne jamais réécrire une entrée passée. Il sert de
 mémoire entre les sessions et de point de reprise quand les sous-agents sont à
 court de quota.
+
+---
+
+## 8. Documentation lisible par une autre IA
+
+Chaque dossier de challenge contient un **`README.md`** écrit pour qu'une autre
+IA puisse reprendre le travail sans deviner. Il contient obligatoirement :
+
+1. **Rôle en une phrase** + état courant (ligue, dernier `submission_id`, rang).
+2. **Ordre de lecture** : `statement.md` → `research.md` → `plan.md` →
+   `critique.md` → `solutions/` → `tests/`.
+3. **Contrat E/S exact** : nombre de lignes, ordre des champs, types, lignes
+   supplémentaires par tour, contrainte de temps.
+4. **Architecture décisionnelle** : état conservé, invariants, règle de
+   départage, complexité réelle mesurée.
+5. **Cartographie des 4 langages** : fichier, rôle, commande de compilation,
+   conventions suivies, pièges spécifiques à la langue.
+6. **Tests** : commande exacte, nombre de cas, ce que le générateur couvre et
+   ce qu'il **ne** couvre pas.
+7. **Pièges déjà rencontrés** avec le lien vers l'entrée de
+   `bot-programming/IMPROVEMENTS.md`.
+8. **Points d'amélioration** : 2–4 hypothèses concrètes à tester, avec le
+   signal qui prouverait le gain (ex. « si `scores: 0 > 0` contre le boss »).
+
+Règle : **documenter avant de changer le code**. Une modification sans mise à
+jour du README est considérée comme incomplète.
