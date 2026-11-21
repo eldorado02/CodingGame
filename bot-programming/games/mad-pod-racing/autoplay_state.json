@@ -1,0 +1,21 @@
+{
+  "league": "Silver",
+  "history": [
+    {
+      "at": "2026-11-20T17:22:55+00:00",
+      "league": "Silver",
+      "submission_id": 41768678
+    }
+  ],
+  "phase": "blocked",
+  "bot": "bot.py",
+  "language": "Python3",
+  "last_progress": {
+    "percentage": 11,
+    "score": 10.24,
+    "rank": 78435,
+    "eligible_for_promotion": false
+  },
+  "wins": 2,
+  "games_done": 4
+}

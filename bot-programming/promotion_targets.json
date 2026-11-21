@@ -1,0 +1,242 @@
+{
+ "fall-challenge-2020": {
+  "league": "Wood 1",
+  "score": 20.74,
+  "boss_score": 26.69,
+  "boss_id": 3307374,
+  "gap": 5.95,
+  "rank": 2541,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 27
+ },
+ "spring-challenge-2026-troll-farm": {
+  "league": "Bronze",
+  "score": 22.88,
+  "boss_score": 22.96,
+  "boss_id": 6479370,
+  "gap": 0.08,
+  "rank": 1,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 26
+ },
+ "codebusters": {
+  "league": "Wood 2",
+  "score": 18.53,
+  "boss_score": 19.59,
+  "boss_id": 630129,
+  "gap": 1.06,
+  "rank": 1,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 6
+ },
+ "xmas-rush": {
+  "league": "Bronze",
+  "score": 12.27,
+  "boss_score": 14.11,
+  "boss_id": 2209776,
+  "gap": 1.84,
+  "rank": 21,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 3035
+ },
+ "summer-challenge-2024-olymbits": {
+  "league": "Bronze",
+  "score": 22.26,
+  "boss_score": 24.2,
+  "boss_id": 5507123,
+  "gap": 1.94,
+  "rank": 1,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 4
+ },
+ "wondev-woman": {
+  "league": "Wood 1",
+  "score": -1.55,
+  "boss_score": 23.19,
+  "boss_id": 1393115,
+  "gap": 24.74,
+  "rank": 193,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 3
+ },
+ "ocean-of-code": {
+  "league": "Bronze",
+  "score": 13.64,
+  "boss_score": 20.1,
+  "boss_id": 2822862,
+  "gap": 6.46,
+  "rank": 169,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 23
+ },
+ "code-of-kutulu": {
+  "league": "Bronze",
+  "score": 13.01,
+  "boss_score": 18.03,
+  "boss_id": 1957340,
+  "gap": 5.02,
+  "rank": 294,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 3110
+ },
+ "mean-max": {
+  "league": "Bronze",
+  "score": 17.75,
+  "boss_score": 27.75,
+  "boss_id": 1595974,
+  "gap": 10.0,
+  "rank": 460,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 222
+ },
+ "smash-the-code": {
+  "league": "Wood 1",
+  "score": 16.85,
+  "boss_score": 23.59,
+  "boss_id": 490029,
+  "gap": 6.74,
+  "rank": 653,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 1
+ },
+ "fantastic-bits": {
+  "league": "Wood 1",
+  "score": 18.4,
+  "boss_score": 22.33,
+  "boss_id": 886260,
+  "gap": 3.93,
+  "rank": 152,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 220
+ },
+ "winter-challenge-2024": {
+  "league": "Wood 2",
+  "score": 9.46,
+  "boss_score": 13.48,
+  "boss_id": 5736696,
+  "gap": 4.02,
+  "rank": 12,
+  "mode": "boss_battles",
+  "next_promotion_in_seconds": 3
+ },
+ "ghost-in-the-cell": {
+  "league": "Wood 1",
+  "score": 9.76,
+  "boss_score": 16.87,
+  "boss_id": 1079501,
+  "gap": 7.11,
+  "rank": 708,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 214
+ },
+ "cultist-wars": {
+  "league": "Bronze",
+  "score": 22.11,
+  "boss_score": 28.45,
+  "boss_id": 2411205,
+  "gap": 6.34,
+  "rank": 49,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 14
+ },
+ "spring-challenge-2021": {
+  "league": "Wood 1",
+  "score": 18.58,
+  "boss_score": 21.27,
+  "boss_id": 3664805,
+  "gap": 2.69,
+  "rank": 316,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 13
+ },
+ "botters-of-the-galaxy": {
+  "league": "Wood 3",
+  "score": 14.46,
+  "boss_score": 21.7,
+  "boss_id": 1739204,
+  "gap": 7.24,
+  "rank": 153,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 22
+ },
+ "summer-challenge-2026-back-track-king": {
+  "league": "Silver",
+  "score": 11.04,
+  "boss_score": 29.77,
+  "boss_id": 6767608,
+  "gap": 18.73,
+  "rank": 483,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 12
+ },
+ "a-code-of-ice-and-fire": {
+  "league": "Silver",
+  "score": 5.42,
+  "boss_score": 19.45,
+  "boss_id": 2425714,
+  "gap": 14.03,
+  "rank": 171,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 11
+ },
+ "code-royale": {
+  "league": "Wood 3",
+  "score": 17.29,
+  "boss_score": 19.98,
+  "boss_id": 1860406,
+  "gap": 2.69,
+  "rank": 3,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 21
+ },
+ "spring-challenge-2022": {
+  "league": "Wood 1",
+  "score": 19.42,
+  "boss_score": 20.8,
+  "boss_id": 4258167,
+  "gap": 1.38,
+  "rank": 1,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 10
+ },
+ "coders-of-the-caribbean": {
+  "league": "Wood 2",
+  "score": 19.31,
+  "boss_score": 22.68,
+  "boss_id": 1298491,
+  "gap": 3.37,
+  "rank": 253,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 14
+ },
+ "green-circle": {
+  "league": "Wood 1",
+  "score": 22.11,
+  "boss_score": 24.04,
+  "boss_id": 4373557,
+  "gap": 1.93,
+  "rank": 188,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 49
+ },
+ "hypersonic": {
+  "league": "Wood 2",
+  "score": 8.92,
+  "boss_score": 19.23,
+  "boss_id": 774074,
+  "gap": 10.31,
+  "rank": 356,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 178
+ },
+ "code-a-la-mode": {
+  "league": "Wood 2",
+  "score": 17.94,
+  "boss_score": 20.73,
+  "boss_id": 3691614,
+  "gap": 2.79,
+  "rank": 191,
+  "mode": "rank_above_boss",
+  "next_promotion_in_seconds": 178
+ }
+}
