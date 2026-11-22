@@ -278,3 +278,39 @@ quota gratuit.
 - Leçon : la transposition est invisible dans un fuzz qui ne compare que nos
   propres langages ; la comparer au rejeu referee. Les scores proches (11–12)
   indiquent un problème de cadence de collecte, pas de crash.
+
+### 2026-11-22 — Xmas Rush Silver — distance Manhattan même hors connexité
+- Constat : v7–v13 plafonnent à 1/5 malgré des scores proches (11–12). Le rejeu
+  `test-20261122-140801.log` montre 131 `PASS` sur 150 tours MOVE : le bot
+  reste déconnecté de ses quêtes révélées et n'avance plus.
+- Hypothèse : pénaliser l'inatteignable par `50/(d+1)` est trop faible pour
+  inciter une poussée à rapprocher l'objet ; il faut un gradient fort
+  `500 - 30*d` même quand la cible est hors composante connexe.
+- Sources : referee officiel `CodinGameCommunity/XmasRush` (`Referee.java`,
+  `checkForFinishedItems`, `doPushAction`, `updatePlayerPos`), énoncé Silver.
+- Action : prototype Python v17 = v13 + gradient Manhattan fort + correction
+  du collect instantané (`instant` seulement si on atterrit sur la tuile
+  insérée). Deux lots de 5 test games contre `2215206`.
+- Résultat : **3/5 puis 3/5** (scores 5–12, 9–8, 11–12, 7–4, 12–10 puis
+  12–11, 12–6, 11–6, 8–12, 6–12). Port C++ en cours ; fuzz à valider avant
+  soumission.
+- Leçon : dans un labyrinthe recomposé à chaque poussée, un gradient continu
+  vers la cible bat une heuristique binaire « atteignable / non ». Vérifier
+  le nombre de `PASS` dans les logs : c'est le meilleur diagnostics de cadence.
+
+### 2026-11-22 — Ataxx — moteur bitboard, murs et profondeur
+- Constat : le rapport de recherche attribue le 0/5 à une évaluation inversée
+  (centre au lieu des coins) et à un horizon d'un coup.
+- Hypothèse : un negamax bitboard avec PST coins/arêtes et profondeur 4
+  devrait battre le boss `6649970`.
+- Sources : `jdermont/AtaxxCodingame` (referee), `kz04px/tiktaxx`,
+  `kz04px/autaxx`, `pressibus.org/ataxx/gen/gbstrategies.html`.
+- Action : prototypes C++ `ataxx_bb` (divers depths), simulateur local
+  `referee_sim.py` + boss 2 plis, ajout des 9 murs réels.
+- Résultat : 0/5 → 1/5 en depth 3 contre le boss réel ; depth 4/5/6 régressent
+  dans le simulateur local. Aucune soumission. Le moteur du rapport de
+  recherche génère des coups invalides dès qu'il y a des murs.
+- Leçon : valider le moteur de recherche sur la vraie config (murs) avant de
+  conclure ; un eval PST trop centré ou un `TURN` trop fort font régresser
+  les profondeurs supérieures. Ne pas confondre un binaire compilé et son
+  source lors des test games.
