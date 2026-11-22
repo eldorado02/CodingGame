@@ -481,3 +481,20 @@ quota gratuit.
 - Leçon : un fuzz trop étroit (3 élémentaux) laisse passer un débordement
   de tableau qui ne se manifeste qu'à la ligue supérieure. Toujours régénérer
   le fuzz avec les constraints de la nouvelle ligue après promotion.
+
+### 2026-11-22 — Othello — moteur bitboard déterministe (suite)
+- Constat : la version temps réel `41787330` gagne mais casse l'identicité du
+  fuzz 4 langages (16 divergences) ; les budgets de nœuds du moteur tableau
+  timeout car `evaluate` coûte ~6500 opérations.
+- Hypothèse : représenter le plateau par deux `uint64` pour réduire le coût
+  d'évaluation d'environ 20× et permettre une profondeur fixe.
+- Sources : referee public `MultiStruct/Othello`, 10 000 positions aléatoires
+  validées contre l'implémentation tableau, logs de test games.
+- Action : moteur bitboard (dilatation 6 étages, `flips`, évaluation POS +
+  mobilité + frontier, tri stable POS, alpha-bêta profondeur 6), 4 ports,
+  fuzz 200/200, validation 10 000/10 000 `moves`/`flips`.
+- Résultat : max 34,9 ms par coup sur le fuzz, **5/5** contre `6797560` ;
+  soumission C++ `41787653`.
+- Leçon : la dilatation doit partir des pions propres (`sh(P)&O`), pas
+  `sh(O)&P`. Une évaluation rapide rend la profondeur fixe compétitive et
+  réconcilie déterminisme et fuzz multi-langages.

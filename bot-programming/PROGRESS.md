@@ -96,7 +96,7 @@ soumission suivent, du plus ancien au plus récent.
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |
 | 70 | `dots-and-boxes` | Dots and Boxes | — | —/— | À FAIRE | Legend |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
-| 72 | `othello-1` | Othello | Wood 2 | 287/— | Soumis `41787330` (alpha-bêta 115 ms, 9V/10) ; score 31.85 > boss 26.42, classement en cours | Legend |
+| 72 | `othello-1` | Othello | Wood 2 | 1/— | Soumis `41787653` (bitboard déterministe profondeur 6, fuzz 200/200, 5/5 boss `6797560`) ; classement en cours | Legend |
 | 73 | `yinsh` | Yinsh | — | —/— | À FAIRE | Legend |
 | 74 | `spring-challenge-2020` | Spring Challenge 2020 | Wood 1 | 1220/1290 | À FAIRE | Legend |
 | 75 | `tulips-and-daisies` | Tulips and Daisies | — | —/— | À FAIRE | Legend |
