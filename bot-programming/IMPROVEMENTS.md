@@ -362,3 +362,20 @@ quota gratuit.
 - Leçon : les heuristiques de distance sur la grille de Xmas ne captent pas
   la contrainte réelle de déplacement (poussée + orientation du tile). Ne pas
   ajouter de terme de distance sans modèle de poussée validé par le referee.
+
+### 2026-11-22 — Brandubh Wood — attaquants incapables d'arrêter le roi
+- Constat : tous les prototypes (Python 1/2 plis, garde du anneau, C++ 4 plis)
+  font 0/5 contre `jacek` (`6913632`). Le roi s'échappe en 10 à 30 tours.
+- Hypothèses testées : distance BFS, mobilité du roi, poids matériel 300,
+  bonus sur les 8 cases de garde initiales, fenêtre alpha-beta complète.
+- Sources : énoncé officiel, referee `n3l-ctrl/brandubh-codingame`
+  (`Referee.java` : `isHostileSquare`, `checkEncirclement`, `checkWinCondition`).
+- Action : correction de trois bugs de modèle (boucle de lecture, orientation
+  des lignes, test roi/défenseur absent du BFS d'encerclement), puis balayage
+  d'évaluations et port C++ avec coupe à 42 ms.
+- Résultat : échecs répétés ; aucune soumission. Deux timeouts Python corrigés
+  en réduisant la profondeur / en restaurant l'élagage alpha-beta.
+- Leçon : l'évaluation « distance du roi au coin » ne suffit pas : les attaquants
+  se font capturer un par un avant de pouvoir former un mur. Il faut un modèle
+  de contrôle des cases de fuite (couloirs vers les 4 coins) et non une simple
+  distance. Ne pasступider les test games tant que ce modèle n'existe pas.

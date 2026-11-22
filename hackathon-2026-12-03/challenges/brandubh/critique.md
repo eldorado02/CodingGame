@@ -18,7 +18,12 @@
 - `v3` (poids distance 300, contrôle 100) : 0/5, le roi s'échappe en ~30 tours.
 - `v4` (BFS d'évasion) : le BFS laissait traverser les défenseurs ; 0/5.
 - `v5` (proximité des attaquants avec mauvais signe) : 0/5, repousse les attaquants.
-- `v6` (BFS avec murs + proximité corrigée) : en cours de validation.
+- `v6` (BFS avec murs + proximité corrigée) : 0/5.
+- `v7` (garde du anneau initial, bonus 250) : 0/5.
+- `v8` (C++ alpha-beta 4 plis, coupe 42 ms) : 0/5, roi échappé en 10 tours.
+- Bugs corrigés en chemin : boucle de lecture unique, orientation des lignes,
+  BFS d'encerclement sans test « roi atteint », départage alpha-beta sur bornes.
+- Leçon : il manque un modèle de contrôle des couloirs de fuite vers les coins.
 
 ## Leçons
 
