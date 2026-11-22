@@ -62,10 +62,11 @@ static int parse_action(const char *s, int *x0, int *y0, int *x1, int *y1) {
         return 0;
     }
     *x0 = clamp7(s[0] - 'a');
-    *y0 = clamp7(s[1] - '1');
+    /* Le plateau est reçu du haut vers le bas : '1' -> 6, '7' -> 0. */
+    *y0 = clamp7('7' - s[1]);
     if (strlen(s) >= 4) {
         *x1 = clamp7(s[2] - 'a');
-        *y1 = clamp7(s[3] - '1');
+        *y1 = clamp7('7' - s[3]);
         return 1;
     }
     *x1 = *x0;

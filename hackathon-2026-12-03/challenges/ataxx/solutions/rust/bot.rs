@@ -65,11 +65,12 @@ fn parse_action(action: &str) -> Parsed {
         return Parsed { jump: false, src: 0, dst: 0 };
     }
     let x0 = clamp7(s[0] as i32 - 'a' as i32);
-    let y0 = clamp7(s[1] as i32 - '1' as i32);
+    // Le plateau est reçu du haut vers le bas : '1' -> 6, '7' -> 0.
+    let y0 = clamp7('7' as i32 - s[1] as i32);
     let src = y0 * 7 + x0;
     if s.len() >= 4 {
         let x1 = clamp7(s[2] as i32 - 'a' as i32);
-        let y1 = clamp7(s[3] as i32 - '1' as i32);
+        let y1 = clamp7('7' as i32 - s[3] as i32);
         return Parsed { jump: true, src, dst: y1 * 7 + x1 };
     }
     Parsed { jump: false, src, dst: src }
@@ -169,6 +170,7 @@ fn main() {
         None => return,
     };
     let id: i32 = first.parse().unwrap_or(0);
+    // Le plateau code '0' -> 1 et '1' -> 2 ; l'id 0 est donc le code 2.
     let mut me = id + 1;
     if me != 1 && me != 2 {
         me = 1;

@@ -4,8 +4,8 @@
 
 | Point | Verdict | Détail |
 |---|---|---|
-| Lecture exacte des champs dans l'ordre | **VALIDÉ** | init = 1 entier (`id`) ; par tour = 7 lignes grille (bas→haut), 1 ligne `lastAction`, 1 entier `actionsCount`, puis `actionsCount` lignes d'action. Aucun champ entrelacé ici (contrairement à Back Track King). |
-| Registres / indices signés | **VALIDÉ** | coords `a-g`/`1-7` converties en `x=c-'a'`, `y=r-'1'` ; bornage défensif à `[0,6]` dans les 4 langages avant indexation. Aucun index négatif. |
+| Lecture exacte des champs dans l'ordre | **VALIDÉ** | init = 1 entier (`id`) ; par tour = 7 lignes grille (**haut→bas**), 1 ligne `lastAction`, 1 entier `actionsCount`, puis `actionsCount` lignes d'action. Aucun champ entrelacé ici (contrairement à Back Track King). |
+| Registres / indices signés | **VALIDÉ (corrigé)** | coords `a-g`/`1-7` converties en `x=c-'a'`, **`y='7'-r'`** (les lignes sont reçues du haut vers le bas) ; bornage défensif à `[0,6]` dans les 4 langages. L'ancien `y=r-'1'` inversait le plateau et provoquait des coups adverses au matériel. |
 | Une action peut-elle détruire notre avantage ? | **VALIDÉ AVEC RÉSERVES** | un Jump vide sa case source : la simulation le modélise explicitement (`cells[src]=0`). La conversion n'écrase que des pièces *adverses*. Risque résiduel : un Jump peut isoler une pièce — l'évaluation de clustering n'est pas incluse en v1. |
 | Horizon dans le budget | **VALIDÉ** | 1-ply seulement : ~78k ops au pire, ≪ 100 ms (voir `plan.md`). Pas de recherche. |
 | Règle de ligue supérieure non couverte | **VALIDÉ AVEC RÉSERVES** | draw à 300 coups et triple répétition sont côté referee ; le bot ne les modélise pas (risque documenté ci-dessous). |
@@ -41,6 +41,16 @@
 5. **Tie-break ASCII dépend de l'ordre des actions fournies ?** Non : on trie
    implicitement par `(eval, chaîne)`, donc l'ordre de la liste du referee
    n'influe pas sur le résultat. Vérifié par le fuzz (listes mélangées).
+6. **Boss Wood 2 `6649970` : 0/5 après correction des conventions.** Rejeu seed
+   `8726614551035298000` (log `test-20261122-125743.log`) : le bot joue bien
+   depuis ses propres pièces, mais le boss gagne au frame 74. Le plateau envoyé
+   au bot est translaté : la première ligne reçue est `y=0` (haut), donc
+   `y = '7' - rang`. L'hypothèse précédente (`me = id + 1` erroné) était fausse :
+   c'est l'orientation des lignes qui était inversée. La recherche 1,5 pli
+   (`/tmp/opencode/ataxx_v2.py`, beam=8, pire retour adverse) perd aussi 0/5.
+   Correctif appliqué dans les 4 langages : fuzz 210/210, mais 0/5 persistants
+   contre le boss. Piste ouverte : évaluation de connectivité / contrôle de
+   centres, ou recherche minimax plus profonde. Aucune soumission.
 
 ## Journal global
 

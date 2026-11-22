@@ -56,10 +56,11 @@ def parse_action(action: str):
     if len(s) < 2:
         return False, 0, 0, 0, 0
     x0 = max(0, min(6, ord(s[0]) - ord("a")))
-    y0 = max(0, min(6, ord(s[1]) - ord("1")))
+    # Le plateau est reçu du haut vers le bas : '1' -> index 6, '7' -> index 0.
+    y0 = max(0, min(6, ord("7") - ord(s[1])))
     if len(s) >= 4:
         x1 = max(0, min(6, ord(s[2]) - ord("a")))
-        y1 = max(0, min(6, ord(s[3]) - ord("1")))
+        y1 = max(0, min(6, ord("7") - ord(s[3])))
         return True, x0, y0, x1, y1
     return False, x0, y0, x0, y0
 

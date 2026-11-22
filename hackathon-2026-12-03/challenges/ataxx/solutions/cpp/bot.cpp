@@ -61,9 +61,10 @@ struct Parsed {
 Parsed parse_action(const std::string& s) {
     if (s.size() < 2) return {false, 0, 0, 0, 0};
     const int x0 = clamp7(s[0] - 'a');
-    const int y0 = clamp7(s[1] - '1');
+    // Le plateau est reçu du haut vers le bas : '1' -> 6, '7' -> 0.
+    const int y0 = clamp7('7' - s[1]);
     if (s.size() >= 4) {
-        return {true, x0, y0, clamp7(s[2] - 'a'), clamp7(s[3] - '1')};
+        return {true, x0, y0, clamp7(s[2] - 'a'), clamp7('7' - s[3])};
     }
     return {false, x0, y0, x0, y0};
 }

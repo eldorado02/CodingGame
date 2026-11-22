@@ -1,11 +1,4 @@
-# Xmas Rush (2018-12-07)
-
-![](//cdn.codingame.com/smash-the-code/statement/league_wood_04.png)
-
-This is a **league based** challenge.
-
-Wood leagues should be considered as a tutorial which lets players discover the different rules of the game.
-In Bronze league, all rules will be unlocked and the real challenge will begin.
+# Xmas Rush (2018-12-07) — Silver
 
 ## The Goal
 
@@ -26,7 +19,9 @@ Each player has 1 tile placed outside the board which they can use to push a row
 
 - Each quest corresponds to an item on the board. Quests are the same for both players, but each item is unique in the deck.
 - To complete a quest, a player must move to the tile containing the corresponding item. The quest must be revealed to be able to complete it.
-- For this league, each player has `1` quest to complete.
+- For this league, each player has `12` quests to complete. At most `3` quests are revealed. They can be collected in any order.
+- A player can complete multiple quests in one turn.
+- When an item is collected, it is removed from the tile and the quest is marked as completed and removed from the player's quest deck. After the turn ends, a new quest is revealed (if available).
 
 **The game turns**
 
@@ -132,18 +127,9 @@ Example: `MOVE LEFT UP RIGHT` will make the player move left, then up, then righ
 
 `board width` = `7`
 `board height` = `7`
-`numPlayerCards` = `1`
-`0` ≤ `numItems` ≤ `2`
-`0` ≤ `numQuests` ≤ `2`
+`0` ≤ `numPlayerCards` ≤ `12`
+`0` ≤ `numItems` ≤ `24`
+`0` ≤ `numQuests` ≤ `6`
 
 Response time for the first turn ≤ `1`s
 Response time per turn ≤ `50`ms
-
-![](//cdn.codingame.com/smash-the-code/statement/league_wood_04.png)
-
-What is in store in the higher leagues?
-
-The extra rules available in higher leagues are:
-
-- In Wood 1, players must complete `6` quests. At most `1` quest is revealed.
-- In Bronze, players must complete `12` quests. At most `3` quests are revealed.

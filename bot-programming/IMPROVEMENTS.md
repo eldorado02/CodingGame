@@ -243,3 +243,38 @@ quota gratuit.
   concentration de force et notre bot disperse ses MOVE. Tester des idées sur
   un échantillon ≥10 avant de porter en 4 langages ; les lots de 5 sont trop
   bruités. Ne pas confondre quota épuisé et erreur réseau dans les logs.
+
+### 2026-11-22 — Ataxx — orientation du plateau, pas mapping joueur
+- Constat : 0/5 contre le boss Wood 2 `6649970` malgré un fuzz 210/210 et un
+  mapping `me = 2 si id == 0` déjà corrigé.
+- Hypothèse : le mapping était la cause ; un rejeu avec traces `stderr` montre
+  au contraire que le bot joue depuis des pièces qui ne sont pas les siennes
+  dans sa propre représentation.
+- Sources : log `bot-programming/games/ataxx/logs/test-20261122-125039.log` et
+  rejeu seed `8726614551035298000` (`test-20261122-125743.log`).
+- Action : restaurer `me = id + 1` et convertir les rangs avec `y = '7' - rang`
+  (les 7 lignes sont reçues du haut vers le bas) dans Python/C/C++/Rust.
+- Résultat : fuzz 210/210 dans les 4 langages ; toujours 0/5 contre `6649970`.
+  Prototype 1,5 pli (beam 8, pire retour adverse) : 0/5 également. Aucune
+  soumission.
+- Leçon : vérifier l'orientation des lignes avec un rejeu tracé avant de
+  modifier le mapping joueur ; un fuzz auto-cohérent ne détecte pas une
+  convention de coordonnées erronée partagée par les 4 langages.
+
+### 2026-11-22 — Xmas Rush Silver — énoncé 12 quêtes et simulation des poussées
+- Constat : promotion Bronze → Silver effective (score 12,16, rang 570,
+  `eligible_for_promotion=False`) ; nouveau boss `Santa Claus` `2215206`
+  score 20,76 ; bot Bronze 1/5.
+- Hypothèse : le bot Bronze gère déjà les 12 quêtes, mais sa simulation des
+  poussées transpose `grid[y][x]` en `grid[x][y]` et évalue tous les objets,
+  y compris les quêtes non révélées.
+- Sources : énoncé Silver via `cg.py show xmas-rush` (remplace `statement.md`),
+  dépôt public `elokaac/cg-xmas-rush` (`GreedyEvaluator`, `BruteForcePusher`).
+- Action : prototype Python v7 corrigeant la transposition et lisant quêtes
+  révélées des deux joueurs ; v8 n'évalue plus que les quêtes révélées ; v9
+  remplace le tie-break Manhattan par une distance BFS exacte.
+- Résultat : v7 1/5 (scores 7/11/2/1/9), v8 1/5 (10/12/7/11/3). v9 en attente
+  du quota test games (30/900s atteint). Aucune soumission.
+- Leçon : la transposition est invisible dans un fuzz qui ne compare que nos
+  propres langages ; la comparer au rejeu referee. Les scores proches (11–12)
+  indiquent un problème de cadence de collecte, pas de crash.
