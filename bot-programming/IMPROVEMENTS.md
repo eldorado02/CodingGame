@@ -332,3 +332,20 @@ quota gratuit.
   Ne jamais remplacer les test games réels par un duel local, même avec les
   murs et le même parser. Conserver le correctif de flip pour la suite, mais
   chercher ailleurs l'écart de force (évaluation, profondeur, gestion du tempo).
+
+### 2026-11-22 — Shobu Wood 4 — swap systématique + bords de board
+- Constat : v1 (1 ply + réponse adverse, sans positionnel) fait 1/5 contre le
+  boss greedy `6906517` ; les défaites arrivent en 10–24 tours.
+- Hypothèse : le boss ne swap jamais et ne regarde pas la réponse. Prendre le
+  swap systématiquement annule son premier coup ; pénaliser nos pierres sur
+  le bord d'un board 4×4 (et récompenser les siennes) cible la mécanique de
+  sortie de plateau.
+- Sources : énoncé officiel, referee `Waffle3z/CG-Shobu` (`Board.java`,
+  `aggressiveOk`, `sameBoard`, `legalMoves`).
+- Action : v5 = always SWAP + positionnel 12 (2 victoires, 3 nulles), puis
+  v6 = positionnel **25** (4/5). Port 4 langages, fuzz 200/200.
+- Résultat : retenu pour validation C++ réelle ; aucune soumission encore.
+- Leçon : l'ordre de génération du referee est sémantique. Les ports triaient
+  les réponses adverses avant d'en garder 24, ce qui changeait le coup joué
+  sur 5 cas de fuzz sur 24. Îlots de comportement -> toujours comparer les 4
+  langages sur des positions réelles, pas seulement sur des cas trivials.
