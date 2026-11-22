@@ -350,3 +350,15 @@ quota gratuit.
   les réponses adverses avant d'en garder 24, ce qui changeait le coup joué
   sur 5 cas de fuzz sur 24. Îlots de comportement -> toujours comparer les 4
   langages sur des positions réelles, pas seulement sur des cas trivials.
+
+### 2026-11-22 — Xmas Rush Silver — v18/v19/v20 rejetés, v22 bloqué
+- Constat : `v17` (soumis `41785676`) plafonne à `score=16.13`, `percentage=14`,
+  boss `2215206` à `20.76`.
+- Hypothèses testées : `v18` gradient BFS étendu, `v19` distance Manhattan
+  accessible, `v20` pénalité -100 sur les cases inatteignables.
+- Action : 5 test games par variante après fuzz 210/210.
+- Résultat : **0/5 pour v18, v19 et v20**. `v22` n'a pas pu être testé :
+  HTTP `429` sur le quota `30 test games / 900 s`.
+- Leçon : les heuristiques de distance sur la grille de Xmas ne captent pas
+  la contrainte réelle de déplacement (poussée + orientation du tile). Ne pas
+  ajouter de terme de distance sans modèle de poussée validé par le referee.

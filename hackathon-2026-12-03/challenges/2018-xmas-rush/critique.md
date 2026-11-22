@@ -90,3 +90,11 @@ la boucle (frames 45–88, `PUSH 5 LEFT/RIGHT` + `PASS`).
 - Leçon : avec un labyrinthe recomposé à chaque poussée, un gradient continu
   vers la cible bat une décision binaire « atteignable / non ». Le nombre de
   `PASS` dans les logs reste le meilleur diagnostic de cadence.
+
+## 2026-11-22 — Silver : v18, v19, v20 rejetés
+- `v18` (gradient BFS étendu) : 0/5.
+- `v19` (distance Manhattan accessible) : 0/5.
+- `v20` (pénalité -100 sur cases inatteignables) : 0/5.
+- `v22` : non testé, quota `30/900 s` épuisé (HTTP 429).
+- Leçon : garder `v17`. Toute modification de la fonction de distance doit
+  être validée par un modèle de poussée fidèle, pas seulement par une heuristique.
