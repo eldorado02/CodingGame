@@ -35,26 +35,44 @@ def bfs_dist(grid, sx, sy, tx, ty):
     return 999
 
 
+def dist_field(grid, tx, ty):
+    """Distance BFS exacte de chaque case à (tx,ty)."""
+    dist = [[999] * N for _ in range(N)]
+    dist[ty][tx] = 0
+    q = deque([(tx, ty)])
+    while q:
+        x, y = q.popleft()
+        nd = dist[y][x] + 1
+        for d in range(4):
+            if not connected(grid, x, y, d):
+                continue
+            nx, ny = x + DX[d], y + DY[d]
+            if dist[ny][nx] == 999:
+                dist[ny][nx] = nd
+                q.append((nx, ny))
+    return dist
+
+
 def multi_bfs(grid, px, py, targets):
-    """Meilleur chemin de <=20 pas collectant le plus de quêtes."""
+    """Meilleur chemin de <=20 pas collectant le plus de quêtes (distance BFS exacte)."""
     if not targets:
         return 0, [], 999
     index = {p: i for i, p in enumerate(targets)}
+    fields = [dist_field(grid, tx, ty) for tx, ty in targets]
+    def exact(x, y):
+        return min(f[y][x] for f in fields)
     start = (px, py, 0)
     parent = {start: None}
     q = deque([(px, py, 0, 0)])
-    best = (0, 0, start, 999)  # collected, steps, state, best_manhattan
-    def manhattan(x, y):
-        return min(abs(x - tx) + abs(y - ty) for tx, ty in targets)
-    best_md = manhattan(px, py)
+    best = (0, 0, start, 999)  # collected, steps, state, exact distance
+    best_d = exact(px, py)
     while q:
         x, y, mask, steps = q.popleft()
-        md = manhattan(x, y)
         got = mask.bit_count()
-        # Priorité : quêtes collectées, puis distance de Manhattan minimale.
-        if (got, -md, -steps) > (best[0], -best_md, -best[1]):
+        md = exact(x, y) if got < len(targets) else 0
+        if (got, -md, -steps) > (best[0], -best[3], -best[1]):
             best = (got, steps, (x, y, mask), md)
-            best_md = md
+            best_d = md
         if steps >= 20:
             continue
         for d in range(4):
@@ -76,7 +94,7 @@ def multi_bfs(grid, px, py, targets):
         moves.append(DIRS[d])
         st = prev
     moves.reverse()
-    return best[0], moves, best[3]
+    return best[0], moves, best_d
 
 
 def reachable_manhattan(grid, px, py, targets):
@@ -171,19 +189,19 @@ def simulate(grid, tile, px, py, board_targets, hand_count, line_id, d):
     if d == 1:
         ins, pop = (0, line_id), (N - 1, line_id)
         for x in range(N - 1, 0, -1):
-            g[x][line_id] = g[x - 1][line_id]
+            g[line_id][x] = g[line_id][x - 1]
     elif d == 3:
         ins, pop = (N - 1, line_id), (0, line_id)
         for x in range(N - 1):
-            g[x][line_id] = g[x + 1][line_id]
+            g[line_id][x] = g[line_id][x + 1]
     elif d == 0:
         ins, pop = (line_id, N - 1), (line_id, 0)
         for y in range(N - 1):
-            g[line_id][y] = g[line_id][y + 1]
+            g[y][line_id] = g[y + 1][line_id]
     else:
         ins, pop = (line_id, 0), (line_id, N - 1)
         for y in range(N - 1, 0, -1):
-            g[line_id][y] = g[line_id][y - 1]
+            g[y][line_id] = g[y - 1][line_id]
     g[ins[1]][ins[0]] = tile
     on_line = (py == line_id) if horizontal else (px == line_id)
     npx, npy = ((px + DX[d]) % N, (py + DY[d]) % N) if on_line else (px, py)
@@ -196,7 +214,7 @@ def simulate(grid, tile, px, py, board_targets, hand_count, line_id, d):
             nboard.append(((pos[0] + DX[d]) % N, (pos[1] + DY[d]) % N))
         else:
             nboard.append(pos)
-    instant = hand_count if on_line else 0
+    instant = hand_count if (on_line and (npx, npy) == ins) else 0
     if hand_count and not on_line:
         nboard.append(ins)
     return g, npx, npy, nboard, popped, instant
@@ -210,72 +228,139 @@ def read_input():
     grid = []
     for _ in range(N):
         row = []
-        for s in sys.stdin.readline().strip().split():
+        for tok in sys.stdin.readline().strip().split():
             mask = 0
             for d, c in enumerate("URDL"):
-                if s[d] == "1":
+                if tok[d] == "1":
                     mask |= 1 << d
             row.append(mask)
         grid.append(row)
-    px = py = 0
-    tile = 0
-    for i in range(2):
+    players = []
+    for _ in range(2):
         f = sys.stdin.readline().split()
-        if i == 0:
-            px, py = int(f[1]), int(f[2])
-            for d, c in enumerate("URDL"):
-                if f[3][d] == "1":
-                    tile |= 1 << d
-    items = {}
+        if len(f) < 4:
+            return None
+        mask = 0
+        for d, c in enumerate("URDL"):
+            if f[3][d] == "1":
+                mask |= 1 << d
+        players.append((int(f[1]), int(f[2]), mask))
+    px, py, tile = players[0]
+    ox, oy, _ = players[1]
+    items = {0: [], 1: []}
     for _ in range(int(sys.stdin.readline())):
         f = sys.stdin.readline().split()
+        if len(f) < 4:
+            return None
         x, y, pid = int(f[1]), int(f[2]), int(f[3])
-        if pid == 0:
-            items[f[0]] = None if x == -1 else ((-2, -2) if x == -2 else (x, y))
-    quests = []
+        if x == -1:
+            pos = None
+        elif x == -2:
+            pos = (-2, -2)
+        else:
+            pos = (x, y)
+        items.setdefault(pid, []).append((f[0], pos))
+    quests = {0: [], 1: []}
     for _ in range(int(sys.stdin.readline())):
         f = sys.stdin.readline().split()
-        if int(f[1]) == 0:
-            quests.append(f[0])
+        if len(f) >= 2:
+            quests.setdefault(int(f[1]), []).append(f[0])
+    qpos = {name: pos for name, pos in items.get(0, []) + items.get(1, [])}
     board_targets = []
-    hand_count = 0
-    for name in quests:
-        pos = items.get(name)
-        if pos is None:
-            hand_count += 1
-        elif pos != (-2, -2):
-            board_targets.append(pos)
-    return turn_type, grid, px, py, tile, board_targets, hand_count
+    opp_targets = []
+    hand = 0
+    our_all = []
+    opp_all = []
+    for pid, lst, tgts in ((0, items.get(0, []), board_targets),
+                           (1, items.get(1, []), opp_targets)):
+        for name, pos in lst:
+            if pos is None:
+                if pid == 0:
+                    hand += 1
+            elif pos != (-2, -2):
+                if pid == 0:
+                    our_all.append(pos)
+                else:
+                    opp_all.append(pos)
+                if name in quests.get(pid, []):
+                    tgts.append(pos)
+    return (turn_type, grid, px, py, tile, ox, oy,
+            board_targets, hand, our_all, opp_all, opp_targets)
 
 
-def best_push(grid, px, py, tile, targets, hand, last_push, stale):
+def reachable_count(grid, sx, sy):
+    seen = {(sx, sy)}
+    q = deque([(sx, sy)])
+    while q:
+        x, y = q.popleft()
+        for d in range(4):
+            if not connected(grid, x, y, d):
+                continue
+            nx, ny = x + DX[d], y + DY[d]
+            if (nx, ny) not in seen:
+                seen.add((nx, ny))
+                q.append((nx, ny))
+    return len(seen)
+
+
+def parse_line(cmd):
+    if not cmd:
+        return None
+    parts = cmd.split()
+    if len(parts) != 3:
+        return None
+    return int(parts[1]), parts[2] in ("RIGHT", "LEFT")
+
+
+def best_push(grid, px, py, tile, our_all, opp_all, ox, oy, hand, last_push, stale,
+              board_targets, opp_targets):
     candidates = []
-    # Poussées locales : lignes proches du joueur.
-    lines_y = {py - 1, py, py + 1}
-    lines_x = {px - 1, px, px + 1}
-    for horizontal in (True, False):
-        for line_id in range(N):
-            if horizontal and line_id not in lines_y:
+    all_lines = [(True, line, d) for line in range(N) for d in (1, 3)]
+    all_lines += [(False, line, d) for line in range(N) for d in (0, 2)]
+    last_line = parse_line(last_push)
+    if last_line is not None:
+        all_lines = [c for c in all_lines if (c[1], c[0]) != last_line]
+    for horizontal, line_id, d in all_lines:
+        g, nx, ny, ts, popped, instant = simulate(
+            grid, tile, px, py, board_targets, hand, line_id, d)
+        _, nox, noy, ots, _, _ = simulate(
+            grid, tile, ox, oy, opp_targets, 0, line_id, d)
+        score = 1000 * instant - 100 * popped
+        for t in ts:
+            dist = bfs_dist(g, nx, ny, t[0], t[1])
+            if dist <= 20:
+                score += 1000 - 10 * dist
+            elif dist < 999:
+                score += 200.0 / (dist + 1)
+            else:
+                md = abs(nx - t[0]) + abs(ny - t[1])
+                score += 500.0 - 30.0 * md
+        score += 2 * reachable_count(g, nx, ny)
+        #Les quêtes adverse portent sur d'autres objets : les bloquer ne
+        #rapporte rien. On garde une legsère pénalité symbolique.
+        for t in ots:
+            dist = bfs_dist(g, nox, noy, t[0], t[1])
+            if dist <= 20:
+                score -= 10
+        #Accès aux objets encore cachés : ils deviendront des quêtes.
+        for t in our_all:
+            if t in board_targets:
                 continue
-            if not horizontal and line_id not in lines_x:
-                continue
-            for d in ((1, 3) if horizontal else (0, 2)):
-                g, nx, ny, ts, popped, instant = simulate(
-                    grid, tile, px, py, targets, hand, line_id, d)
-                md = reachable_manhattan(g, nx, ny, ts) if ts else 0
-                dists = [bfs_dist(g, nx, ny, t[0], t[1]) for t in ts]
-                collectable = sum(1 for x in dists if x <= 20)
-                conn = sum(connected(g, nx, ny, k) for k in range(4))
-                cmd = f"PUSH {line_id} {DIRS[d]}"
-                score = (instant, -popped, -md, collectable, conn,
-                         -hand, -line_id, -d)
-                candidates.append((score, cmd))
+            dist = bfs_dist(g, nx, ny, t[0], t[1])
+            if dist <= 20:
+                score += 20
+            elif dist < 999:
+                score += 20.0 / (dist + 1)
+        conn = sum(connected(g, nx, ny, k) for k in range(4))
+        score += conn
+        cmd = "PUSH %d %s" % (line_id, DIRS[d])
+        candidates.append((score, instant, -popped, conn, -line_id, -d, cmd))
     candidates.sort(reverse=True)
     if stale >= 3 and len(candidates) > 1:
-        for i, (_score, cmd) in enumerate(candidates):
-            if cmd != last_push:
-                return cmd
-    return candidates[0][1]
+        for cand in candidates:
+            if cand[-1] != last_push:
+                return cand[-1]
+    return candidates[0][-1]
 
 
 def main():
@@ -285,23 +370,25 @@ def main():
         data = read_input()
         if data is None:
             return
-        turn_type, grid, px, py, tile, targets, hand = data
+        (turn_type, grid, px, py, tile, ox, oy,
+         board_targets, hand, our_all, opp_all, opp_targets) = data
         if turn_type == 1:
             moves = []
-            if targets:
-                _got, moves, _md = multi_bfs(grid, px, py, targets)
-            if not moves and targets:
-                moves = target_path(grid, px, py, targets)
+            if board_targets:
+                _got, moves, _md = multi_bfs(grid, px, py, board_targets)
+            if not moves and board_targets:
+                moves = target_path(grid, px, py, board_targets)
             if not moves and hand:
                 moves = edge_path(grid, px, py)
             print("MOVE " + " ".join(moves) if moves else "PASS", flush=True)
         else:
-            cmd = best_push(grid, px, py, tile, targets, hand, last_push, stale)
+            cmd = best_push(grid, px, py, tile, our_all, opp_all, ox, oy,
+                            hand, last_push, stale, board_targets, opp_targets)
             if cmd == last_push:
                 stale += 1
             else:
                 stale = 0
-                last_push = cmd
+            last_push = cmd
             print(cmd, flush=True)
 
 

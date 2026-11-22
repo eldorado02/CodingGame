@@ -1,301 +1,381 @@
-// Xmas Rush Bronze — poussées locales, distance de Manhattan atteignable, anti-stale.
-// Port de xmas_v5.py.
+// Xmas Rush (Silver) — évaluation des poussées par distance BFS/Manhattan, anti-stale.
+// Port du prototype Python v17 validé à 3/5 contre le boss Silver 2215206.
 #include <algorithm>
 #include <array>
+#include <cstdlib>
 #include <iostream>
-#include <queue>
-#include <sstream>
 #include <string>
-#include <tuple>
+#include <utility>
 #include <vector>
 
 namespace {
-constexpr int N = 7, C = 49, MAXSTEP = 20;
+
+constexpr int N = 7;
 constexpr int DX[4] = {0, 1, 0, -1};
 constexpr int DY[4] = {-1, 0, 1, 0};
-constexpr const char *DIRS[4] = {"UP", "RIGHT", "DOWN", "LEFT"};
+constexpr const char* DIRS[4] = {"UP", "RIGHT", "DOWN", "LEFT"};
 
 using Grid = std::array<std::array<int, N>, N>;
-struct Pos { int x, y; };
-bool operator==(const Pos &a, const Pos &b) { return a.x == b.x && a.y == b.y; }
+using Pos = std::pair<int, int>;
 
-int mask_of(const std::string &s) {
-    int m = 0;
-    for (int d = 0; d < 4; ++d) if (s[d] == '1') m |= 1 << d;
-    return m;
-}
-int wrap(int v) { v %= N; return v < 0 ? v + N : v; }
+inline int wrap(int v) { int r = v % N; return r < 0 ? r + N : r; }
 
-bool connected(const Grid &g, int x, int y, int d) {
+bool connected(const Grid& g, int x, int y, int d) {
     if (!((g[y][x] >> d) & 1)) return false;
     int nx = x + DX[d], ny = y + DY[d];
-    return nx >= 0 && nx < N && ny >= 0 && ny < N && ((g[ny][nx] >> ((d + 2) % 4)) & 1);
+    return nx >= 0 && nx < N && ny >= 0 && ny < N &&
+           ((g[ny][nx] >> ((d + 2) % 4)) & 1);
 }
 
-int bfs_dist(const Grid &g, Pos s, Pos t) {
-    if (s == t) return 0;
-    std::array<int, C> seen;
-    seen.fill(-1);
-    std::queue<int> q;
-    int si = s.y * N + s.x;
-    seen[si] = 0;
-    q.push(si);
-    while (!q.empty()) {
-        int cur = q.front(); q.pop();
-        int x = cur % N, y = cur / N;
+int bfs_dist(const Grid& g, int sx, int sy, int tx, int ty) {
+    if (sx == tx && sy == ty) return 0;
+    bool seen[N][N] = {};
+    int qx[49], qy[49], qs[49];
+    int head = 0, tail = 0;
+    qx[tail] = sx; qy[tail] = sy; qs[tail] = 0; ++tail;
+    seen[sy][sx] = true;
+    while (head < tail) {
+        int x = qx[head], y = qy[head], s = qs[head]; ++head;
         for (int d = 0; d < 4; ++d) {
             if (!connected(g, x, y, d)) continue;
             int nx = x + DX[d], ny = y + DY[d];
-            if (nx == t.x && ny == t.y) {
-                // distance = distance du prédécesseur + 1 ; on la stocke dans seen.
-                return seen[cur] + 1;
+            if (nx == tx && ny == ty) return s + 1;
+            if (!seen[ny][nx]) {
+                seen[ny][nx] = true;
+                qx[tail] = nx; qy[tail] = ny; qs[tail] = s + 1; ++tail;
             }
-            int ni = ny * N + nx;
-            if (seen[ni] == -1) { seen[ni] = seen[cur] + 1; q.push(ni); }
         }
     }
     return 999;
 }
 
-int manhattan(Pos p, const std::vector<Pos> &targets) {
-    int best = 1000000;
-    for (const Pos &t : targets) best = std::min(best, std::abs(p.x - t.x) + std::abs(p.y - t.y));
-    return best;
+void dist_field(const Grid& g, int tx, int ty, int dist[N][N]) {
+    for (int y = 0; y < N; ++y) for (int x = 0; x < N; ++x) dist[y][x] = 999;
+    dist[ty][tx] = 0;
+    int qx[49], qy[49], head = 0, tail = 0;
+    qx[tail] = tx; qy[tail] = ty; ++tail;
+    while (head < tail) {
+        int x = qx[head], y = qy[head]; ++head;
+        int nd = dist[y][x] + 1;
+        for (int d = 0; d < 4; ++d) {
+            if (!connected(g, x, y, d)) continue;
+            int nx = x + DX[d], ny = y + DY[d];
+            if (dist[ny][nx] == 999) {
+                dist[ny][nx] = nd;
+                qx[tail] = nx; qy[tail] = ny; ++tail;
+            }
+        }
+    }
 }
 
-struct MoveResult { int collected; std::vector<int> dirs; int md; };
+// Meilleur chemin de <= 20 pas collectant le plus de quêtes.
+int multi_bfs(const Grid& g, int px, int py, const std::vector<Pos>& targets,
+              std::vector<std::string>& moves) {
+    moves.clear();
+    if (targets.empty()) return 0;
+    int fields[3][N][N];
+    for (int i = 0; i < static_cast<int>(targets.size()) && i < 3; ++i)
+        dist_field(g, targets[i].first, targets[i].second, fields[i]);
+    auto exact = [&](int x, int y) {
+        int best = 999;
+        for (int i = 0; i < static_cast<int>(targets.size()) && i < 3; ++i)
+            best = std::min(best, fields[i][y][x]);
+        return best;
+    };
 
-MoveResult multi_bfs(const Grid &g, Pos start, const std::vector<Pos> &targets) {
-    if (targets.empty()) return {0, {}, 0};
-    int nt = static_cast<int>(targets.size());
-    constexpr int SM = 1 << 12;  // 12 quêtes au plus (masque 4096)
-    struct Par { int px, py, pm, d; };
-    static std::array<std::array<std::array<Par, SM>, N>, N> parent{};
-    for (auto &row : parent) for (auto &cell : row) for (auto &p : cell) p = {-1, -1, -1, -1};
-    std::queue<std::array<int, 4>> q; // x,y,mask,steps
-    q.push({start.x, start.y, 0, 0});
-    parent[start.y][start.x][0] = {start.x, start.y, 0, -1};
-    int bestGot = 0, bestSteps = 0, bestMD = manhattan(start, targets);
-    int bx = start.x, by = start.y, bm = 0;
-    while (!q.empty()) {
-        auto st = q.front(); q.pop();
-        int x = st[0], y = st[1], mask = st[2], steps = st[3];
-        int md = manhattan({x, y}, targets);
+    constexpr int SZ = N * N * 8;
+    std::array<int, SZ> idx{}; idx.fill(-1);
+    std::array<int, SZ> pre{}, pdir{}, xx{}, yy{}, mm{}, stp{};
+    int start = (py * N + px) * 8;
+    idx[start] = 0; pre[0] = -1;
+    xx[0] = px; yy[0] = py; mm[0] = 0; stp[0] = 0;
+    int q[SZ], head = 0, tail = 0;
+    q[tail++] = 0;
+    int bestGot = 0, bestSteps = 0, bestState = 0, bestMd = 999;
+    int initialMd = exact(px, py);
+    bestMd = initialMd;
+    while (head < tail) {
+        int id = q[head++];
+        int x = xx[id], y = yy[id], mask = mm[id], st = stp[id];
         int got = __builtin_popcount(static_cast<unsigned>(mask));
-        bool better = got > bestGot ||
-                      (got == bestGot && -md > -bestMD) ||
-                      (got == bestGot && md == bestMD && -steps > -bestSteps);
-        if (better) {
-            bestGot = got; bestSteps = steps; bestMD = md;
-            bx = x; by = y; bm = mask;
+        int md = got < static_cast<int>(targets.size()) ? exact(x, y) : 0;
+        if (got > bestGot || (got == bestGot &&
+            (md < bestMd || (md == bestMd && st < bestSteps)))) {
+            bestGot = got; bestSteps = st; bestState = id; bestMd = md;
         }
-        if (steps >= MAXSTEP) continue;
+        if (st >= 20) continue;
         for (int d = 0; d < 4; ++d) {
             if (!connected(g, x, y, d)) continue;
             int nx = x + DX[d], ny = y + DY[d];
             int nm = mask;
-            for (int i = nt - 1; i >= 0; --i)
-                if (targets[i].x == nx && targets[i].y == ny) { nm |= 1 << i; break; }
-            if (parent[ny][nx][nm].px == -1) {
-                parent[ny][nx][nm] = {x, y, mask, d};
-                q.push({nx, ny, nm, steps + 1});
-            }
+            for (int i = 0; i < static_cast<int>(targets.size()); ++i)
+                if (targets[i].first == nx && targets[i].second == ny) nm |= 1 << i;
+            int code = (ny * N + nx) * 8 + nm;
+            if (idx[code] != -1) continue;
+            int nid = tail;
+            idx[code] = nid; pre[nid] = id; pdir[nid] = d;
+            xx[nid] = nx; yy[nid] = ny; mm[nid] = nm; stp[nid] = st + 1;
+            q[tail++] = nid;
         }
     }
-    std::vector<int> dirs;
-    int x = bx, y = by, m = bm;
-    while (true) {
-        Par p = parent[y][x][m];
-        if (p.d < 0) break;
-        dirs.push_back(p.d);
-        x = p.px; y = p.py; m = p.pm;
-    }
-    std::reverse(dirs.begin(), dirs.end());
-    return {bestGot, dirs, bestMD};
+    std::vector<int> rev;
+    for (int cur = bestState; pre[cur] >= 0; cur = pre[cur]) rev.push_back(pdir[cur]);
+    for (auto it = rev.rbegin(); it != rev.rend(); ++it) moves.push_back(DIRS[*it]);
+    return bestGot;
 }
 
-int reachable_manhattan(const Grid &g, Pos start, const std::vector<Pos> &targets) {
-    if (targets.empty()) return 0;
-    int best = manhattan(start, targets);
-    if (best == 0) return 0;
-    std::array<char, C> seen{};
-    std::queue<std::array<int, 3>> q; // x,y,steps
-    seen[start.y * N + start.x] = 1;
-    q.push({start.x, start.y, 0});
-    while (!q.empty()) {
-        auto st = q.front(); q.pop();
-        int x = st[0], y = st[1], steps = st[2];
-        if (steps >= MAXSTEP) continue;
+// BFS avec reconstruction de chemin vers une cible précise.
+void path_to_goal(const Grid& g, int px, int py, int tx, int ty,
+                  std::vector<std::string>& out) {
+    out.clear();
+    constexpr int SZ = N * N;
+    std::array<int, SZ> prev{}; prev.fill(-2);
+    std::array<int, SZ> pdir{};
+    int q[SZ], head = 0, tail = 0;
+    int s = py * N + px;
+    prev[s] = -1; q[tail++] = s;
+    int target = -1;
+    while (head < tail) {
+        int id = q[head++];
+        if (id == ty * N + tx) { target = id; break; }
+        int x = id % N, y = id / N;
         for (int d = 0; d < 4; ++d) {
             if (!connected(g, x, y, d)) continue;
             int nx = x + DX[d], ny = y + DY[d];
-            int ni = ny * N + nx;
-            if (seen[ni]) continue;
-            seen[ni] = 1;
-            int md = manhattan({nx, ny}, targets);
-            if (md < best) best = md;
-            if (best == 0) return 0;
-            q.push({nx, ny, steps + 1});
+            int nid = ny * N + nx;
+            if (prev[nid] != -2) continue;
+            prev[nid] = id; pdir[nid] = d; q[tail++] = nid;
         }
     }
-    return best;
+    if (target < 0) return;
+    std::vector<int> rev;
+    for (int cur = target; prev[cur] >= 0; cur = prev[cur]) rev.push_back(pdir[cur]);
+    for (auto it = rev.rbegin(); it != rev.rend(); ++it) out.push_back(DIRS[*it]);
+    if (out.size() > 20) out.resize(20);
 }
 
-std::vector<int> target_path(const Grid &g, Pos start, const std::vector<Pos> &targets) {
-    int bd = 1000000, bx = -1, by = -1;
-    for (const Pos &t : targets) {
-        int d = bfs_dist(g, start, t);
-        if (d < 999 && d < bd) { bd = d; bx = t.x; by = t.y; }
+// Repli Python : cible la plus proche ( premier en cas d'égalité ), puis BFS.
+void nearest_path(const Grid& g, int px, int py, const std::vector<Pos>& goals,
+                  std::vector<std::string>& out) {
+    out.clear();
+    int best = 1000000, tx = -1, ty = -1;
+    for (const Pos& p : goals) {
+        int d = bfs_dist(g, px, py, p.first, p.second);
+        if (d < 999 && d < best) { best = d; tx = p.first; ty = p.second; }
     }
-    if (bx < 0 || bd == 0) return {};
-    std::array<int, C> prev{};
-    prev.fill(-2);
-    std::queue<int> q;
-    int si = start.y * N + start.x;
-    prev[si] = si;
-    q.push(si);
-    int ti = by * N + bx;
-    while (!q.empty()) {
-        int cur = q.front(); q.pop();
-        if (cur == ti) break;
-        int x = cur % N, y = cur / N;
-        for (int d = 0; d < 4; ++d) {
-            if (!connected(g, x, y, d)) continue;
-            int nx = x + DX[d], ny = y + DY[d];
-            int ni = ny * N + nx;
-            if (prev[ni] == -2) { prev[ni] = cur; q.push(ni); }
-        }
-    }
-    if (prev[ti] == -2) return {};
-    std::vector<int> dirs;
-    int cur = ti;
-    while (cur != si) {
-        int p = prev[cur];
-        int x = cur % N, y = cur / N;
-        int px = p % N, py = p / N;
-        for (int d = 0; d < 4; ++d)
-            if (px + DX[d] == x && py + DY[d] == y) { dirs.push_back(d); break; }
-        cur = p;
-    }
-    std::reverse(dirs.begin(), dirs.end());
-    if (static_cast<int>(dirs.size()) > MAXSTEP) dirs.resize(MAXSTEP);
-    return dirs;
-}
-
-std::vector<int> edge_path(const Grid &g, Pos start) {
-    std::vector<Pos> goals;
-    for (int x = 0; x < N; ++x) { goals.push_back({x, 0}); goals.push_back({x, N - 1}); }
-    for (int y = 0; y < N; ++y) { goals.push_back({0, y}); goals.push_back({N - 1, y}); }
-    int bd = 1000000, bx = -1, by = -1;
-    for (const Pos &t : goals) {
-        int d = bfs_dist(g, start, t);
-        if (d < 999 && d < bd) { bd = d; bx = t.x; by = t.y; }
-    }
-    if (bx < 0 || bd == 0) return {};
-    std::array<int, C> prev{};
-    prev.fill(-2);
-    std::queue<int> q;
-    int si = start.y * N + start.x;
-    prev[si] = si;
-    q.push(si);
-    int ti = by * N + bx;
-    while (!q.empty()) {
-        int cur = q.front(); q.pop();
-        if (cur == ti) break;
-        int x = cur % N, y = cur / N;
-        for (int d = 0; d < 4; ++d) {
-            if (!connected(g, x, y, d)) continue;
-            int nx = x + DX[d], ny = y + DY[d];
-            int ni = ny * N + nx;
-            if (prev[ni] == -2) { prev[ni] = cur; q.push(ni); }
-        }
-    }
-    if (prev[ti] == -2) return {};
-    std::vector<int> dirs;
-    int cur = ti;
-    while (cur != si) {
-        int p = prev[cur];
-        int x = cur % N, y = cur / N;
-        int px = p % N, py = p / N;
-        for (int d = 0; d < 4; ++d)
-            if (px + DX[d] == x && py + DY[d] == y) { dirs.push_back(d); break; }
-        cur = p;
-    }
-    std::reverse(dirs.begin(), dirs.end());
-    if (static_cast<int>(dirs.size()) > MAXSTEP) dirs.resize(MAXSTEP);
-    return dirs;
+    if (tx < 0 || best == 0) return;
+    path_to_goal(g, px, py, tx, ty, out);
 }
 
 struct SimResult {
-    Grid grid; Pos pos; std::vector<Pos> targets; int popped, instant;
+    Grid g;
+    int nx, ny;
+    std::vector<Pos> targets;
+    int popped, instant;
 };
 
-SimResult simulate(const Grid &grid, int tile, Pos p, const std::vector<Pos> &targets,
-                   int hand, int line, int d) {
-    Grid g = grid;
+SimResult simulate(const Grid& grid, int tile, int px, int py,
+                   const std::vector<Pos>& board_targets, int hand_count,
+                   int line_id, int d) {
+    SimResult r;
+    r.g = grid;
+    r.popped = 0;
+    r.instant = 0;
     bool horizontal = (d == 1 || d == 3);
-    Pos ins, pop;
-    if (d == 1) { ins = {0, line}; pop = {N - 1, line};
-        for (int x = N - 1; x > 0; --x) g[x][line] = g[x - 1][line]; }
-    else if (d == 3) { ins = {N - 1, line}; pop = {0, line};
-        for (int x = 0; x < N - 1; ++x) g[x][line] = g[x + 1][line]; }
-    else if (d == 0) { ins = {line, N - 1}; pop = {line, 0};
-        for (int y = 0; y < N - 1; ++y) g[line][y] = g[line][y + 1]; }
-    else { ins = {line, 0}; pop = {line, N - 1};
-        for (int y = N - 1; y > 0; --y) g[line][y] = g[line][y - 1]; }
-    g[ins.y][ins.x] = tile;
-    bool onLine = horizontal ? (p.y == line) : (p.x == line);
-    Pos np = onLine ? Pos{wrap(p.x + DX[d]), wrap(p.y + DY[d])} : p;
-    std::vector<Pos> nt;
-    int popped = 0;
-    for (const Pos &t : targets) {
-        if (t == pop) ++popped;
-        else if ((horizontal && t.y == line) || (!horizontal && t.x == line))
-            nt.push_back({wrap(t.x + DX[d]), wrap(t.y + DY[d])});
-        else nt.push_back(t);
+    int insx, insy, popx, popy;
+    if (d == 1) {
+        insx = 0; insy = line_id; popx = N - 1; popy = line_id;
+        for (int x = N - 1; x > 0; --x) r.g[line_id][x] = r.g[line_id][x - 1];
+    } else if (d == 3) {
+        insx = N - 1; insy = line_id; popx = 0; popy = line_id;
+        for (int x = 0; x < N - 1; ++x) r.g[line_id][x] = r.g[line_id][x + 1];
+    } else if (d == 0) {
+        insx = line_id; insy = N - 1; popx = line_id; popy = 0;
+        for (int y = 0; y < N - 1; ++y) r.g[y][line_id] = r.g[y + 1][line_id];
+    } else {
+        insx = line_id; insy = 0; popx = line_id; popy = N - 1;
+        for (int y = N - 1; y > 0; --y) r.g[y][line_id] = r.g[y - 1][line_id];
     }
-    int instant = onLine ? hand : 0;
-    if (hand && !onLine) nt.push_back(ins);
-    return {g, np, nt, popped, instant};
+    r.g[insy][insx] = tile;
+    bool on_line = horizontal ? (py == line_id) : (px == line_id);
+    r.nx = on_line ? wrap(px + DX[d]) : px;
+    r.ny = on_line ? wrap(py + DY[d]) : py;
+    for (const Pos& p : board_targets) {
+        if (p.first == popx && p.second == popy) {
+            ++r.popped;
+        } else if ((horizontal && p.second == line_id) ||
+                   (!horizontal && p.first == line_id)) {
+            r.targets.emplace_back(wrap(p.first + DX[d]), wrap(p.second + DY[d]));
+        } else {
+            r.targets.push_back(p);
+        }
+    }
+    if (on_line && r.nx == insx && r.ny == insy) r.instant = hand_count;
+    if (hand_count && !on_line) r.targets.emplace_back(insx, insy);
+    return r;
 }
 
-using Score = std::tuple<int, int, int, int, int, int, int, int>;
-
-std::string best_push(const Grid &g, Pos p, int tile, const std::vector<Pos> &targets,
-                      int hand, const std::string &lastPush, int stale) {
-    std::vector<std::pair<Score, std::string>> cand;
-    int lys[3] = {p.y - 1, p.y, p.y + 1};
-    int lxs[3] = {p.x - 1, p.x, p.x + 1};
-    for (int hor = 0; hor < 2; ++hor) {
-        int *lines = hor ? lys : lxs;
-        for (int k = 0; k < 3; ++k) {
-            int line = lines[k];
-            if (line < 0 || line >= N) continue;
-            // Ordre Python : pour horizontal d in (1,3), vertical d in (0,2)
-            for (int di = 0; di < 2; ++di) {
-                int d = hor ? (di == 0 ? 1 : 3) : (di == 0 ? 0 : 2);
-                auto r = simulate(g, tile, p, targets, hand, line, d);
-                int md = r.targets.empty() ? 0 : reachable_manhattan(r.grid, r.pos, r.targets);
-                int collectable = 0;
-                for (const Pos &t : r.targets)
-                    if (bfs_dist(r.grid, r.pos, t) <= 20) ++collectable;
-                int conn = 0;
-                for (int dd = 0; dd < 4; ++dd) if (connected(r.grid, r.pos.x, r.pos.y, dd)) ++conn;
-                Score sc = std::make_tuple(-r.instant, r.popped, md, -collectable, -conn,
-                                           hand, line, d);
-                std::string cmd = "PUSH " + std::to_string(line) + " " + DIRS[d];
-                cand.push_back({sc, cmd});
+int reachable_count(const Grid& g, int sx, int sy) {
+    bool seen[N][N] = {};
+    int qx[49], qy[49], head = 0, tail = 0;
+    qx[tail] = sx; qy[tail] = sy; ++tail;
+    seen[sy][sx] = true;
+    int total = 1;
+    while (head < tail) {
+        int x = qx[head], y = qy[head]; ++head;
+        for (int d = 0; d < 4; ++d) {
+            if (!connected(g, x, y, d)) continue;
+            int nx = x + DX[d], ny = y + DY[d];
+            if (!seen[ny][nx]) {
+                seen[ny][nx] = true; ++total;
+                qx[tail] = nx; qy[tail] = ny; ++tail;
             }
         }
     }
-    std::sort(cand.begin(), cand.end(), [](const auto &a, const auto &b) {
-        if (a.first != b.first) return a.first < b.first;
-        return a.second > b.second;
-    });
-    if (stale >= 3 && cand.size() > 1) {
-        for (const auto &c : cand) if (c.second != lastPush) return c.second;
+    return total;
+}
+
+struct Input {
+    int turn_type = 0, px = 0, py = 0, tile = 0, ox = 0, oy = 0, hand = 0;
+    Grid grid{};
+    std::vector<Pos> board_targets, opp_targets, our_all;
+};
+
+bool read_input(Input& in) {
+    if (!(std::cin >> in.turn_type)) return false;
+    std::string tok;
+    const std::string order = "URDL";
+    for (int y = 0; y < N; ++y) {
+        in.grid[y].fill(0);
+        for (int x = 0; x < N; ++x) {
+            if (!(std::cin >> tok)) return false;
+            int mask = 0;
+            for (int d = 0; d < 4; ++d) if (tok[d] == '1') mask |= 1 << d;
+            in.grid[y][x] = mask;
+        }
     }
-    return cand[0].second;
+    for (int p = 0; p < 2; ++p) {
+        int count;
+        if (!(std::cin >> count)) return false;
+        int& x = (p == 0 ? in.px : in.ox);
+        int& y = (p == 0 ? in.py : in.oy);
+        if (!(std::cin >> x >> y >> tok)) return false;
+        int mask = 0;
+        for (int d = 0; d < 4; ++d) if (tok[d] == '1') mask |= 1 << d;
+        if (p == 0) in.tile = mask;
+    }
+    in.board_targets.clear(); in.opp_targets.clear(); in.our_all.clear(); in.hand = 0;
+    int n_items;
+    if (!(std::cin >> n_items)) return false;
+    std::vector<std::string> names[2];
+    std::vector<Pos> positions[2];
+    for (int i = 0; i < n_items; ++i) {
+        std::string name; int x, y, pid;
+        if (!(std::cin >> name >> x >> y >> pid)) return false;
+        if (pid < 0 || pid > 1) continue;
+        names[pid].push_back(name);
+        positions[pid].emplace_back(x, y);
+    }
+    int n_quests;
+    if (!(std::cin >> n_quests)) return false;
+    std::vector<std::string> quests[2];
+    for (int i = 0; i < n_quests; ++i) {
+        std::string name; int pid;
+        if (!(std::cin >> name >> pid)) return false;
+        if (pid >= 0 && pid <= 1) quests[pid].push_back(name);
+    }
+    for (int pid = 0; pid < 2; ++pid) {
+        for (size_t i = 0; i < names[pid].size(); ++i) {
+            int x = positions[pid][i].first, y = positions[pid][i].second;
+            if (x == -1) { if (pid == 0) ++in.hand; continue; }
+            if (x == -2) continue;
+            bool revealed = false;
+            for (const std::string& q : quests[pid]) if (q == names[pid][i]) { revealed = true; break; }
+            if (pid == 0) in.our_all.emplace_back(x, y);
+            if (revealed) {
+                if (pid == 0) in.board_targets.emplace_back(x, y);
+                else in.opp_targets.emplace_back(x, y);
+            }
+        }
+    }
+    return true;
+}
+
+struct Candidate {
+    double score;
+    int instant, popped, conn, line, d;
+    std::string cmd;
+};
+
+bool cand_better(const Candidate& a, const Candidate& b) {
+    if (a.score != b.score) return a.score > b.score;
+    if (a.instant != b.instant) return a.instant > b.instant;
+    if (a.popped != b.popped) return a.popped < b.popped;
+    if (a.conn != b.conn) return a.conn > b.conn;
+    if (a.line != b.line) return a.line < b.line;
+    if (a.d != b.d) return a.d < b.d;
+    return a.cmd > b.cmd;
+}
+
+std::string best_push(const Input& in, const std::string& last_push, int stale) {
+    std::vector<Candidate> cands;
+    int last_line = -1; bool last_horiz = false;
+    if (last_push.size() >= 9 && last_push.compare(0, 5, "PUSH ") == 0) {
+        std::string rest = last_push.substr(5);
+        size_t sp = rest.find(' ');
+        if (sp != std::string::npos) {
+            last_line = std::atoi(rest.substr(0, sp).c_str());
+            std::string dir = rest.substr(sp + 1);
+            last_horiz = (dir == "RIGHT" || dir == "LEFT");
+        }
+    }
+    for (int pass = 0; pass < 2; ++pass) {
+        bool horizontal = (pass == 0);
+        for (int line = 0; line < N; ++line) {
+            for (int step = 0; step < 2; ++step) {
+                int d = horizontal ? (step == 0 ? 1 : 3) : (step == 0 ? 0 : 2);
+                if (last_line >= 0 && last_line == line && last_horiz == horizontal) continue;
+                SimResult s = simulate(in.grid, in.tile, in.px, in.py,
+                                       in.board_targets, in.hand, line, d);
+                SimResult o = simulate(in.grid, in.tile, in.ox, in.oy,
+                                       in.opp_targets, 0, line, d);
+                double score = 1000.0 * s.instant - 100.0 * s.popped;
+                for (const Pos& t : s.targets) {
+                    int dist = bfs_dist(s.g, s.nx, s.ny, t.first, t.second);
+                    if (dist <= 20) score += 1000 - 10 * dist;
+                    else if (dist < 999) score += 200.0 / (dist + 1);
+                    else score += 500.0 - 30.0 * (std::abs(s.nx - t.first) +
+                                                  std::abs(s.ny - t.second));
+                }
+                score += 2.0 * reachable_count(s.g, s.nx, s.ny);
+                for (const Pos& t : o.targets) {
+                    int dist = bfs_dist(s.g, o.nx, o.ny, t.first, t.second);
+                    if (dist <= 20) score -= 10;
+                }
+                for (const Pos& t : in.our_all) {
+                    bool is_target = false;
+                    for (const Pos& q : in.board_targets) if (q == t) { is_target = true; break; }
+                    if (is_target) continue;
+                    int dist = bfs_dist(s.g, s.nx, s.ny, t.first, t.second);
+                    if (dist <= 20) score += 20;
+                    else if (dist < 999) score += 20.0 / (dist + 1);
+                }
+                int conn = 0;
+                for (int k = 0; k < 4; ++k) if (connected(s.g, s.nx, s.ny, k)) ++conn;
+                score += conn;
+                Candidate c;
+                c.score = score; c.instant = s.instant; c.popped = s.popped;
+                c.conn = conn; c.line = line; c.d = d;
+                c.cmd = "PUSH " + std::to_string(line) + " " + DIRS[d];
+                cands.push_back(c);
+            }
+        }
+    }
+    std::sort(cands.begin(), cands.end(), cand_better);
+    if (stale >= 3 && cands.size() > 1) {
+        for (const Candidate& c : cands) if (c.cmd != last_push) return c.cmd;
+    }
+    return cands[0].cmd;
 }
 
 }  // namespace
@@ -303,81 +383,35 @@ std::string best_push(const Grid &g, Pos p, int tile, const std::vector<Pos> &ta
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    std::string line;
-    std::string lastPush;
+    std::string last_push;
     int stale = 0;
-    while (std::getline(std::cin, line)) {
-        if (line.empty()) continue;
-        int turnType = std::stoi(line);
-        Grid grid{};
-        for (int y = 0; y < N; ++y) {
-            if (!std::getline(std::cin, line)) return 0;
-            std::istringstream ss(line);
-            std::string s;
-            for (int x = 0; x < N; ++x) { ss >> s; grid[y][x] = mask_of(s); }
-        }
-        int px = 0, py = 0, tile = 0;
-        for (int i = 0; i < 2; ++i) {
-            if (!std::getline(std::cin, line)) return 0;
-            std::istringstream ss(line);
-            std::string pat;
-            int nc, x, y;
-            ss >> nc >> x >> y >> pat;
-            if (i == 0) { px = x; py = y; tile = mask_of(pat); }
-        }
-        std::vector<std::string> itemName, itemPos;
-        int nItems = 0;
-        if (!std::getline(std::cin, line)) return 0;
-        nItems = std::stoi(line);
-        for (int i = 0; i < nItems; ++i) {
-            if (!std::getline(std::cin, line)) return 0;
-            std::istringstream ss(line);
-            std::string nm; int x, y, pid;
-            ss >> nm >> x >> y >> pid;
-            itemName.push_back(nm);
-            itemPos.push_back(std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(pid));
-        }
-        int nQuests = 0;
-        if (!std::getline(std::cin, line)) return 0;
-        nQuests = std::stoi(line);
-        std::vector<std::string> quests;
-        for (int i = 0; i < nQuests; ++i) {
-            if (!std::getline(std::cin, line)) return 0;
-            std::istringstream ss(line);
-            std::string nm; int pid;
-            ss >> nm >> pid;
-            if (pid == 0) quests.push_back(nm);
-        }
-        std::vector<Pos> targets;
-        int hand = 0;
-        for (const std::string &q : quests) {
-            for (size_t i = 0; i < itemName.size(); ++i) {
-                if (itemName[i] != q) continue;
-                std::istringstream ss(itemPos[i]);
-                int x, y, pid; char comma;
-                ss >> x >> comma >> y >> comma >> pid;
-                if (pid != 0) continue;  // ignorer les items de l'adversaire
-                if (x == -1) ++hand;
-                else if (x != -2) targets.push_back({x, y});
-                break;
+    Input in;
+    while (read_input(in)) {
+        if (in.turn_type == 1) {
+            std::vector<std::string> moves;
+            multi_bfs(in.grid, in.px, in.py, in.board_targets, moves);
+            if (moves.empty() && !in.board_targets.empty())
+                nearest_path(in.grid, in.px, in.py, in.board_targets, moves);
+            if (moves.empty() && in.hand) {
+                std::vector<Pos> edge;
+                for (int x = 0; x < N; ++x) { edge.emplace_back(x, 0); edge.emplace_back(x, N - 1); }
+                for (int y = 0; y < N; ++y) { edge.emplace_back(0, y); edge.emplace_back(N - 1, y); }
+                nearest_path(in.grid, in.px, in.py, edge, moves);
             }
-        }
-        if (turnType == 1) {
-            std::vector<int> dirs;
-            if (!targets.empty()) dirs = multi_bfs(grid, {px, py}, targets).dirs;
-            if (dirs.empty() && !targets.empty()) dirs = target_path(grid, {px, py}, targets);
-            if (dirs.empty() && hand) dirs = edge_path(grid, {px, py});
-            if (dirs.empty()) std::cout << "PASS\n" << std::flush;
-            else {
+            if (moves.empty()) {
+                std::cout << "PASS" << std::endl;
+            } else {
                 std::cout << "MOVE";
-                for (int d : dirs) std::cout << ' ' << DIRS[d];
-                std::cout << '\n' << std::flush;
+                for (const std::string& m : moves) std::cout << ' ' << m;
+                std::cout << std::endl;
             }
         } else {
-            std::string cmd = best_push(grid, {px, py}, tile, targets, hand, lastPush, stale);
-            if (cmd == lastPush) ++stale; else { stale = 0; lastPush = cmd; }
-            std::cout << cmd << '\n' << std::flush;
+            std::string cmd = best_push(in, last_push, stale);
+            if (cmd == last_push) ++stale; else stale = 0;
+            last_push = cmd;
+            std::cout << cmd << std::endl;
         }
+        std::cout << std::flush;
     }
     return 0;
 }

@@ -1,20 +1,16 @@
-// Xmas Rush Bronze — poussées locales, distance de Manhattan atteignable, anti-stale.
-// Port de xmas_v5.py.
-use std::cmp::Ordering;
-use std::collections::VecDeque;
-use std::io::{self, BufRead, Write};
+// Xmas Rush (Silver) — port Rust du prototype Python v17 validé 3/5 contre 2215206.
+use std::io::{self, Read, Write};
 
-const N: usize = 7;
-const CELLS: usize = N * N;
+const N: i32 = 7;
+const NZ: usize = N as usize;
+const CELLS: usize = (N * N) as usize;
 const MAXSTEP: usize = 20;
-const MAXT: usize = 12;
-const MASKS: usize = 1 << MAXT;
-const STATES: usize = CELLS * MASKS;
+const STSZ: usize = CELLS * 8;
 const DX: [i32; 4] = [0, 1, 0, -1];
 const DY: [i32; 4] = [-1, 0, 1, 0];
 const DIRS: [&str; 4] = ["UP", "RIGHT", "DOWN", "LEFT"];
 
-type Grid = [[i32; N]; N];
+type Grid = [[i32; NZ]; NZ];
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 struct Pos { x: i32, y: i32 }
@@ -25,388 +21,417 @@ fn mask_of(s: &str) -> i32 {
 }
 
 fn wrap(v: i32) -> i32 {
-    let r = v % (N as i32);
-    if r < 0 { r + N as i32 } else { r }
+    let r = v % N;
+    if r < 0 { r + N } else { r }
 }
 
 fn connected(g: &Grid, x: i32, y: i32, d: usize) -> bool {
     if (g[y as usize][x as usize] >> d) & 1 == 0 { return false; }
     let nx = x + DX[d];
     let ny = y + DY[d];
-    nx >= 0 && nx < N as i32 && ny >= 0 && ny < N as i32 &&
+    nx >= 0 && nx < N && ny >= 0 && ny < N &&
         ((g[ny as usize][nx as usize] >> ((d + 2) % 4)) & 1) != 0
 }
 
-fn bfs_dist(g: &Grid, s: Pos, t: Pos) -> i32 {
-    if s == t { return 0; }
-    let mut dist = vec![-1i32; CELLS];
-    let si = (s.y as usize) * N + s.x as usize;
-    dist[si] = 0;
-    let mut q = VecDeque::new();
-    q.push_back(s);
-    while let Some(cur) = q.pop_front() {
+fn bfs_dist(g: &Grid, sx: i32, sy: i32, tx: i32, ty: i32) -> i32 {
+    if sx == tx && sy == ty { return 0; }
+    let mut seen = vec![false; CELLS];
+    let mut qx = vec![0i32; CELLS];
+    let mut qy = vec![0i32; CELLS];
+    let mut qs = vec![0i32; CELLS];
+    let (mut head, mut tail) = (0usize, 0usize);
+    qx[tail] = sx; qy[tail] = sy; qs[tail] = 0; tail += 1;
+    seen[(sy * N + sx) as usize] = true;
+    while head < tail {
+        let x = qx[head]; let y = qy[head]; let s = qs[head]; head += 1;
         for d in 0..4 {
-            if !connected(g, cur.x, cur.y, d) { continue; }
-            let nx = cur.x + DX[d];
-            let ny = cur.y + DY[d];
-            if nx == t.x && ny == t.y { return dist[(cur.y as usize) * N + cur.x as usize] + 1; }
-            let ni = ny as usize * N + nx as usize;
-            if dist[ni] == -1 {
-                dist[ni] = dist[(cur.y as usize) * N + cur.x as usize] + 1;
-                q.push_back(Pos { x: nx, y: ny });
+            if !connected(g, x, y, d) { continue; }
+            let nx = x + DX[d]; let ny = y + DY[d];
+            if nx == tx && ny == ty { return s + 1; }
+            let id = (ny * N + nx) as usize;
+            if !seen[id] {
+                seen[id] = true;
+                qx[tail] = nx; qy[tail] = ny; qs[tail] = s + 1; tail += 1;
             }
         }
     }
     999
 }
 
-fn manhattan(p: Pos, targets: &[Pos]) -> i32 {
-    targets.iter().map(|t| (p.x - t.x).abs() + (p.y - t.y).abs()).min().unwrap_or(1_000_000)
-}
-
-#[derive(Clone, Copy)]
-struct Par { px: i32, py: i32, pm: u16, d: i8 }
-
-fn multi_bfs(g: &Grid, p: Pos, targets: &[Pos]) -> Vec<usize> {
-    let nt = targets.len();
-    if nt == 0 { return Vec::new(); }
-    let mut parent = vec![Par { px: -1, py: -1, pm: 0, d: -1 }; STATES];
-    let si = (p.y as usize * N + p.x as usize) * MASKS;
-    parent[si] = Par { px: p.x, py: p.y, pm: 0, d: -2 }; // racine
-    #[derive(Clone, Copy)]
-    struct State { x: i32, y: i32, mask: u16, steps: usize }
-    let mut q = VecDeque::new();
-    q.push_back(State { x: p.x, y: p.y, mask: 0, steps: 0 });
-    let mut best_got = 0usize;
-    let mut best_steps = 0usize;
-    let mut best_md = manhattan(p, targets);
-    let mut bx = p.x;
-    let mut by = p.y;
-    let mut bm = 0u16;
-    while let Some(st) = q.pop_front() {
-        let md = manhattan(Pos { x: st.x, y: st.y }, targets);
-        let got = st.mask.count_ones() as usize;
-        if got > best_got || (got == best_got && md < best_md) ||
-           (got == best_got && md == best_md && st.steps < best_steps) {
-            best_got = got; best_steps = st.steps; best_md = md;
-            bx = st.x; by = st.y; bm = st.mask;
-        }
-        if st.steps >= MAXSTEP { continue; }
+fn dist_field(g: &Grid, tx: i32, ty: i32) -> [[i32; NZ]; NZ] {
+    let mut dist = [[999i32; NZ]; NZ];
+    dist[ty as usize][tx as usize] = 0;
+    let mut qx = vec![0i32; CELLS];
+    let mut qy = vec![0i32; CELLS];
+    let (mut head, mut tail) = (0usize, 0usize);
+    qx[tail] = tx; qy[tail] = ty; tail += 1;
+    while head < tail {
+        let x = qx[head]; let y = qy[head]; head += 1;
+        let nd = dist[y as usize][x as usize] + 1;
         for d in 0..4 {
-            if !connected(g, st.x, st.y, d) { continue; }
-            let nx = st.x + DX[d];
-            let ny = st.y + DY[d];
-            let mut nm = st.mask;
-            for (i, t) in targets.iter().enumerate().rev() {
-                if t.x == nx && t.y == ny { nm |= 1u16 << i; break; }
+            if !connected(g, x, y, d) { continue; }
+            let nx = x + DX[d]; let ny = y + DY[d];
+            if dist[ny as usize][nx as usize] == 999 {
+                dist[ny as usize][nx as usize] = nd;
+                qx[tail] = nx; qy[tail] = ny; tail += 1;
             }
-            let idx = (ny as usize * N + nx as usize) * MASKS + nm as usize;
-            if parent[idx].d != -1 { continue; }
-            parent[idx] = Par { px: st.x, py: st.y, pm: st.mask, d: d as i8 };
-            q.push_back(State { x: nx, y: ny, mask: nm, steps: st.steps + 1 });
         }
     }
-    let mut rev = Vec::new();
-    let (mut x, mut y, mut m) = (bx, by, bm);
-    loop {
-        let par = parent[(y as usize * N + x as usize) * MASKS + m as usize];
-        if par.d < 0 { break; }
-        rev.push(par.d as usize);
-        x = par.px; y = par.py; m = par.pm;
-    }
-    rev.reverse();
-    rev
+    dist
 }
 
-fn reachable_manhattan(g: &Grid, p: Pos, targets: &[Pos]) -> i32 {
-    if targets.is_empty() { return 0; }
-    let mut best = manhattan(p, targets);
-    if best == 0 { return 0; }
-    let mut dist = vec![-1i32; CELLS];
-    let si = p.y as usize * N + p.x as usize;
-    dist[si] = 0;
-    let mut q = VecDeque::new();
-    q.push_back(p);
-    while let Some(cur) = q.pop_front() {
-        let steps = dist[cur.y as usize * N + cur.x as usize] as usize;
-        if steps >= MAXSTEP { continue; }
-        for d in 0..4 {
-            if !connected(g, cur.x, cur.y, d) { continue; }
-            let nx = cur.x + DX[d];
-            let ny = cur.y + DY[d];
-            let ni = ny as usize * N + nx as usize;
-            if dist[ni] != -1 { continue; }
-            dist[ni] = steps as i32 + 1;
-            let md = manhattan(Pos { x: nx, y: ny }, targets);
-            if md < best { best = md; }
-            if best == 0 { return 0; }
-            q.push_back(Pos { x: nx, y: ny });
+fn multi_bfs(g: &Grid, px: i32, py: i32, targets: &[Pos]) -> Vec<usize> {
+    if targets.is_empty() { return Vec::new(); }
+    let fields: Vec<[[i32; NZ]; NZ]> = targets.iter()
+        .take(3).map(|t| dist_field(g, t.x, t.y)).collect();
+    let exact = |x: i32, y: i32| {
+        fields.iter().fold(999i32, |best, f| best.min(f[y as usize][x as usize]))
+    };
+    let mut idx = vec![-1i32; STSZ];
+    let mut pre = vec![-2i32; STSZ];
+    let mut pdir = vec![0usize; STSZ];
+    let mut xx = vec![0i32; STSZ];
+    let mut yy = vec![0i32; STSZ];
+    let mut mm = vec![0i32; STSZ];
+    let mut stp = vec![0i32; STSZ];
+    let start = ((py * N + px) * 8) as usize;
+    idx[start] = 0; pre[0] = -1;
+    xx[0] = px; yy[0] = py; mm[0] = 0; stp[0] = 0;
+    let mut q = vec![0usize; STSZ];
+    let (mut head, mut tail) = (0usize, 0usize);
+    q[tail] = 0; tail += 1;
+    let mut best_got = 0i32;
+    let mut best_steps = 0i32;
+    let mut best_state = 0usize;
+    let mut best_md = exact(px, py);
+    while head < tail {
+        let id = q[head]; head += 1;
+        let x = xx[id]; let y = yy[id]; let mask = mm[id]; let st = stp[id];
+        let got = (0..targets.len()).filter(|&i| (mask >> i) & 1 != 0).count() as i32;
+        let md = if got < targets.len() as i32 { exact(x, y) } else { 0 };
+        if got > best_got || (got == best_got &&
+            (md < best_md || (md == best_md && st < best_steps))) {
+            best_got = got; best_steps = st; best_state = id; best_md = md;
         }
-    }
-    best
-}
-
-fn target_path(g: &Grid, p: Pos, targets: &[Pos]) -> Vec<usize> {
-    let mut best: Option<(i32, Pos)> = None;
-    for t in targets {
-        let d = bfs_dist(g, p, *t);
-        if d < 999 && (best.is_none() || d < best.unwrap().0) { best = Some((d, *t)); }
-    }
-    let (_bd, t) = match best { Some(v) => v, None => return Vec::new() };
-    if p == t { return Vec::new(); }
-    path_to(g, p, t)
-}
-
-fn path_to(g: &Grid, p: Pos, t: Pos) -> Vec<usize> {
-    let si = p.y as usize * N + p.x as usize;
-    let ti = t.y as usize * N + t.x as usize;
-    let mut prev = vec![usize::MAX; CELLS];
-    prev[si] = si;
-    let mut q = VecDeque::new();
-    q.push_back(si);
-    while let Some(cur) = q.pop_front() {
-        if cur == ti { break; }
-        let x = (cur % N) as i32;
-        let y = (cur / N) as i32;
+        if st >= MAXSTEP as i32 { continue; }
         for d in 0..4 {
             if !connected(g, x, y, d) { continue; }
-            let nx = x + DX[d];
-            let ny = y + DY[d];
-            let ni = ny as usize * N + nx as usize;
-            if prev[ni] != usize::MAX { continue; }
-            prev[ni] = cur;
-            q.push_back(ni);
+            let nx = x + DX[d]; let ny = y + DY[d];
+            let mut nm = mask;
+            for (i, t) in targets.iter().enumerate() {
+                if t.x == nx && t.y == ny { nm |= 1 << i; }
+            }
+            let code = ((ny * N + nx) * 8 + nm) as usize;
+            if idx[code] != -1 { continue; }
+            let nid = tail;
+            idx[code] = nid as i32; pre[nid] = id as i32; pdir[nid] = d;
+            xx[nid] = nx; yy[nid] = ny; mm[nid] = nm; stp[nid] = st + 1;
+            q[tail] = nid; tail += 1;
         }
     }
-    if prev[ti] == usize::MAX { return Vec::new(); }
     let mut rev = Vec::new();
-    let mut cur = ti;
-    while cur != si && rev.len() < MAXSTEP {
-        let par = prev[cur];
-        let x = (cur % N) as i32;
-        let y = (cur / N) as i32;
-        let px = (par % N) as i32;
-        let py = (par / N) as i32;
-        for d in 0..4 {
-            if px + DX[d] == x && py + DY[d] == y { rev.push(d); break; }
-        }
-        cur = par;
+    let mut cur = best_state;
+    while pre[cur] >= 0 {
+        rev.push(pdir[cur]);
+        cur = pre[cur] as usize;
     }
     rev.reverse();
+    rev.truncate(MAXSTEP);
     rev
 }
 
-fn edge_path(g: &Grid, p: Pos) -> Vec<usize> {
-    let mut goals = Vec::new();
-    for x in 0..N as i32 {
-        goals.push(Pos { x, y: 0 });
-        goals.push(Pos { x, y: (N - 1) as i32 });
-    }
-    for y in 0..N as i32 {
-        goals.push(Pos { x: 0, y });
-        goals.push(Pos { x: (N - 1) as i32, y });
-    }
-    let mut best: Option<(i32, Pos)> = None;
-    for t in &goals {
-        let d = bfs_dist(g, p, *t);
-        if d < 999 && (best.is_none() || d < best.unwrap().0) { best = Some((d, *t)); }
-    }
-    let (_bd, t) = match best { Some(v) => v, None => return Vec::new() };
-    if p == t { return Vec::new(); }
-    let si = p.y as usize * N + p.x as usize;
-    let ti = t.y as usize * N + t.x as usize;
-    let mut prev = vec![usize::MAX; CELLS];
-    prev[si] = si;
-    let mut q = VecDeque::new();
-    q.push_back(si);
-    while let Some(cur) = q.pop_front() {
-        if cur == ti { break; }
-        let x = (cur % N) as i32;
-        let y = (cur / N) as i32;
+fn path_to_goal(g: &Grid, px: i32, py: i32, tx: i32, ty: i32) -> Vec<usize> {
+    let mut prev = vec![-2i32; CELLS];
+    let mut pdir = vec![0usize; CELLS];
+    let mut q = vec![0usize; CELLS];
+    let (mut head, mut tail) = (0usize, 0usize);
+    let s = (py * N + px) as usize;
+    prev[s] = -1; q[tail] = s; tail += 1;
+    let target = (ty * N + tx) as usize;
+    let mut found = false;
+    while head < tail {
+        let id = q[head]; head += 1;
+        if id == target { found = true; break; }
+        let x = (id % NZ as usize) as i32;
+        let y = (id / NZ as usize) as i32;
         for d in 0..4 {
             if !connected(g, x, y, d) { continue; }
-            let nx = x + DX[d];
-            let ny = y + DY[d];
-            let ni = ny as usize * N + nx as usize;
-            if prev[ni] != usize::MAX { continue; }
-            prev[ni] = cur;
-            q.push_back(ni);
+            let nx = x + DX[d]; let ny = y + DY[d];
+            let nid = (ny * N + nx) as usize;
+            if prev[nid] != -2 { continue; }
+            prev[nid] = id as i32; pdir[nid] = d; q[tail] = nid; tail += 1;
         }
     }
-    if prev[ti] == usize::MAX { return Vec::new(); }
+    if !found { return Vec::new(); }
     let mut rev = Vec::new();
-    let mut cur = ti;
-    while cur != si && rev.len() < MAXSTEP {
-        let par = prev[cur];
-        let x = (cur % N) as i32;
-        let y = (cur / N) as i32;
-        let px = (par % N) as i32;
-        let py = (par / N) as i32;
-        for d in 0..4 {
-            if px + DX[d] == x && py + DY[d] == y { rev.push(d); break; }
-        }
-        cur = par;
+    let mut cur = target;
+    while prev[cur] >= 0 {
+        rev.push(pdir[cur]);
+        cur = prev[cur] as usize;
     }
     rev.reverse();
+    rev.truncate(MAXSTEP);
     rev
 }
 
-struct Sim {
+fn nearest_path(g: &Grid, px: i32, py: i32, goals: &[Pos]) -> Vec<usize> {
+    let mut best = 1_000_000i32;
+    let mut tx = -1; let mut ty = -1;
+    for p in goals {
+        let d = bfs_dist(g, px, py, p.x, p.y);
+        if d < 999 && d < best { best = d; tx = p.x; ty = p.y; }
+    }
+    if tx < 0 || best == 0 { return Vec::new(); }
+    path_to_goal(g, px, py, tx, ty)
+}
+
+struct SimResult {
     g: Grid,
-    p: Pos,
+    nx: i32,
+    ny: i32,
     targets: Vec<Pos>,
     popped: i32,
     instant: i32,
 }
 
-fn simulate(g: &Grid, tile: i32, p: Pos, targets: &[Pos], hand: i32, line: i32, d: usize) -> Sim {
-    let mut r = Sim { g: *g, p, targets: Vec::new(), popped: 0, instant: 0 };
+fn simulate(grid: &Grid, tile: i32, px: i32, py: i32,
+            board_targets: &[Pos], hand: i32, line: i32, d: usize) -> SimResult {
+    let mut g = *grid;
     let horizontal = d == 1 || d == 3;
-    let (ins, pop) = match d {
-        1 => (Pos { x: 0, y: line }, Pos { x: (N - 1) as i32, y: line }),
-        3 => (Pos { x: (N - 1) as i32, y: line }, Pos { x: 0, y: line }),
-        0 => (Pos { x: line, y: (N - 1) as i32 }, Pos { x: line, y: 0 }),
-        _ => (Pos { x: line, y: 0 }, Pos { x: line, y: (N - 1) as i32 }),
-    };
-    let l = line as usize;
-    match d {
-        1 => for x in (1..N).rev() { r.g[x][l] = r.g[x - 1][l]; },
-        3 => for x in 0..N - 1 { r.g[x][l] = r.g[x + 1][l]; },
-        0 => for y in 0..N - 1 { r.g[l][y] = r.g[l][y + 1]; },
-        _ => for y in (1..N).rev() { r.g[l][y] = r.g[l][y - 1]; },
+    let (insx, insy, popx, popy);
+    if d == 1 {
+        insx = 0; insy = line; popx = N - 1; popy = line;
+        for x in (1..NZ).rev() { g[line as usize][x] = g[line as usize][x - 1]; }
+    } else if d == 3 {
+        insx = N - 1; insy = line; popx = 0; popy = line;
+        for x in 0..NZ - 1 { g[line as usize][x] = g[line as usize][x + 1]; }
+    } else if d == 0 {
+        insx = line; insy = N - 1; popx = line; popy = 0;
+        for y in 0..NZ - 1 { g[y][line as usize] = g[y + 1][line as usize]; }
+    } else {
+        insx = line; insy = 0; popx = line; popy = N - 1;
+        for y in (1..NZ).rev() { g[y][line as usize] = g[y - 1][line as usize]; }
     }
-    r.g[ins.y as usize][ins.x as usize] = tile;
-    let on_line = if horizontal { p.y == line } else { p.x == line };
-    if on_line {
-        r.p = Pos { x: wrap(p.x + DX[d]), y: wrap(p.y + DY[d]) };
-    }
-    for &t in targets {
-        if t == pop { r.popped += 1; }
-        else if (horizontal && t.y == line) || (!horizontal && t.x == line) {
-            r.targets.push(Pos { x: wrap(t.x + DX[d]), y: wrap(t.y + DY[d]) });
+    g[insy as usize][insx as usize] = tile;
+    let on_line = if horizontal { py == line } else { px == line };
+    let nx = if on_line { wrap(px + DX[d]) } else { px };
+    let ny = if on_line { wrap(py + DY[d]) } else { py };
+    let mut targets = Vec::new();
+    let mut popped = 0;
+    for p in board_targets {
+        if p.x == popx && p.y == popy {
+            popped += 1;
+        } else if (horizontal && p.y == line) || (!horizontal && p.x == line) {
+            targets.push(Pos { x: wrap(p.x + DX[d]), y: wrap(p.y + DY[d]) });
         } else {
-            r.targets.push(t);
+            targets.push(*p);
         }
     }
-    r.instant = if on_line { hand } else { 0 };
-    if hand != 0 && !on_line { r.targets.push(ins); }
-    r
+    let instant = if on_line && nx == insx && ny == insy { hand } else { 0 };
+    if hand != 0 && !on_line { targets.push(Pos { x: insx, y: insy }); }
+    SimResult { g, nx, ny, targets, popped, instant }
+}
+
+fn reachable_count(g: &Grid, sx: i32, sy: i32) -> i32 {
+    let mut seen = vec![false; CELLS];
+    let mut qx = vec![0i32; CELLS];
+    let mut qy = vec![0i32; CELLS];
+    let (mut head, mut tail) = (0usize, 0usize);
+    qx[tail] = sx; qy[tail] = sy; tail += 1;
+    seen[(sy * N + sx) as usize] = true;
+    let mut total = 1;
+    while head < tail {
+        let x = qx[head]; let y = qy[head]; head += 1;
+        for d in 0..4 {
+            if !connected(g, x, y, d) { continue; }
+            let nx = x + DX[d]; let ny = y + DY[d];
+            let id = (ny * N + nx) as usize;
+            if !seen[id] { seen[id] = true; total += 1; qx[tail] = nx; qy[tail] = ny; tail += 1; }
+        }
+    }
+    total
+}
+
+struct Input {
+    turn_type: i32,
+    px: i32, py: i32, tile: i32,
+    ox: i32, oy: i32,
+    hand: i32,
+    grid: Grid,
+    board_targets: Vec<Pos>,
+    opp_targets: Vec<Pos>,
+    our_all: Vec<Pos>,
+    opp_all: Vec<Pos>,
+}
+
+fn read_input(tokens: &[&str], pos: &mut usize) -> Option<Input> {
+    if *pos >= tokens.len() { return None; }
+    let turn_type = tokens[*pos].parse().ok()?; *pos += 1;
+    let mut grid = [[0i32; NZ]; NZ];
+    for y in 0..NZ {
+        for x in 0..NZ {
+            grid[y][x] = mask_of(tokens[*pos]); *pos += 1;
+        }
+    }
+    let mut coords = [0i32; 5];
+    for p in 0..2 {
+        let _count: i32 = tokens[*pos].parse().ok()?; *pos += 1;
+        coords[p * 2] = tokens[*pos].parse().ok()?; *pos += 1;
+        coords[p * 2 + 1] = tokens[*pos].parse().ok()?; *pos += 1;
+        let tile = mask_of(tokens[*pos]); *pos += 1;
+        if p == 0 { coords[4] = tile; }
+    }
+    let mut items: Vec<Vec<(String, i32, i32)>> = vec![Vec::new(), Vec::new()];
+    let ni: usize = tokens[*pos].parse().ok()?; *pos += 1;
+    for _ in 0..ni {
+        let name = tokens[*pos].to_string(); *pos += 1;
+        let x: i32 = tokens[*pos].parse().ok()?; *pos += 1;
+        let y: i32 = tokens[*pos].parse().ok()?; *pos += 1;
+        let pid: usize = tokens[*pos].parse().ok()?; *pos += 1;
+        if pid <= 1 { items[pid].push((name, x, y)); }
+    }
+    let mut quests: Vec<Vec<String>> = vec![Vec::new(), Vec::new()];
+    let nq: usize = tokens[*pos].parse().ok()?; *pos += 1;
+    for _ in 0..nq {
+        let name = tokens[*pos].to_string(); *pos += 1;
+        let pid: usize = tokens[*pos].parse().ok()?; *pos += 1;
+        if pid <= 1 { quests[pid].push(name); }
+    }
+    let mut inp = Input {
+        turn_type, px: coords[0], py: coords[1], tile: coords[4],
+        ox: coords[2], oy: coords[3], hand: 0, grid,
+        board_targets: Vec::new(), opp_targets: Vec::new(),
+        our_all: Vec::new(), opp_all: Vec::new(),
+    };
+    for pid in 0..2 {
+        for (name, x, y) in &items[pid] {
+            if *x == -1 { if pid == 0 { inp.hand += 1; } continue; }
+            if *x == -2 { continue; }
+            let revealed = quests[pid].iter().any(|q| q == name);
+            if pid == 0 { inp.our_all.push(Pos { x: *x, y: *y }); }
+            else { inp.opp_all.push(Pos { x: *x, y: *y }); }
+            if revealed {
+                if pid == 0 { inp.board_targets.push(Pos { x: *x, y: *y }); }
+                else { inp.opp_targets.push(Pos { x: *x, y: *y }); }
+            }
+        }
+    }
+    Some(inp)
 }
 
 #[derive(Clone)]
-struct Candidate { score: [i32; 8], cmd: String }
-
-impl Candidate {
-    fn better(&self, other: &Candidate) -> bool {
-        for i in 0..8 {
-            if self.score[i] != other.score[i] { return self.score[i] > other.score[i]; }
-        }
-        self.cmd > other.cmd
-    }
+struct Candidate {
+    score: f64,
+    instant: i32,
+    popped: i32,
+    conn: i32,
+    line: i32,
+    d: usize,
+    cmd: String,
 }
 
-fn best_push(g: &Grid, p: Pos, tile: i32, targets: &[Pos], hand: i32,
-             last_push: &str, stale: i32) -> String {
-    let mut cand: Vec<Candidate> = Vec::new();
-    let lines_y = [p.y - 1, p.y, p.y + 1];
-    let lines_x = [p.x - 1, p.x, p.x + 1];
-    for hor in [true, false] {
-        let lines = if hor { &lines_y } else { &lines_x };
-        for &line in lines {
-            if line < 0 || line >= N as i32 { continue; }
-            for di in 0..2 {
-                let d = if hor { if di == 0 { 1 } else { 3 } } else { if di == 0 { 0 } else { 2 } };
-                let r = simulate(g, tile, p, targets, hand, line, d);
-                let md = if r.targets.is_empty() { 0 } else { reachable_manhattan(&r.g, r.p, &r.targets) };
-                let collectable = r.targets.iter()
-                    .filter(|t| bfs_dist(&r.g, r.p, **t) <= 20).count() as i32;
-                let conn = (0..4).filter(|&k| connected(&r.g, r.p.x, r.p.y, k)).count() as i32;
-                cand.push(Candidate {
-                    score: [r.instant, -r.popped, -md, collectable, conn, -hand, -line, -(d as i32)],
-                    cmd: format!("PUSH {} {}", line, DIRS[d]),
+fn parse_last(cmd: &str) -> Option<(i32, bool)> {
+    let parts: Vec<&str> = cmd.split_whitespace().collect();
+    if parts.len() != 3 || parts[0] != "PUSH" { return None; }
+    let line = parts[1].parse().ok()?;
+    Some((line, parts[2] == "RIGHT" || parts[2] == "LEFT"))
+}
+
+fn best_push(inp: &Input, last_push: &str, stale: i32) -> String {
+    let mut cands = Vec::new();
+    let last = parse_last(last_push);
+    for pass in 0..2 {
+        let horizontal = pass == 0;
+        for line in 0..N {
+            for step in 0..2 {
+                let d = if horizontal { if step == 0 { 1 } else { 3 } }
+                        else { if step == 0 { 0 } else { 2 } };
+                if let Some((ll, lh)) = last {
+                    if ll == line && lh == horizontal { continue; }
+                }
+                let s = simulate(&inp.grid, inp.tile, inp.px, inp.py,
+                                 &inp.board_targets, inp.hand, line, d);
+                let o = simulate(&inp.grid, inp.tile, inp.ox, inp.oy,
+                                 &inp.opp_targets, 0, line, d);
+                let mut score = 1000.0 * s.instant as f64 - 100.0 * s.popped as f64;
+                for t in &s.targets {
+                    let dist = bfs_dist(&s.g, s.nx, s.ny, t.x, t.y);
+                    if dist <= 20 { score += (1000 - 10 * dist) as f64; }
+                    else if dist < 999 { score += 200.0 / (dist + 1) as f64; }
+                    else {
+                        score += 500.0 - 30.0 * ((s.nx - t.x).abs() + (s.ny - t.y).abs()) as f64;
+                    }
+                }
+                score += 2.0 * reachable_count(&s.g, s.nx, s.ny) as f64;
+                for t in &o.targets {
+                    let dist = bfs_dist(&s.g, o.nx, o.ny, t.x, t.y);
+                    if dist <= 20 { score -= 10.0; }
+                }
+                for t in &inp.our_all {
+                    if inp.board_targets.iter().any(|q| q == t) { continue; }
+                    let dist = bfs_dist(&s.g, s.nx, s.ny, t.x, t.y);
+                    if dist <= 20 { score += 20.0; }
+                    else if dist < 999 { score += 20.0 / (dist + 1) as f64; }
+                }
+                let mut conn = 0;
+                for k in 0..4 { if connected(&s.g, s.nx, s.ny, k) { conn += 1; } }
+                score += conn as f64;
+                cands.push(Candidate {
+                    score, instant: s.instant, popped: s.popped, conn,
+                    line, d, cmd: format!("PUSH {} {}", line, DIRS[d]),
                 });
             }
         }
     }
-    cand.sort_by(|a, b| {
-        if a.better(b) { Ordering::Less } else if b.better(a) { Ordering::Greater } else { Ordering::Equal }
+    cands.sort_by(|a, b| {
+        if a.score != b.score { return b.score.partial_cmp(&a.score).unwrap(); }
+        if a.instant != b.instant { return b.instant.cmp(&a.instant); }
+        if a.popped != b.popped { return a.popped.cmp(&b.popped); }
+        if a.conn != b.conn { return b.conn.cmp(&a.conn); }
+        if a.line != b.line { return a.line.cmp(&b.line); }
+        if a.d != b.d { return a.d.cmp(&b.d); }
+        b.cmd.cmp(&a.cmd)
     });
-    if stale >= 3 && cand.len() > 1 {
-        for c in &cand { if c.cmd != last_push { return c.cmd.clone(); } }
+    if stale >= 3 && cands.len() > 1 {
+        if let Some(c) = cands.iter().find(|c| c.cmd != last_push) { return c.cmd.clone(); }
     }
-    cand[0].cmd.clone()
+    cands[0].cmd.clone()
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let stdin = io::stdin();
-    let mut lines = stdin.lock().lines().map(|l| l.unwrap());
-    let stdout = io::stdout();
-    let mut handle = stdout.lock();
+fn main() {
+    let mut raw = String::new();
+    io::stdin().read_to_string(&mut raw).unwrap();
+    let tokens: Vec<&str> = raw.split_whitespace().collect();
+    let mut pos = 0usize;
     let mut last_push = String::new();
     let mut stale = 0i32;
-    while let Some(first) = lines.next() {
-        if first.is_empty() { continue; }
-        let turn: usize = first.trim().parse()?;
-        let mut out = String::new();
-        let mut g = [[0i32; N]; N];
-        for y in 0..N {
-            let row = match lines.next() { Some(s) => s, None => return Ok(()) };
-            for (x, c) in row.split_whitespace().enumerate() { g[y][x] = mask_of(c); }
-        }
-        let mut p = Pos { x: 0, y: 0 };
-        let mut tile = 0;
-        for i in 0..2 {
-            let line = match lines.next() { Some(s) => s, None => return Ok(()) };
-            let f: Vec<&str> = line.split_whitespace().collect();
-            if i == 0 {
-                p = Pos { x: f[1].parse()?, y: f[2].parse()? };
-                tile = mask_of(f[3]);
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
+    while let Some(inp) = read_input(&tokens, &mut pos) {
+        if inp.turn_type == 1 {
+            let mut moves = multi_bfs(&inp.grid, inp.px, inp.py, &inp.board_targets);
+            if moves.is_empty() && !inp.board_targets.is_empty() {
+                moves = nearest_path(&inp.grid, inp.px, inp.py, &inp.board_targets);
             }
-        }
-        let nitems: usize = match lines.next() { Some(s) => s.trim().parse()?, None => return Ok(()) };
-        let mut items: Vec<(String, i32, i32)> = Vec::new();
-        for _ in 0..nitems {
-            let line = match lines.next() { Some(s) => s, None => return Ok(()) };
-            let f: Vec<&str> = line.split_whitespace().collect();
-            let x: i32 = f[1].parse()?;
-            let y: i32 = f[2].parse()?;
-            let pid: usize = f[3].parse()?;
-            if pid == 0 { items.push((f[0].to_string(), x, y)); }
-        }
-        let nquests: usize = match lines.next() { Some(s) => s.trim().parse()?, None => return Ok(()) };
-        let mut quests: Vec<String> = Vec::new();
-        for _ in 0..nquests {
-            let line = match lines.next() { Some(s) => s, None => return Ok(()) };
-            let f: Vec<&str> = line.split_whitespace().collect();
-            if f[1] == "0" { quests.push(f[0].to_string()); }
-        }
-        let mut targets: Vec<Pos> = Vec::new();
-        let mut hand = 0i32;
-        for q in &quests {
-            if let Some((_nm, x, y)) = items.iter().find(|(nm, _, _)| nm == q) {
-                if *x == -1 { hand += 1; }
-                else if *x != -2 { targets.push(Pos { x: *x, y: *y }); }
+            if moves.is_empty() && inp.hand != 0 {
+                let mut edge = Vec::new();
+                for x in 0..N { edge.push(Pos { x, y: 0 }); edge.push(Pos { x, y: N - 1 }); }
+                for y in 0..N { edge.push(Pos { x: 0, y }); edge.push(Pos { x: N - 1, y }); }
+                moves = nearest_path(&inp.grid, inp.px, inp.py, &edge);
             }
-        }
-        if turn == 1 {
-            let mut moves = multi_bfs(&g, p, &targets);
-            if moves.is_empty() && !targets.is_empty() { moves = target_path(&g, p, &targets); }
-            if moves.is_empty() && hand > 0 { moves = edge_path(&g, p); }
-            if moves.is_empty() { out.push_str("PASS"); }
-            else {
-                out.push_str("MOVE");
-                for d in moves { out.push(' '); out.push_str(DIRS[d]); }
+            if moves.is_empty() {
+                writeln!(out, "PASS").unwrap();
+            } else {
+                write!(out, "MOVE").unwrap();
+                for m in moves { write!(out, " {}", DIRS[m]).unwrap(); }
+                writeln!(out).unwrap();
             }
-            out.push('\n');
         } else {
-            let cmd = best_push(&g, p, tile, &targets, hand, &last_push, stale);
-            if cmd == last_push { stale += 1; }
-            else { stale = 0; last_push = cmd.clone(); }
-            out.push_str(&cmd);
-            out.push('\n');
+            let cmd = best_push(&inp, &last_push, stale);
+            if cmd == last_push { stale += 1; } else { stale = 0; }
+            last_push = cmd.clone();
+            writeln!(out, "{}", cmd).unwrap();
         }
-        handle.write_all(out.as_bytes())?;
-        handle.flush()?;
+        out.flush().unwrap();
     }
-    Ok(())
 }
