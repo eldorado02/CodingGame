@@ -87,7 +87,7 @@ soumission suivent, du plus ancien au plus récent.
 | 60 | `amazons` | Amazons | — | —/— | À FAIRE | Legend |
 | 61 | `night-of-war` | Night Of War | — | —/— | À FAIRE | Legend |
 | 62 | `clobber` | Clobber | — | —/— | À FAIRE | Legend |
-| 63 | `connect-4` | Connect 4 | — | —/— | À FAIRE | Legend |
+| 63 | `connect-4` | Connect 4 | — | Wood 2 | Soumis `41786612` (5/5 boss `6797564`) ; promotion à valider | Legend |
 | 64 | `fireworks` | Fireworks | — | —/— | À FAIRE | Legend |
 | 65 | `tryangle-catch` | TryAngle Catch | — | —/— | À FAIRE | Legend |
 | 66 | `chess` | Chess | — | —/— | À FAIRE | Legend |

@@ -409,3 +409,21 @@ quota gratuit.
 - Leçon : la simulation est correcte mais l'évaluation ne suffit pas face à un
   bot de tête ; ne pas soumettre sans benchmark favorable. Passer à un jeu avec
   un boss officiel et une recherche plus décisive (Connect 4).
+
+### 2026-11-22 — Connect 4 — alpha-beta profondeur 6 retenu
+- Constat : le boss officiel `6797564` est batable ; un premier moteur
+  itératif a timeout au tour 0 à cause d'une vérification de délai tous les
+  1024 nœuds seulement.
+- Hypothèses testées : profondeur fixe 6/7, bonus centre (colonne vs case du
+  haut), ordre des coups centre → bords, table de transpositions.
+- Sources : énoncé officiel `cg.py show connect-4`, dépôt public
+  `AshKcg/cg-multi-connect4` (`Boss.java`, `Referee.java`, `Connect4Board.java`),
+  Opponents API. arXiv et Semantic Scholar n'ont rien apporté pour le plateau
+  7×9.
+- Action : 4 ports (`solutions/{python,c,cpp,rust}`), fuzz différentiel
+  **200/200**, test games C++ contre `6797564`.
+- Résultat : `c4_fixed7` **0/5** ; `c4_v2` **4/5** ; `c4_center` **4/5** puis
+  **5/5** ; la version exacte du dépôt **5/5**. Soumission C++ `41786612`.
+- Leçon : la profondeur fixe 6 est plus fiable que la recherche itérative sous
+  100 ms ; rejouer la version du dépôt avant soumission car les séries de 5
+  parties sont bruitées.
