@@ -19,7 +19,8 @@ def in_bounds(x, y):
 
 
 def coord(x, y):
-    return chr(ord('a') + x) + str(y + 1)
+    """Le referee affiche la ligne 1 en haut : y interne 6 -> rang '1'."""
+    return chr(ord('a') + x) + str(7 - y)
 
 
 def legal_actions(cells, me_char):
@@ -88,7 +89,7 @@ def make_case(seed):
     ))
 
     lines = [str(me)]
-    for y in range(7):                       # bas (y=0) -> haut (y=6)
+    for y in range(6, -1, -1):               # haut (y=6) -> bas (y=0)
         lines.append("".join(cells[y]))
     lines.append(last_action)
     lines.append(str(len(actions)))
