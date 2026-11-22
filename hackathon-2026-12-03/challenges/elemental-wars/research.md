@@ -18,7 +18,14 @@
   voisine choisie évite toute ambiguïté sur le tie-breaking du referee.
 - En Wood 3 : 3 élémentaux (1 par tribu), plateau 11×11. En Wood 2 :
   **6, 9 ou 12 élémentaux**, plateau 11×11 ou 13×13, 50 ms/coup.
+- En Wood 1 : plateau **11/13/15**, **6/9/12/15** élémentaux, 50 ms/coup.
+  Nouvelle règle : un allié libre sur le camp du prédateur libère tous nos
+  prisonniers ; la libération est résolue **après** les captures. La partie
+  s'arrête immédiatement si une tribu est entièrement prisonnière.
 - Un élémental prisonnier ne bouge plus et doit être ignoré comme cible.
+- Le déplacement est déterministe : un pas sur un plus court chemin avec
+  priorité **N, E, S, O**. Cela permet de prédire exactement le coup adverse dès
+  que sa cible est connue (v6 : proie libre la plus proche).
 
 ## Hypothèses validées
 

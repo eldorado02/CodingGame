@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère 200 cas de fuzz reproductibles pour Elemental Wars (Wood 2+)."""
+"""Génère 200 cas de fuzz reproductibles pour Elemental Wars (Wood 1+)."""
 from pathlib import Path
 import random
 
@@ -11,7 +11,7 @@ for old in FUZZ.glob("case_*.in"):
 
 for seed in range(200):
     rng = random.Random(70_000 + seed)
-    n = rng.choice((11, 13))
+    n = rng.choice((11, 13, 15))
     grid = [["#" if y == 0 or y == n - 1 else "." for x in range(n)]
             for y in range(n)]
     walkable = [(x, y) for y in range(1, n - 1) for x in range(1, n - 1)]
@@ -24,7 +24,7 @@ for seed in range(200):
     camps = walkable[:3]
     for ch, (x, y) in zip("WFP", camps):
         grid[y][x] = ch
-    per_tribe = rng.choice((2, 3, 4))
+    per_tribe = rng.choice((2, 3, 4, 5))
     count = 3 * per_tribe
     lines = [rng.choice("WFP"), str(n)]
     lines += ["".join(row) for row in grid]

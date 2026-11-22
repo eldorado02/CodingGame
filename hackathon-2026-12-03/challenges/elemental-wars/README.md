@@ -1,42 +1,52 @@
-# Elemental Wars
+# Elemental Wars — guide pour reprendre le travail
 
-État : **Wood 2**, boss `6697631` (`BOSS 2`). Nouvelle version v3 en cours de
-validation des ports ; la version soumise `41786190` (Wood 3) timeout en Wood 2.
+Challenge CodinGame bot-programming (`elemental-wars`). Objectif : **Ligue Légende**.
 
-## Stratégie v3
+## État courant
 
-Contrairement à Wood 3 (3 élémentaux), Wood 2 compte **6, 9 ou 12 élémentaux**
-(2 à 4 par tribu). Le bot commande **tous** ses élémentaux non-prisonniers.
+- Ligue : **Wood 1** (promu depuis Wood 2 via `41787544`). Plus de boss : 64
+  joueurs, nous sommes autour du rang 38–40.
+- Nouvelle règle Wood 1 : un élémental libre envoyé sur le camp du **prédateur**
+  libère tous nos prisonniers (résolu **après** les captures).
+- Version en cours : **v6** — prédiction déterministe du prochain coup adverse
+  (un pas vers la proie la plus proche, BFS depuis la cible, priorité N,E,S,W),
+  interception des proies, évitement du prédateur, anti-regroupement,
+  libération des prisonniers.
+- Soumission C++ v6 : `41788154`. Test games : **5/5** contre notre ancienne
+  version `6918338` et le joueur de rang 40 `6758748` ; **2/5** contre les deux
+  meilleurs `6710922`, `6788011` (meilleur rang moyen des variantes essayées).
+  Fuzz 200/200 sur 11/13/15 et 6/9/12/15 élémentaux.
+- Voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md`.
 
-Pour chaque ennemi non-prisonnier, une carte BFS de distances est calculée depuis
-sa case. Pour chaque élémental allié, on évalue 5 candidats (rester + 4 voisins) :
+## Ordre de lecture
 
-```
-score = -100 * min(dp, 20) + 15 * min(dq, 8)
-+10000 si dp == 0 (capture)
--12000 si dq == 0 (on se fait capturer)
--2000  si dq <= 1 et dp > 1
-```
+1. `statement.md` — énoncé officiel Wood 1 (relu après promotion).
+2. `research.md` — sources, mécanique du referee, pistes explorées.
+3. `plan.md` — algorithme v6.
+4. `critique.md` — bilan des tentatives v3→v11.
+5. `solutions/` — 4 implémentations.
+6. `tests/` — fuzz différentiel 200 cas (11/13/15, 6/9/12/15 élémentaux).
 
-où `dp`/`dq` sont les distances minimales aux proies / prédateurs.
-Départage : score, puis `x` croissant, puis `y` croissant.
+## Contrat d'entrée / sortie
 
-## Fichiers
+Init : `myTribe mapSize`, puis `mapSize` lignes de carte (`.`, `#`, `W`, `F`, `P`).
+Par tour : `scoreW scoreF scoreP`, `elementalsCount`, puis
+`elementalId tribe x y prisoner`. Les identifiants sont uniques **par tribu**.
+Sortie : commandes `id MOVE x y` ou `id WAIT` séparées par `;`, `MSG` en repli,
+terminées par un retour à la ligne avec flush.
 
-- `solutions/python/bot.py` — référence.
-- `solutions/c/bot.c`, `solutions/cpp/bot.cpp`, `solutions/rust/bot.rs`.
-- `tests/` — fuzz différentiel 200 cas (6/9/12 élémentaux, 11×11 ou 13×13).
-- `statement.md`, `research.md`, `plan.md`, `critique.md`.
+## Pièges rencontrés
 
-## Résultats
+- Il faut exactement **2 adversaires** : un seul donnera HTTP 400.
+- La lecture bloquante (`stdin.read()`) timeout au premier tour.
+- `id` est unique par tribu, pas globalement.
+- Rassembler tous ses élémentaux sur une case est fatal : un seul prédateur
+  capture toute la pile, et si tous nos élémentaux sont prisonniers la partie
+  s'arrête immédiatement.
+- `mapSize=15` et `elementalsCount=15` apparaissent en Wood 1 : `NMAX=16`.
+- Les budgets de test games sont stricts (30 / 900 s) : respecter `Retry-After`.
 
-- `v3` C++ : **5/5** (`scores: 0=2..4 1=0 2=0`) contre `6697631,6699103`.
-- Fuzz 200/200 (6/9/12 élémentaux) en cours de validation des ports.
+## Tests
 
-## Commandes
-
-```
-python3 bot-programming/tools/cg.py test elemental-wars \
-  hackathon-2026-12-03/challenges/elemental-wars/solutions/cpp/bot.cpp \
-  --language C++ --opponents 6697631,6699103
-```
+`bash tests/run.sh` compare les 4 implémentations sur 200 cas de fuzz.
+Critère : fuzz vert + au moins 3/5 test games contre le meilleur joueur.

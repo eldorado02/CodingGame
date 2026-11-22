@@ -52,7 +52,7 @@ soumission suivent, du plus ancien au plus récent.
 | 25 | `tron-battle` | Tron Battle | Wood 1 | 1/563 | ACTIF | Legend |
 | 26 | `shobu` | Shobu | Wood 2 | 12/— | Soumis `41786861` (promu Wood 3) ; optimisation Wood 3 en cours | Legend |
 | 27 | `brandubh` | Brandubh | Wood | —/— | À FAIRE | Legend |
-| 28 | `elemental-wars` | Elemental Wars | Wood 2 | 75/— | Soumis `41787544` (v3 multi-élémentaux, fuzz 200/200, 5/5 boss `6697631`) ; classement en cours | Legend |
+| 28 | `elemental-wars` | Elemental Wars | Wood 1 | ~38/64 | Promu Wood 1 ; soumis `41788154` (v6 prédiction/interception, fuzz 200/200, 5/5 vs ancien bot) | Legend |
 | 29 | `ataxx` | Ataxx | — | —/— | À FAIRE | Legend |
 | 30 | `chain-reaction-1` | Chain Reaction | — | —/— | À FAIRE | Legend |
 | 31 | `winter-challenge-2026-snakebyte` | SnakeByte - Winter Challenge 2026 | — | —/— | À FAIRE | Legend |
@@ -87,7 +87,7 @@ soumission suivent, du plus ancien au plus récent.
 | 60 | `amazons` | Amazons | — | —/— | À FAIRE | Legend |
 | 61 | `night-of-war` | Night Of War | — | —/— | À FAIRE | Legend |
 | 62 | `clobber` | Clobber | — | —/— | À FAIRE | Legend |
-| 63 | `connect-4` | Connect 4 | — | Wood 2 | Soumis `41786612` (5/5 boss `6797564`) ; promotion à valider | Legend |
+| 63 | `connect-4` | Connect 4 | Wood 1 | 521/— | Soumis `41786612` (5/5 boss `6797564`) ; promu Wood 1, pas de boss | Legend |
 | 64 | `fireworks` | Fireworks | — | —/— | À FAIRE | Legend |
 | 65 | `tryangle-catch` | TryAngle Catch | — | —/— | À FAIRE | Legend |
 | 66 | `chess` | Chess | — | —/— | À FAIRE | Legend |
@@ -96,7 +96,7 @@ soumission suivent, du plus ancien au plus récent.
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |
 | 70 | `dots-and-boxes` | Dots and Boxes | — | —/— | À FAIRE | Legend |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
-| 72 | `othello-1` | Othello | Wood 2 | 1/— | Soumis `41787653` (bitboard déterministe profondeur 6, fuzz 200/200, 5/5 boss `6797560`) ; classement en cours | Legend |
+| 72 | `othello-1` | Othello | Wood 1 | ~127/— | Promu Wood 1 via `41787653` (bitboard profondeur 6, fuzz 200/200, 5/5 boss) ; pas de boss | Legend |
 | 73 | `yinsh` | Yinsh | — | —/— | À FAIRE | Legend |
 | 74 | `spring-challenge-2020` | Spring Challenge 2020 | Wood 1 | 1220/1290 | À FAIRE | Legend |
 | 75 | `tulips-and-daisies` | Tulips and Daisies | — | —/— | À FAIRE | Legend |

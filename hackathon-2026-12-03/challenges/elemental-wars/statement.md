@@ -6,6 +6,8 @@ This is a **league based** challenge.
 
 For this challenge, multiple leagues for the same game are available. Once you have proven your worth against the Boss, you will access the higher league.
 
+**NEW RULE:** Captured elementals are not lost forever! If one of your free elementals reaches the enemy camp, all your imprisoned allies are released.
+
 ## Goal
 
 Control your elemental tribe, hunt your prey, avoid your predator, and capture more enemies than your opponents to win the battlefield!
@@ -78,11 +80,19 @@ If all three tribes are present on the same cell, the three tribes capture each 
 
 Nothing special happens when a prey elemental enters an enemy camp: camps do not capture by themselves. Captures only occur when predator and prey elementals share the same cell.
 
-### 🔓 Prisoners
+### 🔓 Prisoners and releases
 
 A prisoner cannot move.
 
 Prisoners do not participate in captures. They are ignored during capture resolution.
+
+To release your prisoners, move one of your free elementals onto the camp of your **predator** tribe. All your prisoners held there are released.
+
+Released elementals stay on that camp cell and can be commanded again starting on the next turn.
+
+Releasing prisoners never removes points already earned by captors. Released elementals can be captured again later, and each new capture gives another point.
+
+Releases are resolved **after** captures. If your liberator is captured on the camp during the capture phase, no release happens.
 
 ### ⛔ Game End
 
@@ -154,19 +164,11 @@ Example:
 
 ### Constraints
 
-`mapSize` = `11`
-`elementalsCount` = `3`
+`mapSize` = `11`, `13` or `15`
+`elementalsCount` = `6`, `9`, `12` or `15`
 
 Response time for the first turn ≤ `1000`ms
 Response time per turn ≤ `50`ms
-
-![](//cdn.codingame.com/smash-the-code/statement/league_wood_04.png)
-
-What is in store for me in the higher leagues ?
-
-- Control multiple elementals.
-- Release imprisoned elementals.
-- Larger maps with more elementals per tribe.
 
 # Story
 

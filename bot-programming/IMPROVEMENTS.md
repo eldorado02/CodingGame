@@ -498,3 +498,26 @@ quota gratuit.
 - Leçon : la dilatation doit partir des pions propres (`sh(P)&O`), pas
   `sh(O)&P`. Une évaluation rapide rend la profondeur fixe compétitive et
   réconcilie déterminisme et fuzz multi-langages.
+
+### 2026-11-22 — Elemental Wars — Wood 1, prédiction et libération
+- Constat : promotion en Wood 1. Nouvelle règle (libération des prisonniers
+  via le camp du prédateur), cartes 11/13/15 jusqu'à 15 élémentaux, et fin
+  immédiate si une tribu est entièrement prisonnière. La v3 empilait tous ses
+  élémentaux sur une même case : un seul prédateur capturait la pile entière.
+- Hypothèse : prédire le déplacement adverse (un pas sur un plus court chemin,
+  priorité N,E,S,W) permet d'intercepter les proies et d'éviter le prédateur ;
+  répartir les alliés sur des cases distinctes évite la défaite instantanée.
+- Sources : énoncé officiel relu après promotion, logs de test games, recherche
+  GitHub/web (aucun bot public exploitable trouvé).
+- Action : 8 variantes C++ locales (`v4`…`v11`), 5 test games chacune contre
+  `6710922,6788011` (deux meilleurs Wood 1). Rétention de `v6` : prédiction
+  déterministe, interception (+12000), évitement (-18000), anti-regroupement
+  (-5000), libérateur. Ports 4 langages et fuzz étendu à 15×15 / 15 élémentaux.
+- Résultat : `v6` **2/5** victoires contre les deux meilleurs et meilleur rang
+  moyen ; `v11` (probabilités + garde de camp) marque plus mais finit 0/5.
+  Test décisif : **5/5** contre notre ancienne soumission `6918338` et le rang
+  40 `6758748`. Fuzz 200/200 (11/13/15, 6/9/12/15). Soumission `41788154`.
+- Leçon : dans un jeu à captures simultanées, empiler ses unités est une perte
+  immédiate ; la prédiction du mouvement adverse est plus utile que le
+  renforcement des pénalités de fuite. Le quota de 30 test games / 900 s
+  limite fortement l'exploration : privilégier des variantes distinctes.
