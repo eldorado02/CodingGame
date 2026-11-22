@@ -133,3 +133,5 @@ Each league has a boss to beat:
 - **Wood 2**: a plain three-turn-deep minimax with alpha-beta pruning, counting stones.
 
 The bosses never swap. **Wood 1** is the top league.
+-- languages: Bash, C, C#, C++, Clojure, D, Dart, F#, Go, Groovy, Haskell, Java, Javascript, Kotlin, Lua, ObjectiveC, OCaml, Pascal, Perl, PHP, Python3, Ruby, Rust, Scala, Swift, TypeScript, VB.NET
+

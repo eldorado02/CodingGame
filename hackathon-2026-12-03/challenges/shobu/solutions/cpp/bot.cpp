@@ -1,15 +1,17 @@
-// Shobu — évaluation 1 ply + meilleure réponse adverse + position bord.
+// Shobu — minimax déterministe à budget de nœuds.
 #include <algorithm>
 #include <array>
-#include <numeric>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 
 using namespace std;
 
 constexpr int WIN = 1000000000;
-constexpr int BEAM = 24;
+constexpr int ROOT_BEAM = 24;
+constexpr int NODE_BEAM = 16;
+constexpr int WORK_LIMIT = 20000;
 const int DIRS[8][2] = {{0,-1},{1,-1},{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1}};
 
 struct Move {
@@ -27,7 +29,7 @@ struct Move {
     }
 };
 
-using Cells = array<int, 64>;
+using Cells = array<signed char, 64>;
 
 int board_of(int x, int y) { return 2 * (y / 4) + x / 4; }
 bool is_dark(int b) { return b % 2 == 0; }
@@ -38,9 +40,9 @@ bool same_board(int x, int y, int ux, int uy, int k) {
     return nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && nx / 4 == x / 4 && ny / 4 == y / 4;
 }
 
-// Identique à Board.legalMoves() du referee.
 vector<Move> gen_moves(const Cells& c, int me) {
     vector<Move> out;
+    out.reserve(256);
     int op = 1 - me;
     for (int py = 0; py < 8; ++py) {
         for (int px = 0; px < 8; ++px) {
@@ -74,7 +76,8 @@ vector<Move> gen_moves(const Cells& c, int me) {
     return out;
 }
 
-Cells apply_move(const Cells& cells, int me, const Move& m) {
+struct Step { Cells cells; bool win; };
+Step apply_step(const Cells& cells, int me, const Move& m) {
     Cells g = cells;
     int op = 1 - me;
     int k = max(abs(m.dx), abs(m.dy));
@@ -93,7 +96,14 @@ Cells apply_move(const Cells& cells, int me, const Move& m) {
     }
     g[m.ay*8+m.ax] = -1;
     g[(m.ay+m.dy)*8 + m.ax+m.dx] = me;
-    return g;
+    bool win = false;
+    for (int b = 0; b < 4; ++b) {
+        int bx = (b % 2) * 4, by = (b / 2) * 4, n = 0;
+        for (int y = by; y < by+4; ++y) for (int x = bx; x < bx+4; ++x)
+            if (g[y*8+x] == op) ++n;
+        if (n == 0) { win = true; break; }
+    }
+    return {g, win};
 }
 
 int stones(const Cells& g, int b, int color) {
@@ -116,60 +126,90 @@ int evaluate(const Cells& g, int me) {
     }
     if (mn_o == 0) return WIN;
     if (mn_m == 0) return -WIN;
-    int score = 40 * (accumulate(mm, mm+4, 0) - accumulate(om, om+4, 0));
-    score += 300 * ((4 - mn_o) * (4 - mn_o));
-    score -= 250 * ((4 - mn_m) * (4 - mn_m));
-    for (int b = 0; b < 4; ++b) score += 15 * (mm[b] - om[b]);
-    int our_edge = 0, op_edge = 0;
+    int score = 35 * (accumulate(mm, mm+4, 0) - accumulate(om, om+4, 0));
+    score += 420 * (4 - mn_o) * (4 - mn_o);
+    score -= 320 * (4 - mn_m) * (4 - mn_m);
+    for (int b = 0; b < 4; ++b) score += 18 * (mm[b] - om[b]);
+    int our_edge = 0, op_edge = 0, our_corner = 0, op_corner = 0;
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             int c = g[y*8+x];
             if (c == -1) continue;
             int lx = x % 4, ly = y % 4;
-            if (lx == 0 || lx == 3 || ly == 0 || ly == 3) {
-                if (c == me) ++our_edge; else ++op_edge;
-            }
+            bool edge = lx == 0 || lx == 3 || ly == 0 || ly == 3;
+            bool corner = (lx == 0 || lx == 3) && (ly == 0 || ly == 3);
+            if (c == me) { our_edge += edge; our_corner += corner; }
+            else { op_edge += edge; op_corner += corner; }
         }
     }
-    score += 25 * (op_edge - our_edge);
+    score += 30 * (op_edge - our_edge) + 45 * (op_corner - our_corner);
     return score;
 }
 
-Move choose(const Cells& g, int me) {
+static int work = 0;
+static bool aborted_global = false;
+
+struct ScoredMove { int score; Move move; Cells cells; bool win; };
+
+vector<ScoredMove> ordered_moves(const Cells& g, int me, int beam) {
     vector<Move> moves = gen_moves(g, me);
-    struct Scored { int s; Move m; Cells ng; };
-    vector<Scored> scored;
+    vector<ScoredMove> out;
+    out.reserve(moves.size());
     for (const auto& m : moves) {
-        Cells ng = apply_move(g, me, m);
-        scored.push_back({evaluate(ng, me), m, ng});
+        if (work >= WORK_LIMIT) { aborted_global = true; break; }
+        ++work;
+        Step st = apply_step(g, me, m);
+        int s = st.win ? WIN : evaluate(st.cells, me);
+        out.push_back({s, m, st.cells, st.win});
     }
-    sort(scored.begin(), scored.end(), [](const Scored& a, const Scored& b) {
-        if (a.s != b.s) return a.s > b.s;
-        return a.m < b.m;
+    sort(out.begin(), out.end(), [](const ScoredMove& a, const ScoredMove& b) {
+        if (a.score != b.score) return a.score > b.score;
+        return a.move < b.move;
     });
-    Move best{};
-    int best_score = -2 * WIN;
-    bool have = false;
-    for (int idx = 0; idx < BEAM && idx < (int)scored.size(); ++idx) {
-        int s = scored[idx].s;
-        Move m = scored[idx].m;
-        Cells ng = scored[idx].ng;
-        if (s >= WIN) return m;
-        vector<Move> replies = gen_moves(ng, 1 - me);
-        if (replies.empty()) return m;
-        int worst = WIN;
-        // Les 24 premières réponses, dans l'ordre de génération du referee.
-        for (int ri = 0; ri < BEAM && ri < (int)replies.size(); ++ri) {
-            Cells rg = apply_move(ng, 1 - me, replies[ri]);
-            worst = min(worst, evaluate(rg, me));
-        }
-        if (!have || worst > best_score || (worst == best_score && m < best)) {
-            best_score = worst;
-            best = m;
-            have = true;
-        }
+    if ((int)out.size() > beam) out.resize(beam);
+    return out;
+}
+
+int search(const Cells& g, int me, int depth, int alpha, int beta) {
+    if (aborted_global) return evaluate(g, me);
+    if (depth <= 0) return evaluate(g, me);
+    auto moves = ordered_moves(g, me, NODE_BEAM);
+    if (moves.empty()) return -WIN;
+    int best = -2 * WIN;
+    for (const auto& sm : moves) {
+        int val = sm.win ? WIN - depth : -search(sm.cells, 1 - me, depth - 1, -beta, -alpha);
+        if (val > best) best = val;
+        if (best > alpha) alpha = best;
+        if (alpha >= beta || aborted_global) break;
     }
-    return have ? best : moves[0];
+    return best;
+}
+
+Move choose(const Cells& g, int me) {
+    vector<Move> all = gen_moves(g, me);
+    if (all.empty()) return {0,0,0,0,0,0};
+    Move best = all[0];
+    int best_val = -2 * WIN;
+    work = 0;
+    aborted_global = false;
+    for (int depth = 1; depth <= 4; ++depth) {
+        auto moves = ordered_moves(g, me, ROOT_BEAM);
+        int local_best = -2 * WIN;
+        Move local_move = best;
+        bool aborted = aborted_global;
+        for (const auto& sm : moves) {
+            if (aborted_global) { aborted = true; break; }
+            int val = sm.win ? WIN - depth
+                             : -search(sm.cells, 1 - me, depth - 1, -2 * WIN,
+                                       local_best == -2 * WIN ? 2 * WIN : -local_best);
+            if (val > local_best) { local_best = val; local_move = sm.move; }
+        }
+        if (!aborted) { best = local_move; best_val = local_best; }
+        if (best_val >= WIN / 2 || aborted) break;
+    }
+    bool found = false;
+    for (const auto& m : all) if (m == best) { found = true; break; }
+    return found ? best : all[0];
 }
 
 int main() {
@@ -181,9 +221,8 @@ int main() {
         for (int y = 0; y < 8; ++y) {
             string row;
             cin >> row;
-            for (int x = 0; x < 8; ++x) {
+            for (int x = 0; x < 8; ++x)
                 cells[y*8+x] = row[x] == 'b' ? 0 : (row[x] == 'w' ? 1 : -1);
-            }
         }
         string last;
         cin >> last;
@@ -198,20 +237,13 @@ int main() {
         for (int i = 0; i < n; ++i) {
             string a;
             cin >> a;
-            if (a == "SWAP") {
-                can_swap = true;
-            } else {
-                Move m{};
-                // a contient le premier entier, il reste 5 à lire
-                m.px = stoi(a);
-                cin >> m.py >> m.ax >> m.ay >> m.dx >> m.dy;
-                actions.push_back(m);
-            }
+            if (a == "SWAP") { can_swap = true; continue; }
+            Move m{};
+            m.px = stoi(a);
+            cin >> m.py >> m.ax >> m.ay >> m.dx >> m.dy;
+            actions.push_back(m);
         }
-        if (can_swap) {
-            cout << "SWAP" << '\n' << flush;
-            continue;
-        }
+        if (can_swap) { cout << "SWAP" << '\n' << flush; continue; }
         Move m = choose(cells, my_color);
         bool found = false;
         for (const auto& a : actions) if (a == m) { found = true; break; }

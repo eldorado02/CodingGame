@@ -427,3 +427,21 @@ quota gratuit.
 - Leçon : la profondeur fixe 6 est plus fiable que la recherche itérative sous
   100 ms ; rejouer la version du dépôt avant soumission car les séries de 5
   parties sont bruitées.
+
+### 2026-11-22 — Shobu Wood 3 → Wood 2 — budget d'évaluations
+- Constat : la version Wood 4 (1 ply + 24 réponses) perd 0/5 contre le boss
+  MCTS `6906535`. Le budget temps (82 ms) gagne 5/5 mais casse le fuzz
+  identique ; le budget de nœuds (200) timeout à ~180 ms (50 000 évaluations).
+- Hypothèses testées : budget d'évaluations 18 000 / 20 000 / 22 000 / 26 000,
+  profondeur fixe 3/4, variantes d'évaluation (matériel renforcé, plateau faible
+  renforcé, coups de push directs), swap ou non.
+- Sources : énoncé relu après promotion, referee public `Waffle3z/CG-Shobu`
+  (`Board.java`, `Referee.java`), logs de test games.
+- Action : 4 ports maintenus, fuzz **200/200**, test games C++ contre `6906535`
+  puis contre le boss Wood 2 `6906553`.
+- Résultat : budget 20 000 → **4V+1N/5 puis 4V+1N/5** contre Wood 3, sans
+  timeout. Soumission C++ `41786861`, promotion immédiate en Wood 2. Contre
+  Wood 2 : 1V+1N+3D ; sans swap 0/5 ; variantes d'évaluation 0–1V/5.
+- Leçon : le budget d'évaluations est la bonne unité déterministe. Le boss
+  Wood 2 (minimax 3 plis) reste à battre ; privilégier une recherche plus
+  profonde à budget constant plutôt que des poids d'évaluation ajustés à la main.
