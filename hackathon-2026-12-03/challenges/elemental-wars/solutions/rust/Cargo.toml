@@ -5,6 +5,7 @@ edition = "2021"
 
 [[bin]]
 name = "elemental_wars_bot"
-path = "bot.rs"
+path = "src/main.rs"
 
-[dependencies]
+[profile.release]
+opt-level = 2

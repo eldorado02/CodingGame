@@ -51,8 +51,8 @@ soumission suivent, du plus ancien au plus récent.
 | 24 | `fall-challenge-2020` | Fall Challenge 2020 | Wood 1 | 2541/2875 | À AMÉLIORER | Legend |
 | 25 | `tron-battle` | Tron Battle | Wood 1 | 1/563 | ACTIF | Legend |
 | 26 | `shobu` | Shobu | Wood 4 | —/— | SOUMIS | Legend |
-| 27 | `brandubh` | Brandubh | — | —/— | À FAIRE | Legend |
-| 28 | `elemental-wars` | Elemental Wars | — | —/— | À FAIRE | Legend |
+| 27 | `brandubh` | Brandubh | Wood | —/— | À FAIRE | Legend |
+| 28 | `elemental-wars` | Elemental Wars | Wood 3 | —/— | SOUMIS | Legend |
 | 29 | `ataxx` | Ataxx | — | —/— | À FAIRE | Legend |
 | 30 | `chain-reaction-1` | Chain Reaction | — | —/— | À FAIRE | Legend |
 | 31 | `winter-challenge-2026-snakebyte` | SnakeByte - Winter Challenge 2026 | — | —/— | À FAIRE | Legend |

@@ -379,3 +379,17 @@ quota gratuit.
   se font capturer un par un avant de pouvoir former un mur. Il faut un modèle
   de contrôle des cases de fuite (couloirs vers les 4 coins) et non une simple
   distance. Ne pasступider les test games tant que ce modèle n'existe pas.
+
+### 2026-11-22 — Elemental Wars Wood 3 — fuite prioritaire, 5/5
+- Constat : le premier prototype lisait tout `stdin` d'un coup et timeout au
+  frame 1 (0/5). Après correction de la lecture, 3/5 avec une fuite modérée.
+- Hypothèse : en Wood 3 (3 élémentaux), la partie se joue sur la distance au
+  prédateur ; privilégier la survie puis la poursuite de la proie.
+- Sources : énoncé officiel, API `opponents` (`6910638`, `6697588`), logs de
+  test games. Aucun dépôt public trouvé.
+- Action : `score = -100*d(proie) + 20*min(d(prédateur),6)` + bonus/malus
+  `+10000/-10000/-2000` ; ports C/C++/Rust ; fuzz 200/200.
+- Résultat : Python **5/5**, C++ **5/5**, soumission C++ `41786190`.
+- Leçon : deux bugs de port (`pred_of('P')`, prédateur prisonnier) n'étaient
+  visibles que dans le fuzz : toujours exécuter le différentiel 4 langages avant
+  de soumettre, même quand le prototype Python est 5/5.
