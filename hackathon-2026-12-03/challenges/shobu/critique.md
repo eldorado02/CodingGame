@@ -23,6 +23,8 @@ _À remplir après les premiers test games._
 - Ports C/C++/Rust : un bug de port majeur corrigé — les réponses adverses
   doivent être prises dans l'ordre de génération du referee (`replies[:24]`),
   pas triées par évaluation. Après correction : fuzz **200/200** identique.
+- Validation C++ réelle : 2/5 puis **3/5** (5/10 cumulés, aucune défaite dans
+  le premier lot). Soumission `41785855`.
 - Leçon : contre un boss greedy qui ne regarde pas la réponse, le swap
   systématique élimine les défaites ; le poids positionnel sur les bords
   transforme les nulles en victoires. L'ordre de génération du referee fait

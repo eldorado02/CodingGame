@@ -8,9 +8,10 @@ Challenge CodinGame bot-programming. Objectif : **Ligue Légende**.
 - Prototype retenu : **v6** = always `SWAP` quand c'est légal + évaluation
   1 ply avec réponse adverse (24 premières réponses dans l'ordre du referee)
   + terme positionnel sur les bords de board (poids 25).
-- Résultat Python : **4/5** contre le boss Wood 4 (un lot ; confirmation en cours).
+- Résultats : Python **4/5**, C++ **2/5 puis 3/5** contre le boss Wood 4
+  (5 victoires / 10 au cumul).
 - Port 4 langages terminé, fuzz **200/200** identique.
-- Aucune soumission pour l'instant ; validation C++ réelle avant soumission.
+- Soumission C++ `41785855` (en cours d'évaluation).
 - Voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md`.
 
 ## Ordre de lecture

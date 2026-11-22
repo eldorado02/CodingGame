@@ -344,7 +344,8 @@ quota gratuit.
   `aggressiveOk`, `sameBoard`, `legalMoves`).
 - Action : v5 = always SWAP + positionnel 12 (2 victoires, 3 nulles), puis
   v6 = positionnel **25** (4/5). Port 4 langages, fuzz 200/200.
-- Résultat : retenu pour validation C++ réelle ; aucune soumission encore.
+- Résultat : validation C++ **2/5 puis 3/5** (5/10 cumulés). Soumission C++
+  `41785855`.
 - Leçon : l'ordre de génération du referee est sémantique. Les ports triaient
   les réponses adverses avant d'en garder 24, ce qui changeait le coup joué
   sur 5 cas de fuzz sur 24. Îlots de comportement -> toujours comparer les 4
