@@ -393,3 +393,19 @@ quota gratuit.
 - Leçon : deux bugs de port (`pred_of('P')`, prédateur prisonnier) n'étaient
   visibles que dans le fuzz : toujours exécuter le différentiel 4 langages avant
   de soumettre, même quand le prototype Python est 5/5.
+
+### 2026-11-22 — Chain Reaction — moteur alpha-beta validé mais dominé
+- Constat : le moteur C++ (alpha-beta, 6 plis, simulation conforme au referee
+  Java public `darkhorse64/CG_ChainReaction`) gagne 5/5 contre le joueur de rang
+  73 mais perd 0/5 contre `jacek` (rang 1) et les rangs 2 et 3.
+- Hypothèses testées : poids matériel 100/300/1000, potentiel orbs/critical,
+  heuristique Brilliant (orbs, voisins critiques, coins, orbs non-orphelins),
+  pénalité défensive renforcée, tri des coups par évaluation immédiate.
+- Sources : referee et `Board.java` publics (simulation validée 299/300 puis
+  300/300 après correction du flag « deux joueurs ont joué »), dépôts
+  `notshridhar/chain-reaction-ai` et `BALLISTICrobin/chain-reaction-ai-bot-`.
+- Action : prototype C++ `/tmp/opencode/cr_v1..v6.cpp` ; aucune soumission.
+- Résultat : 0/5 contre le repère `jacek` pour chaque variante.
+- Leçon : la simulation est correcte mais l'évaluation ne suffit pas face à un
+  bot de tête ; ne pas soumettre sans benchmark favorable. Passer à un jeu avec
+  un boss officiel et une recherche plus décisive (Connect 4).
