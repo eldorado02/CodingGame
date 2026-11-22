@@ -291,9 +291,10 @@ quota gratuit.
 - Action : prototype Python v17 = v13 + gradient Manhattan fort + correction
   du collect instantané (`instant` seulement si on atterrit sur la tuile
   insérée). Deux lots de 5 test games contre `2215206`.
-- Résultat : **3/5 puis 3/5** (scores 5–12, 9–8, 11–12, 7–4, 12–10 puis
-  12–11, 12–6, 11–6, 8–12, 6–12). Port C++ en cours ; fuzz à valider avant
-  soumission.
+- Résultat : **3/5 puis 3/5** en Python (scores 5–12, 9–8, 11–12, 7–4, 12–10
+  puis 12–11, 12–6, 11–6, 8–12, 6–12). Port 4 langages terminé ; fuzz
+  **210/210** identique. C++ validé à **1/5 + 1 nulle, puis 4/5, puis 4/5 + 1
+  nulle** (9 victoires / 15). Soumission C++ `41785676`.
 - Leçon : dans un labyrinthe recomposé à chaque poussée, un gradient continu
   vers la cible bat une heuristique binaire « atteignable / non ». Vérifier
   le nombre de `PASS` dans les logs : c'est le meilleur diagnostics de cadence.
@@ -314,3 +315,20 @@ quota gratuit.
   conclure ; un eval PST trop centré ou un `TURN` trop fort font régresser
   les profondeurs supérieures. Ne pas confondre un binaire compilé et son
   source lors des test games.
+
+### 2026-11-22 — Ataxx — correction du flip racine, le simulateur local ment
+- Constat : `ataxx_v2_d3.cpp` est 1/5 contre le boss réel `6649970` mais
+  `draw 2 / loss 3 / win 3` dans le duel local avec murs.
+- Hypothèse : la racine appliquait le déplacement sans convertir les voisins
+  retournés (`nme` perdait les pièces au lieu de les gagner). Le corriger
+  devrait améliorer nettement le jeu réel.
+- Sources : referee `jdermont/AtaxxCodingame`, local `referee_sim.py` +
+  `ataxx_local_duel.py`, PST `tiktaxx`.
+- Action : `ataxx_v3_rootflip.cpp` = depth 3 + `nme |= ADJ[dst] & opp` à la
+  racine. Duel local : **12 victoires / 12**. Test games réels : **0/5**.
+- Résultat : rejeté, aucune soumission. Le boss local (heuristique 2 plis) est
+  trop faible et ne prédit pas le comportement du boss CodinGame.
+- Leçon : un simulateur local ne valide qu'une mécanique, pas une force de jeu.
+  Ne jamais remplacer les test games réels par un duel local, même avec les
+  murs et le même parser. Conserver le correctif de flip pour la suite, mais
+  chercher ailleurs l'écart de force (évaluation, profondeur, gestion du tempo).
