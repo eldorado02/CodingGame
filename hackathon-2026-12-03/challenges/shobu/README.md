@@ -12,7 +12,8 @@ Challenge CodinGame bot-programming. Objectif : **Ligue Légende**.
   timeout. Le budget temps de 82 ms donnait 5/5 mais n'était pas reproductible
   dans les 4 langages ; le budget de nœuds (200) timeoutait à ~180 ms.
 - Port 4 langages terminé, fuzz **200/200** identique.
-- Soumission C++ à venir.
+- Soumission C++ `41786861` (promotion immédiate en Wood 2). Contre le boss
+  Wood 2 `6906553` : 1V+1N+3D ; variantes testées sans gain.
 - Voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md`.
 
 ## Ordre de lecture

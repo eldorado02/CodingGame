@@ -26,6 +26,14 @@
 - `work22000` : **3V+1N+1 timeout** sur la version du dépôt, rejeté.
 - `work26000` : 3V+1N+1 timeout, rejeté.
 
+### Wood 2 (après promotion)
+
+- `work20000` (version soumise `41786861`) : **1V+1N+3D** contre `6906553`.
+- Sans swap : **0/5**. Ajustements de evalA/evalB : 1V/5 et 0V/5.
+- Beam 16/10 : 1V+3N/5. Swap conditionnel : 0V+3N/5.
+- Budget dynamique 24k/18k : 0V+2N+1 timeout. Évaluation simplifiée + 35k
+  évaluations : 0V/5. La recherche reste plafonnée à 3 plis complets.
+
 ## Leçons
 
 - Un budget temps gagne mais casse l'exigence de fuzz identique ; un budget de
