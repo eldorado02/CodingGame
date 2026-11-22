@@ -6,8 +6,15 @@ sans deviner. Mettre à jour **avant** toute modification du code.
 
 ## État courant
 
-- Dernières soumissions connues :
-- `voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md``
+- Dernière soumission retenue : Silver `41785676` (C++), score 12.16 contre
+  boss Silver `2215206` à 20.76 (ligue Silver, pas encore promu).
+- Prototype Silver `v17` retenu : évaluation des poussées avec distance de
+  Manhattan même quand la cible est déconnectée (`500 - 30*d`),
+  anti-répétition de ligne, correction de la transposition de `simulate()` et
+  du collect instantané. **3/5 puis 3/5** en Python, **9 victoires / 15** en
+  C++ contre le boss Silver.
+- Port 4 langages terminé : fuzz **210/210** identique.
+- Voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md`.
 - Ligues/rangs : interroger `python3 ../../bot-programming/tools/cg.py get <pretty_id> progress`.
 - Journal global : [`../../bot-programming/IMPROVEMENTS.md`](../../bot-programming/IMPROVEMENTS.md)
 - Règles du projet : [`../../bot-programming/PLAYBOOK.md`](../../bot-programming/PLAYBOOK.md)

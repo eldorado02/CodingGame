@@ -29,7 +29,7 @@ soumission suivent, du plus ancien au plus récent.
 | 2 | `summer-challenge-2026-back-track-king` | Back Track King — Summer Challenge 2026 | Silver | 483/720 | À AMÉLIORER | Legend |
 | 3 | `spring-challenge-2026-troll-farm` | Troll Farm - Spring Challenge 2026 | Bronze | 3/402 | À AMÉLIORER | Legend |
 | 4 | `summer-challenge-2024-olymbits` | Olymbits - Summer Challenge 2024 | Silver | 2/1598 | À AMÉLIORER | Legend |
-| 5 | `xmas-rush` | Xmas Rush | Bronze | 38/51 | À AMÉLIORER | Legend |
+| 5 | `xmas-rush` | Xmas Rush | Silver | 184/254 | À AMÉLIORER | Legend |
 | 6 | `cultist-wars` | Cultist Wars | Bronze | 76/266 | À AMÉLIORER | Legend |
 | 7 | `ocean-of-code` | Ocean of Code | Bronze | 169/443 | À AMÉLIORER | Legend |
 | 8 | `code-of-kutulu` | Code of Kutulu | Bronze | 294/678 | À AMÉLIORER | Legend |

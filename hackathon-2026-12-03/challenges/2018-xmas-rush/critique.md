@@ -71,3 +71,22 @@ la boucle (frames 45–88, `PUSH 5 LEFT/RIGHT` + `PASS`).
   identiques. Fuzz 210/210 toujours vert.
 - Validation finale C++ : **3 victoires / 5** (12–11, 12–11, 12–5), 1 nulle,
   1 défaite ; soumission `41779754`.
+
+## 2026-11-22 — Silver : v17 (gradient Manhattan) retenu
+
+- v11–v13 plafonnent à 1/5. Le rejeu `test-20261122-140801.log` montre 131
+  `PASS` sur 150 tours MOVE : le bot reste déconnecté de ses quêtes.
+- v17 remplace le bonus d'inatteignable `200/(d+1)` par un gradient continu
+  `500 - 30*d`, corrige le collect instantané (uniquement si le joueur atterrit
+  sur la tuile insérée) et conserve l'anti-répétition de ligne.
+- Validation Python : **3/5 puis 3/5** contre `2215206`.
+- Port C/C++/Rust : deux bugs de port corrigés avant fuzz :
+  - `pre[0] = -1` (et non `pre[start]`) dans le BFS multi-quêtes, sinon
+    reconstruction qui boucle ;
+  - `MAXIT = 32` en C (les cas de fuzz ont jusqu'à 24 items, pas 12).
+- Fuzz : **210/210** identique dans les 4 langages.
+- Validation C++ : 1/5 + 1 nulle, puis 4/5, puis 4/5 + 1 nulle →
+  **9 victoires / 15**. Soumission `41785676`.
+- Leçon : avec un labyrinthe recomposé à chaque poussée, un gradient continu
+  vers la cible bat une décision binaire « atteignable / non ». Le nombre de
+  `PASS` dans les logs reste le meilleur diagnostic de cadence.
