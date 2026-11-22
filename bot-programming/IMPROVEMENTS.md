@@ -445,3 +445,39 @@ quota gratuit.
 - Leçon : le budget d'évaluations est la bonne unité déterministe. Le boss
   Wood 2 (minimax 3 plis) reste à battre ; privilégier une recherche plus
   profonde à budget constant plutôt que des poids d'évaluation ajustés à la main.
+
+### 2026-11-22 — Othello Wood 2 — alpha-bêta avec élagage à la racine
+- Constat : le boss `6797560` est un joueur aléatoire (seed 13, `MultiStruct/Othello`).
+  Un moteur alpha-bêta simple (profondeur fixe 4/5/6 ou budget de nœuds
+  1200–2500) timeout ou plafonne à 1V/5 : le coût de `evaluate` (mobilité +
+  frontier) dépend trop de la position.
+- Hypothèse : le budget temps (115 ms, vérifié toutes les 256 entrées) combiné
+  à un **élagage alpha-bêta à la racine** permet d'atteindre 5–7 plis sans timeout.
+- Sources : énoncé officiel, referee et `Boss.java` publics (`MultiStruct/Othello`),
+  logs de test games, opponents API.
+- Action : 4 langages (C/C++/Python/Rust), fuzz 200/200 avec un budget de nœuds
+  déterministe pour valider la parité des ports ; test games C++ de la version
+  temps réel contre `6797560`.
+- Résultat : version temps réel **9V/1D/10** ; soumission C++ `41787330`,
+  score 31.85 > boss 26.42 en cours de classement (pas encore promu).
+- Leçon : l'élagage à la racine est indispensable (division du temps par ~3).
+  Le budget temps casse l'identicité du fuzz entre langages ; un moteur à
+  bitboards avec profondeur fixe est la piste pour réconcilier les deux.
+
+### 2026-11-22 — Elemental Wars Wood 2 — correction du débordement et commande groupée
+- Constat : la version Wood 3 soumise (`41786190`) timeout en Wood 2
+  (`0=-1` sur 3 test games sur 5). Cause : tableaux de taille 8 alors que
+  `elementalsCount` vaut 9 ou 12, et un seul élémental commandé.
+- Hypothèse : en Wood 2 il faut commander **tous** les élémentaux alliés, avec
+  une carte BFS par ennemi et un score mêlant poursuite et survie.
+- Sources : énoncé récupéré via `cg.py show elemental-wars` (constraints
+  `elementalsCount = 6, 9, 12`, `50 ms`/tour), opponents API
+  (`6697631`, `6699103`), logs de test games.
+- Action : v3 (BFS par ennemi, `-100*min(dp,20)+15*min(dq,8)`, bonus/malus
+  `+10000/-12000/-2000`, départage x puis y), générateur de fuzz étendu à
+  6/9/12 élémentaux et 11×11/13×13, 4 ports, fuzz 200/200.
+- Résultat : C++ **5/5** contre `6697631,6699103` (`0=2..4 1=0 2=0`) ;
+  soumission C++ `41787544`.
+- Leçon : un fuzz trop étroit (3 élémentaux) laisse passer un débordement
+  de tableau qui ne se manifeste qu'à la ligue supérieure. Toujours régénérer
+  le fuzz avec les constraints de la nouvelle ligue après promotion.

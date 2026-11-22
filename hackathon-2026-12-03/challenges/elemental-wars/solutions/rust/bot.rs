@@ -1,115 +1,235 @@
-// Elemental Wars (Wood) — BFS multi-source : poursuivre la proie, fuir le prédateur.
+// Elemental Wars — v3 : commande toutes les elementaux, fuit le predateur,
+// poursuit la proie. Distances BFS precalculees par ennemi (port de bot.cpp).
 use std::collections::VecDeque;
-use std::io::{self, BufRead, Write};
+use std::io::{self, Read, Write};
 
-const DX: [i32; 4] = [-1, 0, 1, 0];
-const DY: [i32; 4] = [0, 1, 0, -1];
+const NMAX: usize = 16;
+const DX: [i32; 4] = [0, 1, 0, -1];
+const DY: [i32; 4] = [-1, 0, 1, 0];
+
+type Grid = [[u8; NMAX]; NMAX];
+type Dist = [[i32; NMAX]; NMAX];
 
 fn prey_of(t: u8) -> u8 {
-    match t { b'W' => b'F', b'F' => b'P', _ => b'W' }
-}
-fn pred_of(t: u8) -> u8 {
-    match t { b'W' => b'P', b'F' => b'W', _ => b'F' }
+    match t {
+        b'W' => b'F',
+        b'F' => b'P',
+        _ => b'W',
+    }
 }
 
-fn distances(sources: &[(usize, usize)], grid: &[Vec<u8>]) -> Vec<Vec<i32>> {
-    let n = grid.len();
-    let mut dist = vec![vec![-1i32; n]; n];
+fn pred_of(t: u8) -> u8 {
+    match t {
+        b'W' => b'P',
+        b'F' => b'W',
+        _ => b'F',
+    }
+}
+
+fn bfs(g: &Grid, n: i32, sx: i32, sy: i32) -> Dist {
+    let mut d = [[-1i32; NMAX]; NMAX];
+    if sx < 0 || sx >= n || sy < 0 || sy >= n {
+        return d;
+    }
+    let (sx, sy) = (sx as usize, sy as usize);
+    if g[sy][sx] == b'#' {
+        return d;
+    }
+    d[sy][sx] = 0;
     let mut q = VecDeque::new();
-    for &(x, y) in sources {
-        if x < n && y < n && dist[y][x] < 0 {
-            dist[y][x] = 0;
-            q.push_back((x, y));
-        }
-    }
+    q.push_back((sx, sy));
     while let Some((x, y)) = q.pop_front() {
-        for d in 0..4 {
-            let nx = x as i32 + DX[d];
-            let ny = y as i32 + DY[d];
-            if nx < 0 || ny < 0 || nx >= n as i32 || ny >= n as i32 { continue; }
-            let (nx, ny) = (nx as usize, ny as usize);
-            if grid[ny][nx] != b'#' && dist[ny][nx] < 0 {
-                dist[ny][nx] = dist[y][x] + 1;
-                q.push_back((nx, ny));
+        for k in 0..4 {
+            let nx = x as i32 + DX[k];
+            let ny = y as i32 + DY[k];
+            if nx < 0 || nx >= n || ny < 0 || ny >= n {
+                continue;
             }
+            let (nx, ny) = (nx as usize, ny as usize);
+            if g[ny][nx] == b'#' || d[ny][nx] >= 0 {
+                continue;
+            }
+            d[ny][nx] = d[y][x] + 1;
+            q.push_back((nx, ny));
         }
     }
-    dist
+    d
+}
+
+struct El {
+    id: i32,
+    tribe: u8,
+    x: i32,
+    y: i32,
+    prisoner: i32,
+}
+
+fn next_token<'a>(it: &mut impl Iterator<Item = &'a str>) -> Option<&'a str> {
+    it.next()
+}
+
+fn next_i32<'a>(it: &mut impl Iterator<Item = &'a str>) -> Option<i32> {
+    it.next()?.parse().ok()
 }
 
 fn main() {
-    let stdin = io::stdin();
-    let mut lines = stdin.lock().lines();
-    let tribe: Vec<u8> = match lines.next() {
-        Some(Ok(s)) => s.trim().bytes().collect(),
-        _ => return,
-    };
-    if tribe.is_empty() { return; }
-    let n: usize = match lines.next() {
-        Some(Ok(s)) => s.trim().parse().unwrap_or(0),
-        _ => return,
-    };
-    let mut grid = Vec::with_capacity(n);
-    for _ in 0..n {
-        if let Some(Ok(s)) = lines.next() { grid.push(s.trim().bytes().collect()); }
-        else { return; }
+    let mut input = String::new();
+    if io::stdin().read_to_string(&mut input).is_err() {
+        return;
     }
+    let mut it = input.split_whitespace();
+
+    let me = match next_token(&mut it) {
+        Some(t) => t.as_bytes()[0],
+        None => return,
+    };
+    let n: i32 = match next_i32(&mut it) {
+        Some(v) => v,
+        None => return,
+    };
+
+    let mut grid = [[b'.'; NMAX]; NMAX];
+    for y in 0..n {
+        let row = match next_token(&mut it) {
+            Some(t) => t,
+            None => return,
+        };
+        let bytes = row.as_bytes();
+        for x in 0..n {
+            grid[y as usize][x as usize] = if (x as usize) < bytes.len() {
+                bytes[x as usize]
+            } else {
+                b'.'
+            };
+        }
+    }
+
     let stdout = io::stdout();
     let mut out = stdout.lock();
     loop {
-        let _scores: String = match lines.next() { Some(Ok(s)) => s, _ => return };
-        let count: usize = match lines.next() {
-            Some(Ok(s)) => s.trim().parse().unwrap_or(0),
-            _ => return,
+        // `while (cin >> sw >> sf >> sp)` : trois entiers, puis le compteur.
+        if next_i32(&mut it).is_none() {
+            break;
+        }
+        if next_i32(&mut it).is_none() {
+            break;
+        }
+        if next_i32(&mut it).is_none() {
+            break;
+        }
+        let count: i32 = match next_i32(&mut it) {
+            Some(v) => v,
+            None => break,
         };
-        let mut mine: Vec<(usize, usize, usize)> = Vec::new();
-        let mut prey: Vec<(usize, usize)> = Vec::new();
-        let mut predator: Vec<(usize, usize)> = Vec::new();
+
+        let mut els: Vec<El> = Vec::with_capacity(count.max(0) as usize);
         for _ in 0..count {
-            let line = match lines.next() { Some(Ok(s)) => s, _ => return };
-            let p: Vec<&str> = line.split_whitespace().collect();
-            if p.len() < 5 { return; }
-            let id: usize = p[0].parse().unwrap_or(0);
-            let t = p[1].as_bytes()[0];
-            let x: usize = p[2].parse().unwrap_or(0);
-            let y: usize = p[3].parse().unwrap_or(0);
-            if p[4] == "1" { continue; }
-            if t == tribe[0] { mine.push((id, x, y)); }
-            else if t == prey_of(tribe[0]) { prey.push((x, y)); }
-            else if t == pred_of(tribe[0]) { predator.push((x, y)); }
+            let id = match next_i32(&mut it) {
+                Some(v) => v,
+                None => return,
+            };
+            let tribe = match next_token(&mut it) {
+                Some(t) => t.as_bytes()[0],
+                None => return,
+            };
+            let x = match next_i32(&mut it) {
+                Some(v) => v,
+                None => return,
+            };
+            let y = match next_i32(&mut it) {
+                Some(v) => v,
+                None => return,
+            };
+            let prisoner = match next_i32(&mut it) {
+                Some(v) => v,
+                None => return,
+            };
+            els.push(El {
+                id,
+                tribe,
+                x,
+                y,
+                prisoner,
+            });
         }
-        let dp = distances(&prey, &grid);
-        let dd = distances(&predator, &grid);
-        let mut actions: Vec<String> = Vec::new();
-        for (id, x, y) in mine {
-            let mut best: Option<(i32, i32, i32, i32, usize)> = None; // key,order,nx,ny,-
-            for order in 0..5usize {
-                let (ax, ay) = if order == 0 { (0, 0) } else { (DX[order - 1], DY[order - 1]) };
-                let nx = x as i32 + ax;
-                let ny = y as i32 + ay;
-                if nx < 0 || ny < 0 || nx >= n as i32 || ny >= n as i32 { continue; }
-                let (nx, ny) = (nx as usize, ny as usize);
-                if order != 0 && grid[ny][nx] == b'#' { continue; }
-                let mut score = 0i32;
-                if prey.iter().any(|&(px, py)| px == nx && py == ny) { score += 1000; }
-                if dp[ny][nx] >= 0 { score -= 2 * dp[ny][nx]; }
-                if dd[ny][nx] >= 0 {
-                    score += 3 * dd[ny][nx];
-                    if dd[ny][nx] <= 1 { score -= 50; }
+
+        let prey = prey_of(me);
+        let pred = pred_of(me);
+        let mut prey_dist: Vec<Dist> = Vec::new();
+        let mut pred_dist: Vec<Dist> = Vec::new();
+        for e in &els {
+            if e.prisoner != 0 || e.tribe == me {
+                continue;
+            }
+            let d = bfs(&grid, n, e.x, e.y);
+            if e.tribe == prey {
+                prey_dist.push(d);
+            } else if e.tribe == pred {
+                pred_dist.push(d);
+            }
+        }
+
+        let mut line = String::new();
+        for e in &els {
+            if e.tribe != me || e.prisoner != 0 {
+                continue;
+            }
+            let mut bx = e.x;
+            let mut by = e.y;
+            let mut best = -1_000_000_000i32;
+            for k in -1..4i32 {
+                let mut x = e.x;
+                let mut y = e.y;
+                if k >= 0 {
+                    x += DX[k as usize];
+                    y += DY[k as usize];
                 }
-                let key = (score, -(order as i32), -(ny as i32), -(nx as i32));
-                if best.as_ref().map_or(true, |b| key > (b.0, b.1, b.2, b.3)) {
-                    best = Some((key.0, key.1, key.2, key.3, order));
+                if x < 0 || x >= n || y < 0 || y >= n || grid[y as usize][x as usize] == b'#' {
+                    continue;
+                }
+                let (ux, uy) = (x as usize, y as usize);
+                let mut dp = 100i32;
+                let mut dq = 100i32;
+                for d in &prey_dist {
+                    let v = d[uy][ux];
+                    if v >= 0 && v < dp {
+                        dp = v;
+                    }
+                }
+                for d in &pred_dist {
+                    let v = d[uy][ux];
+                    if v >= 0 && v < dq {
+                        dq = v;
+                    }
+                }
+                let mut score = -100 * dp.min(20) + 15 * dq.min(8);
+                if dp == 0 {
+                    score += 10000;
+                }
+                if dq == 0 {
+                    score -= 12000;
+                }
+                if dq <= 1 && dp > 1 {
+                    score -= 2000;
+                }
+                if score > best || (score == best && (x < bx || (x == bx && y < by))) {
+                    best = score;
+                    bx = x;
+                    by = y;
                 }
             }
-            match best {
-                Some((_, _, nx, ny, order)) if order != 0 => {
-                    actions.push(format!("{} MOVE {} {}", id, -ny, -nx));
-                }
-                _ => actions.push(format!("{} WAIT", id)),
+            if !line.is_empty() {
+                line.push(';');
+            }
+            if bx == e.x && by == e.y {
+                line.push_str(&format!("{} WAIT", e.id));
+            } else {
+                line.push_str(&format!("{} MOVE {} {}", e.id, bx, by));
             }
         }
-        let line = if actions.is_empty() { "WAIT".to_string() } else { actions.join(";") };
+        if line.is_empty() {
+            line.push_str("MSG");
+        }
         writeln!(out, "{}", line).ok();
         out.flush().ok();
     }

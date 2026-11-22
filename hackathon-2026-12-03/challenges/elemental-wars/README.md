@@ -1,38 +1,42 @@
 # Elemental Wars
 
-État : **Wood 3**, soumission C++ `41786190` (en cours de classement).
+État : **Wood 2**, boss `6697631` (`BOSS 2`). Nouvelle version v3 en cours de
+validation des ports ; la version soumise `41786190` (Wood 3) timeout en Wood 2.
 
-## Stratégie
+## Stratégie v3
 
-Un élémental par tribu en Wood 3. Le bot suit la proie (`W→F→P→W`) en fuyant
-le prédateur :
+Contrairement à Wood 3 (3 élémentaux), Wood 2 compte **6, 9 ou 12 élémentaux**
+(2 à 4 par tribu). Le bot commande **tous** ses élémentaux non-prisonniers.
+
+Pour chaque ennemi non-prisonnier, une carte BFS de distances est calculée depuis
+sa case. Pour chaque élémental allié, on évalue 5 candidats (rester + 4 voisins) :
 
 ```
-score = -100 * dist(proie) + 20 * min(dist(prédateur), 6)
-+10000 si capture immédiate
--10000 si case du prédateur
--2000  si prédateur à distance <= 1 et proie à distance > 1
+score = -100 * min(dp, 20) + 15 * min(dq, 8)
++10000 si dp == 0 (capture)
+-12000 si dq == 0 (on se fait capturer)
+-2000  si dq <= 1 et dp > 1
 ```
 
+où `dp`/`dq` sont les distances minimales aux proies / prédateurs.
 Départage : score, puis `x` croissant, puis `y` croissant.
 
 ## Fichiers
 
 - `solutions/python/bot.py` — référence.
-- `solutions/c/bot.c`, `solutions/cpp/bot.cpp`, `solutions/rust/src/main.rs`.
-- `tests/run.sh` — fuzz différentiel 200 cas.
+- `solutions/c/bot.c`, `solutions/cpp/bot.cpp`, `solutions/rust/bot.rs`.
+- `tests/` — fuzz différentiel 200 cas (6/9/12 élémentaux, 11×11 ou 13×13).
 - `statement.md`, `research.md`, `plan.md`, `critique.md`.
 
 ## Résultats
 
-- Fuzz : **200/200** identiques dans 4 langages.
-- Test games C++ : **5/5** (`scores: 0=1 1=0 2=0`) contre `6910638,6697588`.
-- Soumission C++ `41786190`.
+- `v3` C++ : **5/5** (`scores: 0=2..4 1=0 2=0`) contre `6697631,6699103`.
+- Fuzz 200/200 (6/9/12 élémentaux) en cours de validation des ports.
 
 ## Commandes
 
 ```
 python3 bot-programming/tools/cg.py test elemental-wars \
   hackathon-2026-12-03/challenges/elemental-wars/solutions/cpp/bot.cpp \
-  --language C++ --opponents 6910638,6697588
+  --language C++ --opponents 6697631,6699103
 ```

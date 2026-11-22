@@ -52,7 +52,7 @@ soumission suivent, du plus ancien au plus récent.
 | 25 | `tron-battle` | Tron Battle | Wood 1 | 1/563 | ACTIF | Legend |
 | 26 | `shobu` | Shobu | Wood 2 | 12/— | Soumis `41786861` (promu Wood 3) ; optimisation Wood 3 en cours | Legend |
 | 27 | `brandubh` | Brandubh | Wood | —/— | À FAIRE | Legend |
-| 28 | `elemental-wars` | Elemental Wars | Wood 3 | —/— | SOUMIS | Legend |
+| 28 | `elemental-wars` | Elemental Wars | Wood 2 | 75/— | Soumis `41787544` (v3 multi-élémentaux, fuzz 200/200, 5/5 boss `6697631`) ; classement en cours | Legend |
 | 29 | `ataxx` | Ataxx | — | —/— | À FAIRE | Legend |
 | 30 | `chain-reaction-1` | Chain Reaction | — | —/— | À FAIRE | Legend |
 | 31 | `winter-challenge-2026-snakebyte` | SnakeByte - Winter Challenge 2026 | — | —/— | À FAIRE | Legend |
@@ -96,7 +96,7 @@ soumission suivent, du plus ancien au plus récent.
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |
 | 70 | `dots-and-boxes` | Dots and Boxes | — | —/— | À FAIRE | Legend |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
-| 72 | `othello-1` | Othello | — | —/— | À FAIRE | Legend |
+| 72 | `othello-1` | Othello | Wood 2 | 287/— | Soumis `41787330` (alpha-bêta 115 ms, 9V/10) ; score 31.85 > boss 26.42, classement en cours | Legend |
 | 73 | `yinsh` | Yinsh | — | —/— | À FAIRE | Legend |
 | 74 | `spring-challenge-2020` | Spring Challenge 2020 | Wood 1 | 1220/1290 | À FAIRE | Legend |
 | 75 | `tulips-and-daisies` | Tulips and Daisies | — | —/— | À FAIRE | Legend |

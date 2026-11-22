@@ -22,11 +22,23 @@
   `pred_of('P')` renvoyait `P` au lieu de `F`, et le prédateur prisonnier n'était
   pas ignoré. Après correction : fuzz **200/200** identique.
 
+### Wood 2 — v3 multi-élémentaux
+
+- Constat : la version Wood 3 timeout en Wood 2 (3 défaites sur 5 test games).
+  Les tableaux de taille 8 débordent quand `elementalsCount` vaut 9 ou 12 ;
+  un seul élémental était commandé.
+- Hypothèse : commander tous les élémentaux et calculer une BFS par ennemi.
+- Action : v3, générateur de fuzz étendu (6/9/12 élémentaux, 11×11 ou 13×13),
+  4 ports, fuzz 200/200, test games contre `6697631,6699103`.
+- Résultat : **5/5**, soumission `41787544`.
+
 ## Leçons
 
 - Le fuzz différentiel est indispensable dès que la logique dépend d'une table
   de correspondance : une erreur de port passe inaperçue en test game si la
   tribu concernée n'apparaît pas dans les 5 parties.
+- Un fuzz calibré sur la ligue inférieure ne détecte pas les débordements
+  apparaissant à la ligue supérieure : régénérer les cas après promotion.
 - La lecture bloquante est le défaut récurrent de cette campagne (Brandubh,
   Elemental Wars) : toujours vérifier le premier log de test game avant de
   conclure sur la stratégie.
