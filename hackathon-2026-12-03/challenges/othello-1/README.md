@@ -4,12 +4,14 @@ Challenge CodinGame bot-programming (`othello-1`). Objectif : **Ligue Légende**
 
 ## État courant
 
-- Ligue : Wood 2, boss `6797560` (`BOSS 1`, joueur aléatoire seed 13).
+- Ligue : **Wood 1** (promu depuis Wood 2 avec `41787653`). Pas de boss
+  affiché ; score de ligue ~20, rang ~116/287, classement terminé.
 - Version retenue : moteur **bitboard déterministe**, profondeur fixe 6,
-  évaluation positionnelle + mobilité + frontier. 5/5 contre le boss.
-- Soumissions : `41787330` (ancienne version temps réel 115 ms, score 31.2 >
-  boss 26.4, classement en cours) ; la version bitboard sera soumise après
-  validation des 4 ports.
+  évaluation positionnelle + mobilité + frontier. 5/5 contre l'ancien boss
+  Wood 2 `6797560`, fuzz 200/200 en 4 langages.
+- Profondeur 7 : ~85–108 ms local mais **timeout** sur les serveurs CG
+  (1 défaite sur 5 par timeout) et toujours 0/5 contre le rank 1 `6886490`.
+  Non retenue.
 - Voir `critique.md` et `../../bot-programming/IMPROVEMENTS.md`.
 
 ## Ordre de lecture

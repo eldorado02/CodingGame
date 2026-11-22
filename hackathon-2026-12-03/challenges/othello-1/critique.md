@@ -29,3 +29,17 @@
 - Les bitboards rendent l'évaluation ~20× moins coûteuse : une profondeur fixe
   devient possible, ce qui réconcilie force, déterminisme et fuzz 4 langages.
 - Ne pas confondre `x` (colonne) et `y` (ligne) : bit = `y*8+x`.
+
+### Wood 1 — tentative profondeur 7 (rejetée)
+
+- Constat : en Wood 1, la profondeur 6 perd 0/5 contre le rank 1 `6886490`
+  (défaites d'un ou deux disques, sans timeout).
+- Hypothèse : une profondeur supplémentaire améliore le résultat.
+- Action : optimisation du moteur bitboard (table `PS` de sommes positionnelles
+  16 bits, `evaluate(P,O,mP)` réutilisant les coups déjà calculés) pour faire
+  passer la profondeur 7 de 108 ms à 85 ms sur le fuzz local.
+- Résultat : 0/5 contre `6886490`, dont **1 défaite par timeout** sur CG.
+  Le gain de profondeur ne compense pas le coût ; la version profondeur 6
+  reste soumise (`41787653`).
+- Leçon : les timings locaux sous-estiment les serveurs CodinGame d'un facteur
+  ~1,5–2 ; garder une marge d'au moins 2× sous la limite de 150 ms.

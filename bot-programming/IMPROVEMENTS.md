@@ -521,3 +521,16 @@ quota gratuit.
   immédiate ; la prédiction du mouvement adverse est plus utile que le
   renforcement des pénalités de fuite. Le quota de 30 test games / 900 s
   limite fortement l'exploration : privilégier des variantes distinctes.
+
+### 2026-11-22 — Othello — Wood 1, profondeur 7 rejetée
+- Constat : profondeur 6 perd 0/5 contre le rank 1 Wood 1 `6886490` (petites
+  défaites), et Wood 1 n'affiche pas de boss.
+- Hypothèse : gagner un ply avec un moteur optimisé suffit à basculer les
+  parties serrées.
+- Sources : logs de test games, profil local sur 200 cas de fuzz.
+- Action : table de sommes positionnelles sur 16 bits + réutilisation des coups
+  dans `evaluate`, puis tests C++ contre `6886490`.
+- Résultat : 108 ms → 85 ms local, mais 0/5 dont un timeout sur CG. Version
+  profondeur 6 conservée (`41787653`).
+- Leçon : garder ≥2× de marge sous la limite de temps officielle ; une
+  optimisation de 20 % ne rend pas un budget serré sûr.
