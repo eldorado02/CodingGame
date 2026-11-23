@@ -11,3 +11,4 @@ STATUS.md
 supervisor_state.json
 supervisor.stop
 **/HANDOFF*.md
+*.md.tmp
