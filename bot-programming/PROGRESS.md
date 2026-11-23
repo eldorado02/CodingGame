@@ -112,7 +112,7 @@ soumission suivent, du plus ancien au plus récent.
 | 85 | `bandas` | Bandas | — | —/— | À FAIRE | Legend |
 | 86 | `bit-runner-2048` | Bit Runner 2048 | — | —/— | À FAIRE | Legend |
 | 87 | `yavalath` | Yavalath | — | —/— | À FAIRE | Legend |
-| 88 | `checkers` | Checkers | — | —/— | À FAIRE | Legend |
+| 88 | `checkers` | Checkers | Wood (unique) | en cours | Soumis `41796035` (v1 αβ, fuzz 200/200, 3/3 vs rangs 177 et 89) | rang |
 | 89 | `langton-s-ant` | Langton s Ant | — | —/— | À FAIRE | Legend |
 | 90 | `vindinium` | Vindinium | — | —/— | À FAIRE | Legend |
 | 91 | `legends-of-code-magic` | Legends of Code & Magic | — | —/— | À FAIRE | Legend |

@@ -566,3 +566,11 @@ quota gratuit.
 - Action : v9 4 langages, fuzz 200/200, 3 variantes d'éval des coins testées.
 - Résultat : 0/3 contre le rang 15 (attaquant). Soumission `41795979` (nouvelle règle utilisateur : 1re soumission sans seuil 3/5).
 - Leçon : garde des coins depuis une case adjacente = pièce capturable contre le coin (pattern tafl, ajouté à ALGO.md).
+
+### 2026-11-23 — Checkers — v1 soumise
+- Constat : jeu jamais joué (ligue unique).
+- Hypothèse : template board-2p + générateur de rafles suffit pour le milieu de tableau.
+- Sources : énoncé, test game sonde.
+- Action : 4 langages, fuzz 200/200, bench.
+- Résultat : 3/3 contre les rangs 177 et 89 ; soumission `41796035`.
+- Leçon : racine = liste fournie par le referee, générateur maison seulement en profondeur.

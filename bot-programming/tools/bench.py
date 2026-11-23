@@ -47,6 +47,9 @@ def call(method, path, body=None):
                 time.sleep(wait)
                 continue
             raise SystemExit("HTTP %s %s" % (e.code, txt[:500]))
+        except (urllib.error.URLError, OSError) as e:  # DNS / network blips
+            sys.stderr.write("network error %s, retry in 15s\n" % e)
+            time.sleep(15)
 
 
 def run_one(game, code, lang, opps, seed, tag):
