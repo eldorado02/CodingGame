@@ -77,7 +77,7 @@ soumission suivent, du plus ancien au plus récent.
 | 50 | `start-up` | Start-up! | — | —/— | À FAIRE | Legend |
 | 51 | `code-keeper---the-hero` | Code Keeper - The Hero | — | —/— | À FAIRE | Legend |
 | 52 | `nine-mens-morris` | nine men's morris | — | —/— | À FAIRE | Legend |
-| 53 | `lines-of-action` | Lines Of Action | — | —/— | À FAIRE | Legend |
+| 53 | `lines-of-action` | Lines Of Action | Wood 2 | en cours | Soumis `41796817` (v1 αβ, fuzz 200/200, 3 nuls vs boss Wood 2) | Wood 1 |
 | 54 | `counting-tictactoe` | Counting TicTacToe | Wood 3 | en cours | Soumis `41796704` (v2 αβ sélectif, fuzz 200/200, 3/4 vs boss Wood 3) | Wood 1 |
 | 55 | `clash-of-bots` | Clash of Bots | — | —/— | À FAIRE | Legend |
 | 56 | `space-shooter` | Space Shooter | — | —/— | À FAIRE | Legend |

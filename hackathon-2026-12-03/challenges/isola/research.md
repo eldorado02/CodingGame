@@ -5,3 +5,11 @@
 ## Faits du referee / contradictions avec l'énoncé
 
 ## Classe de problème (ALGO.md) et approche retenue
+
+
+## Deep search opencode (hy4-flash-free) — 2026-11-23
+Rapport complet : `research-opencode-20261123-202841.md` (non vérifié ligne à ligne ; à valider par test game).
+
+Recommandation extraite :
+
+> (pas de section recommandation détectée)

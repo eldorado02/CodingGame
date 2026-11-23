@@ -36,3 +36,11 @@
 - Capture : seulement par la pièce déplacée, sur 2 côtés opposés ; coin toujours hostile ; trône vide hostile sauf pour capturer le roi ; trône occupé (roi) hostile aux attaquants uniquement ; le roi capture.
 - Roi sur le trône : 4 côtés hostiles ; ailleurs 2.
 - Fin : roi capturé ou défenseurs encerclés (aucun D/K atteignable depuis le bord par des cases non-attaquants) → attaquants ; roi sur un coin → défenseurs ; joueur sans coup → perd ; position (plateau + camp au trait) répétée 3 fois → le joueur qui vient de jouer perd.
+
+
+## Deep search opencode (hy4-flash-free) — 2026-11-23
+Rapport complet : `research-opencode-20261123-210357.md` (non vérifié ligne à ligne ; à valider par test game).
+
+Recommandation extraite :
+
+> Hypothèse explicite : **[NON VÉRIFIÉ] le boss est un bot glouton ou à faible profondeur** (son code n'est pas public). La recommandation vise donc à être *robuste* plutôt qu'à exploiter une faille précise.

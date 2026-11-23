@@ -670,3 +670,11 @@ quota gratuit.
 - Action : 4 langages ; 1re version à budget d'actions (préfixe biaisé, 61 ms) remplacée par la recherche en 2 étages ; fuzz 200/200
 - Résultat : 3/3 (2–0) contre le boss `6797567` ; soumission `41796775`
 - Leçon : quand le branchement explose, un pré-classement grossier + faisceau bat un budget qui ne voit qu'un préfixe de la liste
+
+### 2026-11-23 — Lines Of Action — v1 αβ soumise (nuls)
+- Constat : jeu jamais joué ; boss Wood 2 de type αβ
+- Hypothèse : concentration + nombre de groupes suffisent pour connecter avant le boss
+- Sources : énoncé, referee darkhorse64/CG_LinesOfAction, littérature Winands (MIA, évaluateur LOA)
+- Action : 4 langages, fuzz 200/200 ; tests anti-répétition et poids des groupes
+- Résultat : v1 : 3 nuls (boucle) ; anti-répétition 0/3 ; poids 25 0/3 ; v1 soumise `41796817`
+- Leçon : une éval faible + anti-répétition transforme les nuls en défaites : l'anti-répétition ne paie qu'avec une éval qui progresse

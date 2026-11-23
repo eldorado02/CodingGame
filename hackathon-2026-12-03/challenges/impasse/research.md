@@ -5,3 +5,13 @@
 ## Faits du referee / contradictions avec l'énoncé
 
 ## Classe de problème (ALGO.md) et approche retenue
+
+
+## Deep search opencode (hy4-flash-free) — 2026-11-23
+Rapport complet : `research-opencode-20261123-205128.md` (non vérifié ligne à ligne ; à valider par test game).
+
+Recommandation extraite :
+
+> **Idée : « clone du boss + adversaire exact » au lieu d'un alpha-beta générique.**
+> 
+> Le boss est déterministe et myope. Le batteur optimal n'est pas un minimax contre *tous* les coups adverses, mais une recherche contre **le seul coup que le boss va réellement jouer**.

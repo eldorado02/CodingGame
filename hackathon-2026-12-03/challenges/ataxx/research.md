@@ -68,3 +68,11 @@ the ASCII action alphabet (`a`–`g`, `1`–`7`).
   assumption.
 - The 300-turn draw and threefold repetition are referee-side rules; the bot
   does not model them in v1 (see `critique.md`).
+
+
+## Deep search opencode (hy4-flash-free) — 2026-11-23
+Rapport complet : `research-opencode-20261123-202132.md` (non vérifié ligne à ligne ; à valider par test game).
+
+Recommandation extraite :
+
+

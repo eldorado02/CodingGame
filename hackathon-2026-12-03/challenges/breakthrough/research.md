@@ -10,3 +10,11 @@
 - Vitesse serveur CG : ~1,2 M nœuds/s sur v1 (tableau), 60k nœuds en 10–36 ms sur v3.
 
 ## Classe (ALGO.md) : B — plateau abstrait, αβ + éval matériel/avancement/protection + règle des coureurs.
+
+
+## Deep search opencode (hy4-flash-free) — 2026-11-23
+Rapport complet : `research-opencode-20261123-190002.md` (non vérifié ligne à ligne ; à valider par test game).
+
+Recommandation extraite :
+
+> (pas de section recommandation détectée)
