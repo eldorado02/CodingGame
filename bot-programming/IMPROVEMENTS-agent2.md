@@ -31,3 +31,11 @@
 - Action : 4 langages, fuzz 200/200 (flux multi-tours, réponses par la référence Python) ; garde-temps 150 → 80 ms vérifié à chaque nœud après 153 ms observés.
 - Résultat : 9/9 contre rangs 97, 49, 33 ; soumission `41796586`.
 - Leçon : coups composés = coût par nœud très variable → garde-temps à chaque nœud.
+
+### 2026-11-23 — Domain Expansion — v1 αβ + Voronoi soumise
+- Constat : jeu jamais joué (ligue unique Wood, 92 joueurs), aucun bot public.
+- Hypothèse : αβ sur (déplacement, mur) + Voronoi + fin exacte bat le milieu de tableau.
+- Sources : referee Mortis66666/CG-Domain-Expansion (Kotlin, lu ; chemins de 4 pas autorisés).
+- Action : 4 langages, fuzz 200/200, 10000 nœuds (28 ms CG).
+- Résultat : 5/6 (2/3 rang 43, 3/3 rang 25) ; soumission `41796695`.
+- Leçon : lire le BFS du referee, l'énoncé simplifie la règle de déplacement.
