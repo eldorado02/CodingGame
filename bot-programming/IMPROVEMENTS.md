@@ -686,3 +686,11 @@ quota gratuit.
 - Action : sortie = index relatif 0..5 dans les 4 langages ; fuzz 200/200
 - Résultat : re-soumission `41796829` (comportement joueur 0 inchangé, 4/4 conservé)
 - Leçon : les test games ne couvrent que le siège 0 : lire le parsing de sortie du referee pour l'autre siège, et surveiller le score juste après soumission
+
+### 2026-11-23 — Dots and Boxes — v1 αβ soumise
+- Constat : jeu jamais joué ; état complet fourni à chaque tour
+- Hypothèse : αβ avec tour supplémentaire à la fermeture d'une boîte résout le 2×2 de Wood 2
+- Sources : énoncé, loicpetit/codingame-dots-and-boxes (gh_search.sh)
+- Action : 4 langages, fuzz 200/200 (tailles 2–5)
+- Résultat : 4/4 (4–0) contre le boss `6797561` ; soumission `41796861`
+- Leçon : un tour supplémentaire se modélise sans changer le signe dans le negamax

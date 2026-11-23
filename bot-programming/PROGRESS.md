@@ -94,7 +94,7 @@ soumission suivent, du plus ancien au plus récent.
 | 67 | `blocking` | Blocking | — | —/— | À FAIRE | Legend |
 | 68 | `penguins` | Penguins | — | —/— | À FAIRE | Legend |
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |
-| 70 | `dots-and-boxes` | Dots and Boxes | — | —/— | À FAIRE | Legend |
+| 70 | `dots-and-boxes` | Dots and Boxes | Wood 2 | en cours | Soumis `41796861` (v1 αβ, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
 | 72 | `othello-1` | Othello | Wood 1 | ~127/— | Promu Wood 1 via `41787653` (bitboard profondeur 6, fuzz 200/200, 5/5 boss) ; pas de boss | Legend |
 | 73 | `yinsh` | Yinsh | — | —/— | À FAIRE | Legend |

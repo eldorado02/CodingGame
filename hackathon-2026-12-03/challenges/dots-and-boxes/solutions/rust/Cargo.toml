@@ -1,0 +1,11 @@
+[package]
+name = "dots_and_boxes_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "dots_and_boxes_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 3
