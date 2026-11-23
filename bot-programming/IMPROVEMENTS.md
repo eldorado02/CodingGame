@@ -574,3 +574,11 @@ quota gratuit.
 - Action : 4 langages, fuzz 200/200, bench.
 - Résultat : 3/3 contre les rangs 177 et 89 ; soumission `41796035`.
 - Leçon : racine = liste fournie par le referee, générateur maison seulement en profondeur.
+
+### 2026-11-23 — Chain Reaction — v1 réécrite et soumise
+- Constat : aucune soumission, code de la session OpenCode perdu.
+- Hypothèse : αβ + heuristique classique (vulnérabilité, coins/bords, cases critiques).
+- Sources : énoncé ; logs `games/chain-reaction-1/logs/v1-*`.
+- Action : 4 langages, fuzz 200/200 ; budget abaissé 150k → 50k après TIMEGUARD sur CG.
+- Résultat : 1/3 rang 37, 0/2 rang 19 ; soumission `41796092`.
+- Leçon : toujours lire `d= n= ms=` dans les logs serveur avant de fixer le budget.
