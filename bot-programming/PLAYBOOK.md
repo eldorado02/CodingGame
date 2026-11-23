@@ -119,6 +119,7 @@ empiler les changements : un seul changement à la fois, re-testé.
 ## 4. Implémentation 4 langages — idiomatique, pas traduit
 
 ### Règles communes
+- **Clean code obligatoire** (consigne utilisateur du 2026-11-23) : constantes nommées (aucun nombre magique dans l'éval ou les budgets), fonctions courtes à responsabilité unique, noms explicites, commentaires qui expliquent le *pourquoi*, aucun code mort, idiomes propres à chaque langage.
 - Copier la **logique**, pas la syntaxe. Mêmes règles de départage, mêmes
   constantes, mêmes invariants.
 - Interdire les effets non déterministes (`random`, hash iteration order,

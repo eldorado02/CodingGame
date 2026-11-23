@@ -72,7 +72,7 @@ soumission suivent, du plus ancien au plus récent.
 | 45 | `impasse` | Impasse | Wood (unique) | en cours | Soumis `41796185` (v1 gloutonne, fuzz 200/200, 3/3 vs rang 71) | rang |
 | 46 | `git-patchwork` | Git Patchwork | — | —/— | À FAIRE | Legend |
 | 47 | `6-nimmt-6-qui-prend-take-5` | 6 nimmt! / 6 qui prend! / Take 5! | — | —/— | À FAIRE | Legend |
-| 48 | `isola` | Isola | — | —/— | À FAIRE | Legend |
+| 48 | `isola` | Isola | Wood 4 | en cours | Soumis `41796400` (v1 αβ Voronoi, fuzz 200/200, 6/6 vs boss Wood 4) | Wood 1 |
 | 49 | `legends-of-code-magic-constructed` | Legends of Code & Magic: Constructed | — | —/— | À FAIRE | Legend |
 | 50 | `start-up` | Start-up! | — | —/— | À FAIRE | Legend |
 | 51 | `code-keeper---the-hero` | Code Keeper - The Hero | — | —/— | À FAIRE | Legend |

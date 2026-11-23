@@ -44,8 +44,18 @@ def request(method, path, body=None, raw=False):
         headers["Content-Type"] = "application/json"
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req) as resp:
-            payload = resp.read().decode()
+        for attempt in range(20):  # retry DNS / network blips, not HTTP errors
+            try:
+                with urllib.request.urlopen(req) as resp:
+                    payload = resp.read().decode()
+                break
+            except urllib.error.HTTPError:
+                raise
+            except (urllib.error.URLError, OSError) as e:
+                sys.stderr.write("network error %s, retry in 15s\n" % e)
+                time.sleep(15)
+        else:
+            sys.exit("network unavailable")
     except urllib.error.HTTPError as e:
         payload = e.read().decode()
         sys.stderr.write("HTTP %s\n%s\n" % (e.code, payload))
