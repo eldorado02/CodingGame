@@ -69,7 +69,7 @@ soumission suivent, du plus ancien au plus récent.
 | 42 | `mad-knights` | Mad Knights | Wood (unique) | en cours | Soumis `41796137` (v1 paranoïde αβ, fuzz 200/200, 3/3 vs rangs 69+86) | rang |
 | 43 | `spring-challenge-2023-ants` | Spring Challenge 2023 - Fourmis | — | —/— | À FAIRE | Legend |
 | 44 | `keep-off-the-grass-fall-challenge-2022` | Keep Off The Grass | — | —/— | À FAIRE | Legend |
-| 45 | `impasse` | Impasse | — | —/— | À FAIRE | Legend |
+| 45 | `impasse` | Impasse | Wood (unique) | en cours | Soumis `41796185` (v1 gloutonne, fuzz 200/200, 3/3 vs rang 71) | rang |
 | 46 | `git-patchwork` | Git Patchwork | — | —/— | À FAIRE | Legend |
 | 47 | `6-nimmt-6-qui-prend-take-5` | 6 nimmt! / 6 qui prend! / Take 5! | — | —/— | À FAIRE | Legend |
 | 48 | `isola` | Isola | — | —/— | À FAIRE | Legend |
