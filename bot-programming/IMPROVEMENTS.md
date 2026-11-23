@@ -598,3 +598,11 @@ quota gratuit.
 - Action : 4 langages, fuzz 200/200 (plateaux/chaînes aléatoires)
 - Résultat : 3/3 contre le rang 71 (12–4) ; soumission `41796185`
 - Leçon : pour un jeu à règles lourdes avec liste légale fournie, un glouton de progression donne une 1re soumission en ~15 min
+
+### 2026-11-23 — Minishogi — v1 gloutonne soumise
+- Constat : jeu jamais joué ; règles shogi (parachutages, promotions)
+- Hypothèse : glouton capture/promotion + carte d'attaque adverse bat le milieu de tableau
+- Sources : énoncé, referee jdermont/MiniShogi cité, test game sonde (orientation des coordonnées)
+- Action : 4 langages, fuzz 200/200 (plateaux/actions aléatoires)
+- Résultat : 3/3 contre le rang 61 ; soumission `41796267`
+- Leçon : toujours sonder l'orientation des coordonnées (ici colonne 1 = droite) avant d'écrire l'éval

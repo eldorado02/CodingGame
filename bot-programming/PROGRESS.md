@@ -63,7 +63,7 @@ soumission suivent, du plus ancien au plus récent.
 | 36 | `gargoyles-versus-santas` | Gargoyles versus Santas | — | —/— | À FAIRE | Legend |
 | 37 | `hex` | Hex | — | —/— | À FAIRE | Legend |
 | 38 | `dice-shogi` | Dice Shogi | — | —/— | À FAIRE | Legend |
-| 39 | `minishogi` | Minishogi | — | —/— | À FAIRE | Legend |
+| 39 | `minishogi` | Minishogi | Wood (unique) | en cours | Soumis `41796267` (v1 gloutonne, fuzz 200/200, 3/3 vs rang 61) | rang |
 | 40 | `seabed-security` | Seabed Security - Fall Challenge 2023 | — | — | À FAIRE | Legend |
 | 41 | `poker` | Poker | — | —/— | À FAIRE | Legend |
 | 42 | `mad-knights` | Mad Knights | Wood (unique) | en cours | Soumis `41796137` (v1 paranoïde αβ, fuzz 200/200, 3/3 vs rangs 69+86) | rang |
