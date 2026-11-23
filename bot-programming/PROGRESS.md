@@ -92,7 +92,7 @@ soumission suivent, du plus ancien au plus récent.
 | 65 | `tryangle-catch` | TryAngle Catch | — | —/— | À FAIRE | Legend |
 | 66 | `chess` | Chess | — | —/— | À FAIRE | Legend |
 | 67 | `blocking` | Blocking | — | —/— | À FAIRE | Legend |
-| 68 | `penguins` | Penguins | — | —/— | À FAIRE | Legend |
+| 68 | `penguins` | Penguins | Wood 3 | en cours | Soumis `41796912` (v2 gloutonne, fuzz 200/200, 0/4 vs boss Wood 3) | Wood 1 |
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |
 | 70 | `dots-and-boxes` | Dots and Boxes | Wood 2 | en cours | Soumis `41796861` (v1 αβ, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
