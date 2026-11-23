@@ -3,7 +3,10 @@
 ## Sources (URL, langage, idée retenue / rejetée et pourquoi)
 - https://github.com/Oli8/CG-bandas — referee officiel (Java). Lu : https://raw.githubusercontent.com/Oli8/CG-bandas/master/src/main/java/com/codingame/game/Referee.java (placement initial équilibré au centre, déplacements, rognage, fin à 200 tours). Retenu : port exact.
 - `bash bot-programming/tools/gh_search.sh "bandas codingame"` → uniquement Oli8/CG-bandas.
-- Recherche OpenCode : voir section ci-dessous (ajoutée quand le rapport est disponible).
+- Recherche OpenCode (hy4-flash-free) : `research-opencode-20261123-205805.md`. Faits vérifiés cohérents avec notre lecture du referee. Points nouveaux :
+  - https://forum.codingame.com/t/community-puzzle-bandas/101048/2 — pb4 (2019) : « un MCTS complet avec solveur perd 10 % de ses parties contre une heuristique de 5 lignes » (avant le rééquilibrage du placement, valeur actuelle [NON VÉRIFIÉ]). Idée retenue : la tactique courte domine, une bonne éval simple + recherche profonde suffit.
+  - https://forum.codingame.com/t/community-puzzle-bandas/101048/6 et /8 — biais de génération corrigé (dbdr, Oli8).
+  - Aucune source publique sur les bots de yakalir / eulerscheZahl (dépôts, gists, forum vérifiés par OpenCode).
 
 ## Faits du referee / contradictions avec l'énoncé
 - Placement : 8 pions du joueur 0 tirés dans le carré central 4×4, le reste du carré au joueur 1 ; puis 24 pions du joueur 0 au hasard, le reste au joueur 1.
