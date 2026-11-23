@@ -47,3 +47,11 @@
 - Action : 4 langages, fuzz 200/200, 10000 nœuds (29 ms CG).
 - Résultat : 6/6 contre rangs 302 et 130, 0/2 contre rang 44 ; soumission `41796751`.
 - Leçon : pour un petit branching, la vitesse du moteur (bitboards) décide du rang au-dessus du milieu de tableau.
+
+### 2026-11-23 — Tower Dereference — v1c glouton couverture + colle soumise
+- Constat : jeu jamais joué (ligue unique Wood, 425 joueurs) ; v1 canons seuls perd contre le rang 197.
+- Hypothèse : la colle multiplie l'exposition ; les dégâts au-delà des PV sont perdus ; les conflits de construction se perdent sur le demi-terrain adverse.
+- Sources : referee eulerscheZahl/TowerDefense (constantes, ordre du tour, règle de conflit), logs diagnostics argent/vies.
+- Action : glouton gain/coût entier (canon, colle, améliorations), poids colle ×4, plafond 15 dégâts, décote 10 % côté adverse ; 4 langages, fuzz 200/200.
+- Résultat : v1b 2/2 rang 197 ; v1c 2/3 rang 113 ; soumission `41796833`.
+- Leçon : premier test en Python (langage CG Python3) = validation du protocole avant de porter dans 3 langages.
