@@ -66,7 +66,7 @@ soumission suivent, du plus ancien au plus récent.
 | 39 | `minishogi` | Minishogi | — | —/— | À FAIRE | Legend |
 | 40 | `seabed-security` | Seabed Security - Fall Challenge 2023 | — | — | À FAIRE | Legend |
 | 41 | `poker` | Poker | — | —/— | À FAIRE | Legend |
-| 42 | `mad-knights` | Mad Knights | — | —/— | À FAIRE | Legend |
+| 42 | `mad-knights` | Mad Knights | Wood (unique) | en cours | Soumis `41796137` (v1 paranoïde αβ, fuzz 200/200, 3/3 vs rangs 69+86) | rang |
 | 43 | `spring-challenge-2023-ants` | Spring Challenge 2023 - Fourmis | — | —/— | À FAIRE | Legend |
 | 44 | `keep-off-the-grass-fall-challenge-2022` | Keep Off The Grass | — | —/— | À FAIRE | Legend |
 | 45 | `impasse` | Impasse | — | —/— | À FAIRE | Legend |

@@ -582,3 +582,11 @@ quota gratuit.
 - Action : 4 langages, fuzz 200/200 ; budget abaissé 150k → 50k après TIMEGUARD sur CG.
 - Résultat : 1/3 rang 37, 0/2 rang 19 ; soumission `41796092`.
 - Leçon : toujours lire `d= n= ms=` dans les logs serveur avant de fixer le budget.
+
+### 2026-11-23 — Mad Knights — v1 soumise
+- Constat : jeu jamais joué (3 joueurs, ligue unique).
+- Hypothèse : recherche paranoïde αβ + mobilité.
+- Sources : énoncé, referee darkhorse64/CG_MadKnights (cité).
+- Action : 4 langages, fuzz 200/200, bench.
+- Résultat : 3/3 contre rangs 69 + 86 ; soumission `41796137`.
+- Leçon : jeux à 3 joueurs → paranoïde ; vérifier `ms=` serveur : 60k nœuds = 8 ms ici.
