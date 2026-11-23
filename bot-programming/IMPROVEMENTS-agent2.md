@@ -39,3 +39,11 @@
 - Action : 4 langages, fuzz 200/200, 10000 nœuds (28 ms CG).
 - Résultat : 5/6 (2/3 rang 43, 3/3 rang 25) ; soumission `41796695`.
 - Leçon : lire le BFS du referee, l'énoncé simplifie la règle de déplacement.
+
+### 2026-11-23 — Bandas — v1 αβ profondeur 7–8 soumise
+- Constat : jeu jamais joué (ligue unique Wood, 649 joueurs).
+- Hypothèse : branching 4 → negamax profond + éval matériel/distance de chute.
+- Sources : referee Oli8/CG-bandas (port exact des poussées et du rognage).
+- Action : 4 langages, fuzz 200/200, 10000 nœuds (29 ms CG).
+- Résultat : 6/6 contre rangs 302 et 130, 0/2 contre rang 44 ; soumission `41796751`.
+- Leçon : pour un petit branching, la vitesse du moteur (bitboards) décide du rang au-dessus du milieu de tableau.
