@@ -654,3 +654,11 @@ quota gratuit.
 - Action : éval incrémentale (×10), tri stable + faisceau 10, budget 60k (TIMEGUARD) puis 2500 nœuds ; 4 langages, fuzz 200/200
 - Résultat : 2/3 puis 3/4 contre le boss `3856980` ; soumission `41796704`
 - Leçon : un nœud qui trie ses fils coûte ~100 évaluations : budgéter en nœuds triés, pas en feuilles
+
+### 2026-11-23 — Onitama — v1 αβ soumise
+- Constat : jeu jamais joué ; cartes orientées selon le prochain utilisateur
+- Hypothèse : αβ prof. 5–6 avec cartes normalisées dans un repère unique bat le boss
+- Sources : énoncé, sonde (orientation), referee eulerscheZahl/onitama, chareca/onitama-ai (αβ public)
+- Action : 4 langages, fuzz 200/200 (cartes aléatoires)
+- Résultat : 3/3 contre le boss `6797555` ; soumission `41796749`
+- Leçon : normaliser toute donnée orientée (cartes, directions) dans le repère du joueur 0 évite les erreurs de signe

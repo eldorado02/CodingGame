@@ -105,7 +105,7 @@ soumission suivent, du plus ancien au plus récent.
 | 78 | `coders-of-the-realm---1v1` | Coders of the Realm - 1v1 | — | —/— | À FAIRE | Legend |
 | 79 | `twixt-pp` | Twixt-PP | — | —/— | À FAIRE | Legend |
 | 80 | `tower-dereference` | Tower Dereference | — | —/— | À FAIRE | Legend |
-| 81 | `onitama` | Onitama | — | —/— | À FAIRE | Legend |
+| 81 | `onitama` | Onitama | Wood 2 | en cours | Soumis `41796749` (v1 αβ, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 82 | `paper-soccer` | Paper soccer | — | —/— | À FAIRE | Legend |
 | 83 | `breakthrough` | Breakthrough | Wood (unique) | en cours | Soumis `41795905` (v3 bitboards, fuzz 200/200, 4/4 vs rang 97) | rang |
 | 84 | `oware-abapa` | Oware Abapa | Wood 2 | en cours | Soumis `41796595` (v1 αβ, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |

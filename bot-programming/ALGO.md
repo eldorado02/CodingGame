@@ -181,4 +181,7 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 | C++ sans pragma O3 = bot 4× plus lent sur CG | Breakthrough TIMEGUARD chaque tour ; 33/34 bots du dépôt sans pragma | ajouter le pragma partout, re-soumettre les bots existants |
 | Tafl : garder un coin depuis une case adjacente | Brandubh v9 (b7/f7 capturés par le roi contre le coin) | garder depuis la diagonale (b2/b6/f2/f6) |
 | Jeu à 3 joueurs | Mad Knights v1 (3/3) | recherche paranoïde : nous max, tous les autres min, même moteur αβ |
+| Placement à fort branchement (≥100 cases vides) | Counting TicTacToe (prof. 2 → 4, 0/3 → 3/4) | éval incrémentale (seules les fenêtres de la case jouée) + tri par gain immédiat + faisceau K=10 aux nœuds internes, racine complète |
+| Budget mal calibré = TIMEGUARD = coups au hasard | Isola, Chain Reaction, Counting TTT | lire `d= n= ms=` des logs serveur après le 1er bench et fixer `TURN_NODES` à ~40 % de la limite |
+| Boss qui dépasse le temps | Clobber Wood 2 | compter à part les victoires « timeout adverse » ; elles ne prouvent pas la force du bot |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |
