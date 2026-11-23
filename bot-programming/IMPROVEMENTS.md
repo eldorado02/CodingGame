@@ -762,3 +762,11 @@ quota gratuit.
 - Action : glouton gain/coût entier (canon, colle, améliorations), poids colle ×4, plafond 15 dégâts, décote 10 % côté adverse ; 4 langages, fuzz 200/200.
 - Résultat : v1b 2/2 rang 197 ; v1c 2/3 rang 113 ; soumission `41796833`.
 - Leçon : premier test en Python (langage CG Python3) = validation du protocole avant de porter dans 3 langages.
+
+### 2026-11-23 — nine men's morris — v1 αβ soumise
+- Constat : jeu jamais joué ; pierres en main absentes de l'entrée
+- Hypothèse : αβ + matériel/moulins/mobilité bat le boss Wood 2
+- Sources : énoncé, referee bindstone/nine-mens-morris (cité)
+- Action : moulins déduits de l'adjacence, compteur de poses, 4 langages, fuzz 200/200
+- Résultat : 3/3 (5–0) contre le boss `3863794` ; soumission `41796948`
+- Leçon : déduire la géométrie (moulins) des données d'init évite de coder un plateau en dur
