@@ -179,4 +179,5 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 | Boss Wood = joueur aléatoire / glouton 1 pli | Othello Wood 2 (`new Random(13)`), Connect 4 | un αβ prof. 4–6 suffit pour sortir de Wood |
 | Plateau atteint = changement de stratégie, pas micro-réglage | CodeBusters 6 variantes ≤1/4, Chain Reaction 0/5 | relire le referee, chercher le levier mécanique |
 | C++ sans pragma O3 = bot 4× plus lent sur CG | Breakthrough TIMEGUARD chaque tour ; 33/34 bots du dépôt sans pragma | ajouter le pragma partout, re-soumettre les bots existants |
+| Tafl : garder un coin depuis une case adjacente | Brandubh v9 (b7/f7 capturés par le roi contre le coin) | garder depuis la diagonale (b2/b6/f2/f6) |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |

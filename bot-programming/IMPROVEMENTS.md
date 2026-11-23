@@ -558,3 +558,11 @@ quota gratuit.
 - Action : v3 4 langages, fuzz 200/200 (flux auto-générés), bench.
 - Résultat : 4/4 contre le rang 97, 0/4 contre le rang 33. Soumission `41795905`.
 - Leçon : voir `challenges/breakthrough/critique.md`.
+
+### 2026-11-23 — Brandubh — v9 réécrite et soumise
+- Constat : aucune soumission ; v8 perd 0/3 contre le rang 15/27.
+- Hypothèse : modèle de règles exact (referee) + anti-répétition + template board-2p.
+- Sources : `n3l-ctrl/brandubh-codingame` Referee.java ; logs `games/brandubh/logs/v9*`.
+- Action : v9 4 langages, fuzz 200/200, 3 variantes d'éval des coins testées.
+- Résultat : 0/3 contre le rang 15 (attaquant). Soumission `41795979` (nouvelle règle utilisateur : 1re soumission sans seuil 3/5).
+- Leçon : garde des coins depuis une case adjacente = pièce capturable contre le coin (pattern tafl, ajouté à ALGO.md).

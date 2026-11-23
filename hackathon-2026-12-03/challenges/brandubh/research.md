@@ -28,3 +28,11 @@
   n'empêche pas la capture si les 4 voisins deviennent hostiles.
 - Les adversaires Wood listés n'ont pas de boss officiel ; `jacek` (agent
   `6913632`) sert de repère de force.
+
+## 2026-11-23 — referee lu (github.com/n3l-ctrl/brandubh-codingame, Referee.java + Board.java)
+- Position initiale : attaquants d1 d2 a4 b4 f4 g4 d6 d7 ; défenseurs d3 c4 e4 d5 ; roi d4.
+- Joueur 0 = attaquants (joue en premier), joueur 1 = défenseurs. 1000 ms / 50 ms, 200 tours max (nul).
+- Déplacement en tour ; seuls trône et coins sont interdits aux non-rois ; on peut traverser le trône vide.
+- Capture : seulement par la pièce déplacée, sur 2 côtés opposés ; coin toujours hostile ; trône vide hostile sauf pour capturer le roi ; trône occupé (roi) hostile aux attaquants uniquement ; le roi capture.
+- Roi sur le trône : 4 côtés hostiles ; ailleurs 2.
+- Fin : roi capturé ou défenseurs encerclés (aucun D/K atteignable depuis le bord par des cases non-attaquants) → attaquants ; roi sur un coin → défenseurs ; joueur sans coup → perd ; position (plateau + camp au trait) répétée 3 fois → le joueur qui vient de jouer perd.

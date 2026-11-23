@@ -1,49 +1,9 @@
-# Brandubh
+# brandubh — guide de reprise
 
-État : **en cours** — prototype Python, aucune soumission.
-
-## Règles essentielles
-
-- Plateau 7×7, 8 attaquants, 4 défenseurs, 1 roi. Le roi commence en `d4` (trône).
-- Le joueur `0` contrôle les attaquants et joue en premier ; le joueur `1` contrôle
-  les défenseurs et le roi.
-- Déplacement orthogonal de toute distance, sans saut. Le trône et les coins sont
-  traversables par les non-rois mais ne sont pas des cases d'arrivée.
-- Capture : une pièce est prise si elle est encadrée sur deux côtés opposés par
-  des « hostiles ». Les coins sont toujours hostiles ; le trône est hostile aux
-  attaquants, et aux défenseurs seulement si le roi n'y est pas.
-- Victoire attaquants : roi capturé ou défenseurs encerclés. Victoire défenseurs :
-  roi dans un coin. Égalité après 200 tours.
-- Limite de réponse : 1000 ms au premier tour, **50 ms** ensuite.
-
-## Prototype retenu (en test)
-
-`solutions/python/bot.py` — alpha-beta 2 plis (1 pli côté défenseur pour rester
-sous la limite de 50 ms), évaluation basée sur :
-
-- distance BFS du roi au coin le plus proche (pièces = murs) ;
-- mobilité du roi ;
-- attaquants adjacents au roi ;
-- différence de matériel.
-
-## Sources
-
-- Énoncé officiel : `statement.md`.
-- Referee : `n3l-ctrl/brandubh-codingame`, `Referee.java` et `Board.java`.
-
-## Tests
-
-Les test games se lancent avec :
-
-```
-python3 bot-programming/tools/cg.py test brandubh <fichier> --language Python3 --opponents 6913632
-```
-
-`6913632` (`jacek`) est le meilleur joueur Wood listé ; ce jeu n'a pas de boss
-déclaré. Critère de validation : au moins 3 victoires sur 5.
-
-## Historique court
-
-- Premier prototype : timeout au 3e frame (le programme lisait un seul tour).
-- Boucle `while True` ajoutée : timeout corrigé, mais 0/5 (fuite du roi).
-- Évaluation sans BFS puis BFS avec murs : en cours de validation.
+- Énoncé : `statement.md`. Ligue unique `Wood` (27 joueurs) : seul le rang compte.
+- Referee lu : `github.com/n3l-ctrl/brandubh-codingame` `Referee.java` (règles exactes dans l'en-tête de `solutions/python/bot.py`).
+- Protocole : `role` (0 attaquant, 1 défenseur), `lastAction`, 7 lignes de plateau (rangée 7 en haut). Sortie `d2d4`. 1000 ms puis **50 ms**.
+- Bot soumis : **v9** `41795979` (C++) — template board-2p, αβ ID, budget 12k nœuds/tour (CG ~370k nœuds/s), filtre anti-répétition (3e répétition = défaite du joueur qui la crée).
+- Résultats v9 (attaquant, toujours agent 0 en test) : 0/3 contre le rang 15 `6872530`. L'ancien v8 battait le rang 23 `6879824` (adversaire qui plante).
+- Prochaine étape : moteur plus rapide (prof. ≥4), éval défenseur dédiée, étude des parties perdues `bot-programming/games/brandubh/logs/v9*-*.log`.
+- Commandes : fuzz `bash tests/run.sh` (CG_NODES=1500, 40 s) ; bench `python3 bot-programming/tools/bench.py brandubh <cpp> 6872530 --n 3`.

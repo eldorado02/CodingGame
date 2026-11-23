@@ -51,7 +51,7 @@ soumission suivent, du plus ancien au plus récent.
 | 24 | `fall-challenge-2020` | Fall Challenge 2020 | Wood 1 | 2541/2875 | À AMÉLIORER | Legend |
 | 25 | `tron-battle` | Tron Battle | Wood 1 | 1/563 | ACTIF | Legend |
 | 26 | `shobu` | Shobu | Wood 2 | 12/— | Soumis `41786861` (promu Wood 3) ; optimisation Wood 3 en cours | Legend |
-| 27 | `brandubh` | Brandubh | Wood | —/— | À FAIRE | Legend |
+| 27 | `brandubh` | Brandubh | Wood (unique) | en cours | Soumis `41795979` (v9 referee exact, fuzz 200/200, 0/3 vs rang 15) | rang |
 | 28 | `elemental-wars` | Elemental Wars | Wood 1 | ~38/64 | Promu Wood 1 ; soumis `41788154` (v6 prédiction/interception, fuzz 200/200, 5/5 vs ancien bot) | Legend |
 | 29 | `ataxx` | Ataxx | — | —/— | À FAIRE | Legend |
 | 30 | `chain-reaction-1` | Chain Reaction | — | —/— | À FAIRE | Legend |
