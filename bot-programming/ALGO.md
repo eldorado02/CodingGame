@@ -23,6 +23,13 @@ Templates : `hackathon-2026-12-03/templates/` (scaffold :
 4. **Budget temps** : le serveur CG est ~1,5–2× plus lent que le local. Viser
    ≤50 % de la limite (Othello prof. 7 : 85–108 ms local → timeout sur CG).
    Premier tour souvent 1000 ms : y faire les précalculs.
+   **CodinGame compile le C++ sans `-O2`** : toujours mettre
+   `#pragma GCC optimize("O3,unroll-loops")` avant les `#include` (pas de
+   `#pragma GCC target(...)` : casse g++ 13 en local). Même avec le pragma,
+   la STL reste lente (stable_sort + lambda) : tri par insertion maison dans
+   le chemin chaud. Mesure Breakthrough : local -O2 4,6 M nœuds/s, local
+   pragma 2,9 M/s, **serveur CG ≈ 1,2 M/s** → calibrer `NODE_LIMIT` sur
+   ~1 M nœuds/s × (40 % de la limite). Afficher `d= n= ms=` sur stderr.
 5. **Le referee prime sur l'énoncé** (CodeBusters `STUN_DURATION=2`, fuite des
    fantômes via `PreviousViewers`). Les métadonnées des test games priment sur tout.
 6. **Nombre d'adversaires fixe par jeu** (EW = 2, Othello/CodeBusters = 1) :
@@ -171,4 +178,5 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 |---|---|---|
 | Boss Wood = joueur aléatoire / glouton 1 pli | Othello Wood 2 (`new Random(13)`), Connect 4 | un αβ prof. 4–6 suffit pour sortir de Wood |
 | Plateau atteint = changement de stratégie, pas micro-réglage | CodeBusters 6 variantes ≤1/4, Chain Reaction 0/5 | relire le referee, chercher le levier mécanique |
+| C++ sans pragma O3 = bot 4× plus lent sur CG | Breakthrough TIMEGUARD chaque tour ; 33/34 bots du dépôt sans pragma | ajouter le pragma partout, re-soumettre les bots existants |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |

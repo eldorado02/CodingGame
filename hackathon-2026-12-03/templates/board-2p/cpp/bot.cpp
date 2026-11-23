@@ -12,6 +12,7 @@
 //   * move order = generation order, then stable sort on an integer key;
 //   * ties broken by first-found (strict > comparison).
 // Compile: g++ -O2 -std=c++20 -Wall -Wextra bot.cpp -o bot
+#pragma GCC optimize("O3,unroll-loops")
 #include <algorithm>
 #include <array>
 #include <chrono>
