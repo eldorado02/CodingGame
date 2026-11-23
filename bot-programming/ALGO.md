@@ -186,3 +186,15 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 | Boss qui dépasse le temps | Clobber Wood 2 | compter à part les victoires « timeout adverse » ; elles ne prouvent pas la force du bot |
 | Test games = toujours siège 0 | Oware v1 (coups illégaux en joueur 1, score 2,63) | lire le parsing de sortie du referee pour chaque siège ; vérifier le score dans l'heure qui suit la soumission |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |
+
+
+## Patterns du sous-agent (fusionnés le 2026-11-23)
+# ALGO — patterns relevés par l'agent 2 (à fusionner dans ALGO.md §6)
+
+| Pattern | Preuve | Règle |
+|---|---|---|
+| Géométrie non précisée par l'énoncé (diagonale hex, orientation lettre/chiffre) | Hex (sonde anti-diagonale), TwixT-PP (bot public) | vérifier sur une vraie partie (chemin gagnant final) avant d'écrire le moteur |
+| Éval « distance de connexion » plate | TwixT-PP v1 : égalités → coups au bord de départ, 0/5 vs top 25 | toujours un départage secondaire (centralité, nombre de chemins courts) |
+| Milieu de tableau des jeux communautaires = bots stub invalides | TwixT-PP rangs 49 et 65 | bencher aussi contre le top 25 pour mesurer la force réelle |
+| MCTS sur CG : expansion à chaque visite = création de nœuds dominante | Hex v1 (14 µs → 6 µs/itération avec seuil 3 + tableaux statiques) | seuil d'expansion ≥ 3, pas de `std::vector` dans l'arbre |
+| Coups composés (rebonds, rafles) : coût d'un nœud très variable | Paper Soccer v1 : 3000 nœuds = 4 ms au début, > 150 ms en fin de partie | garde-temps vérifié à chaque nœud, pas tous les 64 |
