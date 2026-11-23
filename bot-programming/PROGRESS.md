@@ -108,7 +108,7 @@ soumission suivent, du plus ancien au plus récent.
 | 81 | `onitama` | Onitama | Wood 2 | en cours | Soumis `41796749` (v1 αβ, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 82 | `paper-soccer` | Paper soccer | — | —/— | À FAIRE | Legend |
 | 83 | `breakthrough` | Breakthrough | Wood (unique) | en cours | Soumis `41795905` (v3 bitboards, fuzz 200/200, 4/4 vs rang 97) | rang |
-| 84 | `oware-abapa` | Oware Abapa | Wood 2 | en cours | Soumis `41796595` (v1 αβ, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |
+| 84 | `oware-abapa` | Oware Abapa | Wood 2 | en cours | Soumis `41796829` (v1.1 correctif joueur 1, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |
 | 85 | `bandas` | Bandas | — | —/— | À FAIRE | Legend |
 | 86 | `bit-runner-2048` | Bit Runner 2048 | — | —/— | À FAIRE | Legend |
 | 87 | `yavalath` | Yavalath | — | —/— | À FAIRE | Legend |

@@ -10,7 +10,7 @@ Rules from the referee (github.com/MaximeCheramy/cg-oware Referee.java):
   * score > 24 wins; a side without legal move takes all remaining seeds
     and the game ends; 200 turns max (most seeds wins).
 State is relative: houses[0..5] belong to the side to move.
-Our absolute index: player 0 plays houses 0..5, player 1 houses 6..11.
+Output: the RELATIVE house 0..5 (the referee adds 6 for player 1, Player.getAction).
 """
 import os
 import sys
@@ -166,14 +166,14 @@ def main():
         s = State(h, my_score, their_score, turn)
         mv = legal_moves(s)
         if not mv:
-            print(me_id * SIDE, flush=True)
+            print(0, flush=True)
             continue
         m = Search().run(s)
         nxt = apply_move(s, m)
         my_score = nxt.theirs
         seeds_after_my_move = sum(nxt.h)
         my_turns += 1
-        print(m + me_id * SIDE, flush=True)
+        print(m, flush=True)   # relative house: the referee adds 6 for player 1
 
 
 if __name__ == "__main__":

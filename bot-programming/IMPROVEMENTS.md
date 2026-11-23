@@ -678,3 +678,11 @@ quota gratuit.
 - Action : 4 langages, fuzz 200/200 ; tests anti-répétition et poids des groupes
 - Résultat : v1 : 3 nuls (boucle) ; anti-répétition 0/3 ; poids 25 0/3 ; v1 soumise `41796817`
 - Leçon : une éval faible + anti-répétition transforme les nuls en défaites : l'anti-répétition ne paie qu'avec une éval qui progresse
+
+### 2026-11-23 — Oware Abapa — v1.1 correctif joueur 1
+- Constat : après soumission v1 : score 2,63, rang 45/54 alors que 4/4 contre le boss en test
+- Hypothèse : en test nous sommes toujours joueur 0 ; le chemin joueur 1 est faux
+- Sources : referee MaximeCheramy/cg-oware Player.getAction : num += 6 pour le joueur 1
+- Action : sortie = index relatif 0..5 dans les 4 langages ; fuzz 200/200
+- Résultat : re-soumission `41796829` (comportement joueur 0 inchangé, 4/4 conservé)
+- Leçon : les test games ne couvrent que le siège 0 : lire le parsing de sortie du referee pour l'autre siège, et surveiller le score juste après soumission

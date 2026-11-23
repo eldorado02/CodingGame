@@ -129,7 +129,7 @@ fn main() {
         their_score += seeds_after_my_move - h.iter().sum::<i32>();
         let s = State { h, mine: my_score, theirs: their_score, turn: 2 * my_turns + me_id };
         if legal_moves(&s).is_empty() {
-            writeln!(out, "{}", me_id * SIDE as i32).ok();
+            writeln!(out, "0").ok();
             out.flush().ok();
             continue;
         }
@@ -142,7 +142,7 @@ fn main() {
         seeds_after_my_move = next.h.iter().sum();
         my_turns += 1;
         eprintln!("d={} n={} ms={}", search.depth, search.nodes, t0.elapsed().as_millis());
-        writeln!(out, "{}", m as i32 + me_id * SIDE as i32).ok();
+        writeln!(out, "{}", m).ok(); // relative house: the referee adds 6 for player 1
         out.flush().ok();
     }
 }

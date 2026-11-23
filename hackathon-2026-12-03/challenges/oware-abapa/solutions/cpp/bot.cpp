@@ -145,7 +145,7 @@ int main() {
         NODE_LIMIT = cliNodes > 0 ? cliNodes : (myTurns == 0 ? FIRST_TURN_NODES : TURN_NODES);
         TIME_MS = myTurns == 0 ? FIRST_TURN_MS : TURN_MS;
         int tmp[SIDE];
-        if (!legalMoves(s, tmp)) { cout << meId * SIDE << endl; continue; }
+        if (!legalMoves(s, tmp)) { cout << 0 << endl; continue; }
         int m = search(s);
         State next = applyMove(s, m);
         myScore = next.theirs;
@@ -153,6 +153,6 @@ int main() {
         ++myTurns;
         cerr << "d=" << lastDepth << " n=" << nodes << " ms="
              << chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - t0).count() << endl;
-        cout << m + meId * SIDE << endl;
+        cout << m << endl;  // relative house: the referee adds 6 for player 1
     }
 }

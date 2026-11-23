@@ -184,4 +184,5 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 | Placement à fort branchement (≥100 cases vides) | Counting TicTacToe (prof. 2 → 4, 0/3 → 3/4) | éval incrémentale (seules les fenêtres de la case jouée) + tri par gain immédiat + faisceau K=10 aux nœuds internes, racine complète |
 | Budget mal calibré = TIMEGUARD = coups au hasard | Isola, Chain Reaction, Counting TTT | lire `d= n= ms=` des logs serveur après le 1er bench et fixer `TURN_NODES` à ~40 % de la limite |
 | Boss qui dépasse le temps | Clobber Wood 2 | compter à part les victoires « timeout adverse » ; elles ne prouvent pas la force du bot |
+| Test games = toujours siège 0 | Oware v1 (coups illégaux en joueur 1, score 2,63) | lire le parsing de sortie du referee pour chaque siège ; vérifier le score dans l'heure qui suit la soumission |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |

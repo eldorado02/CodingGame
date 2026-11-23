@@ -144,14 +144,14 @@ int main(void) {
         node_limit = cli_nodes > 0 ? cli_nodes : (my_turns == 0 ? FIRST_TURN_NODES : TURN_NODES);
         time_ms = my_turns == 0 ? FIRST_TURN_MS : TURN_MS;
         int tmp[SIDE];
-        if (!legal_moves(&s, tmp)) { printf("%d\n", me_id * SIDE); fflush(stdout); continue; }
+        if (!legal_moves(&s, tmp)) { printf("0\n"); fflush(stdout); continue; }
         int m = search(&s);
         State next = apply_move(&s, m);
         my_score = next.theirs;
         seeds_after_my_move = side_seeds(&next, 0) + side_seeds(&next, SIDE);
         ++my_turns;
         fprintf(stderr, "d=%d n=%lld ms=%ld\n", last_depth, nodes, elapsed_ms());
-        printf("%d\n", m + me_id * SIDE);
+        printf("%d\n", m);  /* relative house: the referee adds 6 for player 1 */
         fflush(stdout);
     }
 }
