@@ -57,3 +57,11 @@
 L'entrée `bot-programming/IMPROVEMENTS.md` est un fichier **partagé** : ce
 sous-agent ne l'a pas modifié (consigne « do NOT edit shared files »). La
 session parente doit ajouter l'entrée de journal correspondante.
+
+### 2026-11-23 — Ataxx — v2 αβ bitboards soumise
+- Constat : v1 gloutonne 1 pli : 0/5 contre le boss Wood 2, jamais soumise
+- Hypothèse : αβ + différence de pièces à prof. 4–6 bat le boss
+- Sources : énoncé, logs v1 (orientation : 1re ligne = rangée 7), dépôts GitHub jdermont/AtaxxCodingame (referee) et bots αβ publics (Tomatofishh/ataxx, pascalc/Ataxx-Reloaded-Agent)
+- Action : réécriture 4 langages bitboards, fuzz 200/200 ; budget 15k puis 120k nœuds (CG 26–38 ms)
+- Résultat : 2/4 puis 3/4 contre le boss `6649970` ; soumission `41796475`
+- Leçon : la profondeur compte plus que l'éval dans Ataxx : budget ×8 = +1 victoire / 4

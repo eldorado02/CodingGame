@@ -1,165 +1,207 @@
-// Ataxx bot — deterministic 1-ply greedy (port of solutions/python/bot.py).
-// Build: g++ -O2 -std=c++20 -Wall -Wextra solutions/cpp/bot.cpp -o bot_cpp
-// The referee provides the legal actions; we only simulate and score them.
-#include <algorithm>
-#include <array>
+// Ataxx 7x7 — C++ (submitted), v2 alpha-beta. Port of solutions/python/bot.py.
+// Bit index = y * 7 + x, y = 0 is the first input line (row 7).
+// CodinGame compiles without -O2: the pragma is mandatory (ALGO.md §0.4).
+#pragma GCC optimize("O3,unroll-loops")
+#include <chrono>
+#include <cstdint>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
+using namespace std;
+using U64 = uint64_t;
 
-namespace {
+constexpr int SIZE = 7, CELLS = SIZE * SIZE;
+constexpr U64 ALL = (1ULL << CELLS) - 1;
+constexpr long long FIRST_TURN_NODES = 600000, TURN_NODES = 120000;
+constexpr int FIRST_TURN_MS = 700, TURN_MS = 70;
+constexpr int SPAWN_ORDER_BONUS = 1;  // spawns add a piece: try them before equal jumps
+constexpr int MAX_MOVES = 49 * 25;
 
-constexpr int N = 49;
-constexpr int WIN_SCORE = 1'000'000;
-constexpr int PIECE_WEIGHT = 20;
+U64 ADJ[CELLS], JUMP[CELLS];
 
-// Center-control weights (doubly symmetric matrix, row 0 = bottom).
-constexpr std::array<int, N> WEIGHTS{{
-    1, 2, 2, 3, 2, 2, 1,
-    2, 3, 4, 4, 4, 3, 2,
-    2, 4, 5, 5, 5, 4, 2,
-    3, 4, 5, 6, 5, 4, 3,
-    2, 4, 5, 5, 5, 4, 2,
-    2, 3, 4, 4, 4, 3, 2,
-    1, 2, 2, 3, 2, 2, 1,
-}};
-
-using Neighbors = std::array<std::vector<int>, N>;
-
-Neighbors build_neighbors() {
-    Neighbors nb;
-    for (int y = 0; y < 7; ++y) {
-        for (int x = 0; x < 7; ++x) {
-            for (int dy = -1; dy <= 1; ++dy) {
-                for (int dx = -1; dx <= 1; ++dx) {
-                    if (dx == 0 && dy == 0) continue;
-                    const int nx = x + dx, ny = y + dy;
-                    if (nx >= 0 && nx < 7 && ny >= 0 && ny < 7) {
-                        nb[y * 7 + x].push_back(ny * 7 + nx);
-                    }
-                }
-            }
-        }
-    }
-    return nb;
-}
-
-int clamp7(int v) { return std::clamp(v, 0, 6); }
-
-int char_to_cell(char ch) {
-    if (ch == '1') return 2;
-    if (ch == '0') return 1;
-    if (ch == '#') return 3;
-    return 0;
-}
-
-struct Parsed {
-    bool jump;
-    int x0, y0, x1, y1;
+struct Move { int src, dst; };  // src = -1 for a spawn
+struct State {
+    U64 mine, theirs, walls;  // mine = pieces of the side to move
+    U64 empty() const { return ALL & ~(mine | theirs | walls); }
 };
 
-Parsed parse_action(const std::string& s) {
-    if (s.size() < 2) return {false, 0, 0, 0, 0};
-    const int x0 = clamp7(s[0] - 'a');
-    // Le plateau est reçu du haut vers le bas : '1' -> 6, '7' -> 0.
-    const int y0 = clamp7('7' - s[1]);
-    if (s.size() >= 4) {
-        return {true, x0, y0, clamp7(s[2] - 'a'), clamp7('7' - s[3])};
-    }
-    return {false, x0, y0, x0, y0};
-}
-
-using Board = std::array<int, N>;
-
-Board simulate(const Board& cells, const std::string& action, int me, int opp,
-               const Neighbors& nb) {
-    Board board = cells;
-    const Parsed p = parse_action(action);
-    const int dst = p.y1 * 7 + p.x1;
-    if (p.jump) board[p.y0 * 7 + p.x0] = 0;  // source vacated by a jump
-    board[dst] = me;
-    for (int idx : nb[dst]) {
-        if (board[idx] == opp) board[idx] = me;
-    }
-    return board;
-}
-
-int evaluate(const Board& board, int me, int opp, const Neighbors& nb) {
-    int my_count = 0, opp_count = 0, score = 0;
-    for (int i = 0; i < N; ++i) {
-        const int cell = board[i];
-        if (cell == me) {
-            ++my_count;
-            int s = WEIGHTS[i];
-            for (int idx : nb[i]) if (board[idx] == opp) ++s;
-            score += s;
-        } else if (cell == opp) {
-            ++opp_count;
-            int s = WEIGHTS[i];
-            for (int idx : nb[i]) if (board[idx] == me) ++s;
-            score -= s;
+void initTables() {
+    for (int i = 0; i < CELLS; ++i) {
+        ADJ[i] = JUMP[i] = 0;
+        for (int j = 0; j < CELLS; ++j) {
+            int d = max(abs(j % SIZE - i % SIZE), abs(j / SIZE - i / SIZE));
+            if (d == 1) ADJ[i] |= 1ULL << j;
+            else if (d == 2) JUMP[i] |= 1ULL << j;
         }
     }
-    if (my_count == 0) return -WIN_SCORE;
-    if (opp_count == 0) return WIN_SCORE;
-    return score + PIECE_WEIGHT * (my_count - opp_count);
 }
 
-std::string choose(const Board& cells, int me, const std::vector<std::string>& actions,
-                   const Neighbors& nb) {
-    const int opp = 3 - me;
-    std::string best;
-    int best_eval = 0;
-    bool have = false;
-    for (const std::string& action : actions) {
-        if (action.empty()) continue;
-        const Board next = simulate(cells, action, me, opp, nb);
-        const int val = evaluate(next, me, opp, nb);
-        if (!have || val > best_eval || (val == best_eval && action < best)) {
-            best_eval = val;
-            best = action;
-            have = true;
-        }
+inline int popc(U64 x) { return __builtin_popcountll(x); }
+
+int genMoves(const State &s, Move *out) {
+    U64 empty = s.empty(), spawnTargets = 0;
+    for (U64 x = s.mine; x; x &= x - 1) spawnTargets |= ADJ[__builtin_ctzll(x)];
+    int n = 0;
+    for (U64 t = spawnTargets & empty; t; t &= t - 1) out[n++] = {-1, __builtin_ctzll(t)};
+    for (U64 x = s.mine; x; x &= x - 1) {
+        int p = __builtin_ctzll(x);
+        for (U64 t = JUMP[p] & empty; t; t &= t - 1) out[n++] = {p, __builtin_ctzll(t)};
     }
-    return have ? best : "random";
+    return n;
 }
 
-}  // namespace
+inline State applyMove(const State &s, const Move &m) {
+    U64 mine = s.mine | (1ULL << m.dst);
+    if (m.src >= 0) mine &= ~(1ULL << m.src);
+    U64 flipped = ADJ[m.dst] & s.theirs;
+    mine |= flipped;
+    return {s.theirs & ~flipped, mine, s.walls};  // point of view switches
+}
+
+inline int orderKey(const State &s, const Move &m) {
+    return 2 * popc(ADJ[m.dst] & s.theirs) + (m.src < 0 ? SPAWN_ORDER_BONUS : 0);
+}
+
+inline int evaluate(const State &s) { return popc(s.mine) - popc(s.theirs); }
+
+void orderMoves(const State &s, Move *mv, int n) {
+    static int key[MAX_MOVES];
+    for (int i = 0; i < n; ++i) key[i] = orderKey(s, mv[i]);
+    for (int i = 1; i < n; ++i) {  // stable insertion sort, key descending
+        Move x = mv[i];
+        int k = key[i], j = i - 1;
+        while (j >= 0 && key[j] < k) { mv[j + 1] = mv[j]; key[j + 1] = key[j]; --j; }
+        mv[j + 1] = x; key[j + 1] = k;
+    }
+}
+
+// ---------------------------------------------------------------- ENGINE
+constexpr int WIN = 1000000;
+constexpr int INF = 1 << 30;
+constexpr int MAX_DEPTH = 64;
+long long NODE_LIMIT = TURN_NODES;
+int TIME_MS = TURN_MS;
+long long nodes = 0;
+bool aborted = false;
+int lastDepth = 0;
+chrono::steady_clock::time_point t0;
+
+inline int finalScore(const State &s, int ply) {
+    int diff = evaluate(s);
+    return diff > 0 ? WIN - ply : diff < 0 ? -(WIN - ply) : 0;
+}
+
+int negamax(const State &s, int depth, int alpha, int beta, int ply) {
+    if (++nodes > NODE_LIMIT) { aborted = true; return 0; }
+    if ((nodes & 1023) == 0 &&
+        chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - t0).count() > TIME_MS) {
+        cerr << "TIMEGUARD" << endl; aborted = true; return 0;
+    }
+    if (!s.mine || !s.theirs) return finalScore(s, ply);
+    if (depth == 0) return evaluate(s);
+    Move mv[MAX_MOVES];
+    int n = genMoves(s, mv);
+    if (n == 0) {
+        State passed = {s.theirs, s.mine, s.walls};
+        Move tmp[MAX_MOVES];
+        if (!genMoves(passed, tmp)) return finalScore(s, ply);
+        return -negamax(passed, depth - 1, -beta, -alpha, ply + 1);
+    }
+    orderMoves(s, mv, n);
+    int best = -INF;
+    for (int i = 0; i < n; ++i) {
+        int v = -negamax(applyMove(s, mv[i]), depth - 1, -beta, -alpha, ply + 1);
+        if (aborted) return 0;
+        if (v > best) best = v;
+        if (v > alpha) alpha = v;
+        if (alpha >= beta) break;
+    }
+    return best;
+}
+
+Move search(const State &root, vector<Move> mv) {
+    int n = (int)mv.size();
+    orderMoves(root, mv.data(), n);
+    Move best = mv[0];
+    lastDepth = 0; nodes = 0; aborted = false;
+    for (int depth = 1; depth <= MAX_DEPTH; ++depth) {
+        int alpha = -INF, bestV = -INF, curIdx = 0;
+        for (int i = 0; i < n; ++i) {
+            int v = -negamax(applyMove(root, mv[i]), depth - 1, -INF, -alpha, 1);
+            if (aborted) break;
+            if (v > bestV) { bestV = v; curIdx = i; }
+            if (v > alpha) alpha = v;
+        }
+        if (aborted) break;
+        best = mv[curIdx];
+        lastDepth = depth;
+        for (int i = curIdx; i > 0; --i) mv[i] = mv[i - 1];  // PV first
+        mv[0] = best;
+        if (bestV >= WIN - MAX_DEPTH || bestV <= -(WIN - MAX_DEPTH)) break;
+    }
+    return best;
+}
+
+// ---------------------------------------------------------------- I/O
+int square(const string &t, size_t at) {
+    if (at + 2 > t.size()) return -1;
+    char c = t[at], r = t[at + 1];
+    if (c < 'a' || c > 'g' || r < '1' || r > '7') return -1;
+    return (7 - (r - '0')) * SIZE + (c - 'a');
+}
+
+bool parseAction(const string &t, Move &m) {
+    if (t.size() == 2) { m = {-1, square(t, 0)}; return m.dst >= 0; }
+    if (t.size() == 4) { m = {square(t, 0), square(t, 2)}; return m.src >= 0 && m.dst >= 0; }
+    return false;
+}
+
+string nameOf(int i) { return string(1, char('a' + i % SIZE)) + char('0' + 7 - i / SIZE); }
+
+string actionText(const Move &m) { return m.src < 0 ? nameOf(m.dst) : nameOf(m.src) + nameOf(m.dst); }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int id;
-    if (!(std::cin >> id)) return 0;
-    int me = id + 1;
-    if (me != 1 && me != 2) me = 1;
-    const Neighbors nb = build_neighbors();
-
-    std::string row, last;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    initTables();
+    long long cliNodes = -1;
+    if (const char *e = getenv("CG_NODES")) cliNodes = atoll(e);
+    string line;
+    if (!getline(cin, line)) return 0;
+    char me = line.empty() ? '0' : line[0];
+    bool first = true;
     while (true) {
-        Board cells{};
-        bool complete = true;
-        for (int y = 0; y < 7; ++y) {
-            if (!(std::cin >> row)) { complete = false; break; }
-            for (int x = 0; x < 7; ++x) {
-                const char ch = (x < static_cast<int>(row.size())) ? row[x] : '.';
-                cells[y * 7 + x] = char_to_cell(ch);
+        State s = {0, 0, 0};
+        for (int y = 0; y < SIZE; ++y) {
+            if (!getline(cin, line)) return 0;
+            if (y == 0) t0 = chrono::steady_clock::now();
+            for (int x = 0; x < SIZE; ++x) {
+                char ch = x < (int)line.size() ? line[x] : '#';
+                U64 bit = 1ULL << (y * SIZE + x);
+                if (ch == '#' || ch == '\r') s.walls |= bit;
+                else if (ch == me) s.mine |= bit;
+                else if (ch == '0' || ch == '1') s.theirs |= bit;
             }
         }
-        if (!complete) break;
-        if (!(std::cin >> last)) break;  // lastAction
-        int count;
-        if (!(std::cin >> count)) break;
-        if (count < 0) count = 0;
-        std::vector<std::string> actions;
-        actions.reserve(count);
-        std::string action;
-        for (int i = 0; i < count; ++i) {
-            if (!(std::cin >> action)) break;
-            actions.push_back(action);
+        if (!getline(cin, line) || !getline(cin, line)) return 0;
+        int n = atoi(line.c_str());
+        vector<Move> legal;
+        for (int i = 0; i < n; ++i) {
+            if (!getline(cin, line)) return 0;
+            size_t a = line.find_first_not_of(" \t");
+            if (a == string::npos) continue;
+            size_t b = line.find_first_of(" \t\r", a);
+            Move m;
+            if (parseAction(line.substr(a, b == string::npos ? string::npos : b - a), m)) legal.push_back(m);
         }
-        std::cout << choose(cells, me, actions, nb) << std::endl;  // flush each turn
+        NODE_LIMIT = cliNodes > 0 ? cliNodes : (first ? FIRST_TURN_NODES : TURN_NODES);
+        TIME_MS = first ? FIRST_TURN_MS : TURN_MS;
+        first = false;
+        if (legal.empty()) { cout << "random" << endl; continue; }
+        Move best = search(s, legal);
+        cerr << "d=" << lastDepth << " n=" << nodes << " ms="
+             << chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - t0).count() << endl;
+        cout << actionText(best) << endl;
     }
-    return 0;
 }

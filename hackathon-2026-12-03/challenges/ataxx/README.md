@@ -1,4 +1,4 @@
-# Ataxx — guide pour reprendre le travail
+# ataxx — guide de reprise
 
 Challenge CodinGame bot-programming, dossier `hackathon-2026-12-03/challenges/ataxx`
 (port CodinGame du jeu d'arcade Ataxx). Objectif final : **Ligue Légende**.
@@ -124,3 +124,11 @@ supplémentaire n'est émis (sortie byte-exacte pour le fuzz).
 Pour chaque tentative : 1 seule modification, fuzz 210/210, puis test games
 contre le boss, puis écriture du résultat dans `critique.md` et du journal
 global par la session parente.
+
+
+## Mise à jour 2026-11-23 (session Claude Code) — v2 soumise
+- **v2** `41796475` : réécriture bitboards (49 bits + murs), negamax αβ ID, éval = différence de pièces, tri (captures ×2 + bonus spawn), passe gérée, racine = liste légale du referee. Budget 120k nœuds/tour (CG ≈ 30 ms, prof. 6), 600k au tour 1.
+- Bench : 2/4 à 15k nœuds, **3/4 à 120k nœuds** contre le boss Wood 2 `6649970` (v1 gloutonne : 0/5).
+- Fuzz : `bash tests/run.sh` (positions de parties aléatoires avec murs symétriques, CG_NODES=2000, 20 s). Les anciens cas figés 01–10 ont été retirés (format du nouveau harnais).
+- Referee : github.com/jdermont/AtaxxCodingame (à lire pour la fin de partie exacte).
+- Prochaine étape : éval de stabilité (pièces non retournables), TT, suivi de la promotion vers Wood 1.

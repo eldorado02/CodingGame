@@ -53,7 +53,7 @@ soumission suivent, du plus ancien au plus récent.
 | 26 | `shobu` | Shobu | Wood 2 | 12/— | Soumis `41786861` (promu Wood 3) ; optimisation Wood 3 en cours | Legend |
 | 27 | `brandubh` | Brandubh | Wood (unique) | en cours | Soumis `41795979` (v9 referee exact, fuzz 200/200, 0/3 vs rang 15) | rang |
 | 28 | `elemental-wars` | Elemental Wars | Wood 1 | ~38/64 | Promu Wood 1 ; soumis `41788154` (v6 prédiction/interception, fuzz 200/200, 5/5 vs ancien bot) | Legend |
-| 29 | `ataxx` | Ataxx | — | —/— | À FAIRE | Legend |
+| 29 | `ataxx` | Ataxx | Wood 2 | en cours | Soumis `41796475` (v2 αβ, fuzz 200/200, 3/4 vs boss Wood 2) | Wood 1 |
 | 30 | `chain-reaction-1` | Chain Reaction | Wood (unique) | en cours | Soumis `41796092` (v1 αβ, fuzz 200/200, 1/3 vs rang 37) | rang |
 | 31 | `winter-challenge-2026-snakebyte` | SnakeByte - Winter Challenge 2026 | — | —/— | À FAIRE | Legend |
 | 32 | `beeminegame` | BeeMineGame | — | —/— | À FAIRE | Legend |
