@@ -1,95 +1,102 @@
-// Breakthrough 8x8 — C++ (submitted version). Port of solutions/python/bot.py.
-// Template board-2p: negamax + alpha-beta + iterative deepening, node budget.
-// Board index = rank * 8 + file (rank 0 = "1", file 0 = "a").
-// Cell: 0 empty, 1 White (to rank 7), 2 Black (to rank 0).
-// Compile: g++ -O2 -std=c++20 -Wall -Wextra bot.cpp -o bot
+// Breakthrough 8x8 — C++ (submitted version), v3 bitboards.
+// Port of solutions/python/bot.py (reference of the differential fuzz).
+// Bit index = rank * 8 + file (rank 0 = "1", file 0 = "a").
+// White (1) moves to rank 7, Black (2) to rank 0.
+// Runner rule at every node: side to move with a piece one step from goal
+// wins next move; opponent with >=2 runners, or 1 we cannot capture -> lost.
+// CodinGame compiles without -O2: the pragma is mandatory (ALGO.md §0.4).
 #pragma GCC optimize("O3,unroll-loops")
-#include <algorithm>
-#include <array>
 #include <chrono>
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <set>
 #include <string>
 #include <vector>
 using namespace std;
+using U64 = uint64_t;
 
-// ---------------------------------------------------------------- GAME: state
 constexpr int WHITE = 1, BLACK = 2;
-constexpr int DIR[3] = {0, 1, -1};
-constexpr int GOAL[3] = {0, 7, 0};
+constexpr U64 FILE_A = 0x0101010101010101ULL;
+constexpr U64 FILE_H = 0x8080808080808080ULL;
+constexpr U64 rankMask(int r) { return 0xFFULL << (8 * r); }
 constexpr int ADV[8] = {0, 4, 10, 20, 36, 60, 110, 0};
 constexpr int PIECE = 1000, DEFENDED = 12, HOME_GUARD = 18;
 constexpr int MAX_MOVES = 48;
 
 struct Move { int from = 0, to = 0; };
-struct State { array<int, 64> cell{}; int toMove = WHITE; };
+struct State {
+    U64 w = 0xFFFFULL, b = 0xFFFFULL << 48;
+    int toMove = WHITE;
+    U64 own(int p) const { return p == WHITE ? w : b; }
+};
 
-State initialState() {
-    State s;
-    for (int i = 0; i < 16; ++i) { s.cell[i] = WHITE; s.cell[63 - i] = BLACK; }
-    return s;
+inline int popc(U64 x) { return __builtin_popcountll(x); }
+
+inline U64 attacks(int p, U64 x) {
+    if (p == WHITE) return ((x << 7) & ~FILE_H) | ((x << 9) & ~FILE_A);
+    return ((x >> 9) & ~FILE_H) | ((x >> 7) & ~FILE_A);
 }
 
-int winner(const State &s) {
-    for (int i = 0; i < 8; ++i) {
-        if (s.cell[56 + i] == WHITE) return WHITE;
-        if (s.cell[i] == BLACK) return BLACK;
-    }
-    int w = 0, b = 0;
-    for (int v : s.cell) { if (v == WHITE) ++w; else if (v == BLACK) ++b; }
-    if (w == 0) return BLACK;
-    if (b == 0) return WHITE;
+inline U64 runners(int p, U64 x) { return x & (p == WHITE ? rankMask(6) : rankMask(1)); }
+
+inline int winner(const State &s) {
+    if (s.w & rankMask(7)) return WHITE;
+    if (s.b & rankMask(0)) return BLACK;
+    if (!s.w) return BLACK;
+    if (!s.b) return WHITE;
     return 0;
 }
 
 int genMoves(const State &s, Move *out) {
-    int p = s.toMove, d = DIR[p], n = 0;
-    for (int sq = 0; sq < 64; ++sq) {
-        if (s.cell[sq] != p) continue;
+    int p = s.toMove, d = (p == WHITE) ? 1 : -1, n = 0;
+    U64 mine = s.own(p), occ = s.w | s.b, x = mine;
+    while (x) {
+        int sq = __builtin_ctzll(x);
+        x &= x - 1;
         int r = sq >> 3, f = sq & 7, nr = r + d;
         if (nr < 0 || nr > 7) continue;
         for (int df = -1; df <= 1; ++df) {
             int nf = f + df;
             if (nf < 0 || nf > 7) continue;
-            int t = nr * 8 + nf, v = s.cell[t];
-            if (v == 0 || (df != 0 && v != p)) out[n++] = {sq, t};
+            int t = nr * 8 + nf;
+            U64 tb = 1ULL << t;
+            if (tb & mine) continue;
+            if (df == 0 && (tb & occ)) continue;
+            out[n++] = {sq, t};
         }
     }
     return n;
 }
 
-State applyMove(const State &s, const Move &m) {
-    State t = s;
-    t.cell[m.to] = t.cell[m.from];
-    t.cell[m.from] = 0;
-    t.toMove = 3 - s.toMove;
+inline State applyMove(const State &s, const Move &m) {
+    U64 fb = 1ULL << m.from, tb = 1ULL << m.to;
+    State t;
+    if (s.toMove == WHITE) { t.w = (s.w ^ fb) | tb; t.b = s.b & ~tb; t.toMove = BLACK; }
+    else { t.w = s.w & ~tb; t.b = (s.b ^ fb) | tb; t.toMove = WHITE; }
     return t;
 }
 
-int sideScore(const State &s, int p) {
-    int d = DIR[p], sc = 0;
-    for (int sq = 0; sq < 64; ++sq) {
-        if (s.cell[sq] != p) continue;
-        int r = sq >> 3, f = sq & 7;
-        int pr = (p == WHITE) ? r : 7 - r;
-        sc += PIECE + ADV[pr];
-        if (pr == 0) sc += HOME_GUARD;
-        int br = r - d;
-        if (br >= 0 && br <= 7) {
-            if ((f > 0 && s.cell[br * 8 + f - 1] == p) || (f < 7 && s.cell[br * 8 + f + 1] == p))
-                sc += DEFENDED;
-        }
+int sideScore(int p, U64 x) {
+    int sc = PIECE * popc(x);
+    for (int r = 0; r < 8; ++r) {
+        int c = popc(x & rankMask(r));
+        if (c) sc += c * ADV[p == WHITE ? r : 7 - r];
     }
+    sc += HOME_GUARD * popc(x & (p == WHITE ? rankMask(0) : rankMask(7)));
+    sc += DEFENDED * popc(x & attacks(p, x));
     return sc;
 }
 
-int evaluate(const State &s) { return sideScore(s, s.toMove) - sideScore(s, 3 - s.toMove); }
+int evaluate(const State &s) {
+    int p = s.toMove, o = 3 - p;
+    return sideScore(p, s.own(p)) - sideScore(o, s.own(o));
+}
 
-int orderKey(const State &s, const Move &m) {
-    int k = 0;
-    if ((m.to >> 3) == GOAL[s.toMove]) k += 4;
-    if (s.cell[m.to] != 0) k += 2;
+inline int orderKey(const State &s, const Move &m) {
+    int k = 0, goal = (s.toMove == WHITE) ? 7 : 0;
+    if ((m.to >> 3) == goal) k += 4;
+    if ((1ULL << m.to) & (s.w | s.b)) k += 2;
     return k;
 }
 
@@ -97,15 +104,22 @@ int orderKey(const State &s, const Move &m) {
 constexpr int WIN = 1000000;
 constexpr int INF = 1 << 30;
 constexpr int MAX_DEPTH = 64;
-long long NODE_LIMIT = 150000;
-int TIME_MS = 60;
-
+long long NODE_LIMIT = 60000;
+int TIME_MS = 75;
 long long nodes = 0;
 bool aborted = false;
+int lastDepth = 0;
 chrono::steady_clock::time_point t0;
 
-// stable insertion sort, key descending (no STL in the hot path: CG builds
-// without -O2, only the pragma applies)
+inline int runnerRule(const State &s, int ply) {
+    int p = s.toMove, o = 3 - p;
+    if (runners(p, s.own(p))) return WIN - (ply + 1);
+    U64 r = runners(o, s.own(o));
+    if (r && ((r & (r - 1)) || !(r & attacks(p, s.own(p))))) return -(WIN - (ply + 2));
+    return 0;
+}
+
+// stable insertion sort, key descending (no STL in the hot path)
 void orderMoves(const State &s, Move *mv, int n) {
     int key[MAX_MOVES];
     for (int i = 0; i < n; ++i) key[i] = orderKey(s, mv[i]);
@@ -124,6 +138,8 @@ int negamax(const State &s, int depth, int alpha, int beta, int ply) {
     }
     int w = winner(s);
     if (w) return (w == s.toMove) ? WIN - ply : -(WIN - ply);
+    int q = runnerRule(s, ply);
+    if (q) return q;
     if (depth == 0) return evaluate(s);
     Move mv[MAX_MOVES];
     int n = genMoves(s, mv);
@@ -139,8 +155,6 @@ int negamax(const State &s, int depth, int alpha, int beta, int ply) {
     }
     return best;
 }
-
-int lastDepth = 0;
 
 Move search(const State &root, vector<Move> mv) {
     lastDepth = 0;
@@ -160,7 +174,9 @@ Move search(const State &root, vector<Move> mv) {
         if (aborted) break;
         best = cur;
         lastDepth = depth;
-        rotate(mv.begin(), mv.begin() + curIdx, mv.begin() + curIdx + 1);
+        Move pv = mv[curIdx];
+        for (int i = curIdx; i > 0; --i) mv[i] = mv[i - 1];
+        mv[0] = pv;
         if (bestV >= WIN - MAX_DEPTH || bestV <= -(WIN - MAX_DEPTH)) break;
     }
     return best;
@@ -181,20 +197,26 @@ bool validMoveText(const string &t) {
         && t[2] >= 'a' && t[2] <= 'h' && t[3] >= '1' && t[3] <= '8';
 }
 
+string firstToken(const string &line) {
+    size_t a = line.find_first_not_of(" \t\r");
+    if (a == string::npos) return "";
+    size_t b = line.find_first_of(" \t\r", a);
+    return line.substr(a, b == string::npos ? string::npos : b - a);
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     long long cliNodes = -1;
     if (const char *e = getenv("CG_NODES")) cliNodes = atoll(e);
-    State s = initialState();
+    State s;
     int me = 0;
     bool first = true;
     string line;
     while (getline(cin, line)) {
         t0 = chrono::steady_clock::now();
-        string opp;
-        { size_t a = line.find_first_not_of(" \t\r"); size_t b = line.find_first_of(" \t\r", a);
-          opp = (a == string::npos) ? "None" : line.substr(a, b == string::npos ? string::npos : b - a); }
+        string opp = firstToken(line);
+        if (opp.empty()) opp = "None";
         string nl;
         if (!getline(cin, nl)) break;
         int n = atoi(nl.c_str());
@@ -202,18 +224,16 @@ int main() {
         for (int i = 0; i < n; ++i) {
             string t;
             if (!getline(cin, t)) break;
-            size_t a = t.find_first_not_of(" \t\r");
-            if (a == string::npos) continue;
-            t = t.substr(a);
+            t = firstToken(t);
             if (validMoveText(t)) legal.push_back(t.substr(0, 4));
         }
         if (me == 0) me = (opp == "None") ? WHITE : BLACK;
         if (validMoveText(opp)) {
-            State t = s; t.toMove = 3 - me;
-            s = applyMove(t, {sqOf(opp, 0), sqOf(opp, 2)});
+            s.toMove = 3 - me;
+            s = applyMove(s, {sqOf(opp, 0), sqOf(opp, 2)});
         }
         s.toMove = me;
-        // first turn: 1000 ms budget, later 100 ms (CG server ~2x slower)
+        // CG server ~1.2 M nodes/s: 600k on turn 1 (1000 ms), 60k later (100 ms)
         NODE_LIMIT = cliNodes > 0 ? cliNodes : (first ? 600000 : 60000);
         TIME_MS = first ? 700 : 75;
         first = false;
@@ -231,7 +251,6 @@ int main() {
             out = nameOf(m);
             s = applyMove(s, m);
         }
-        // diagnostics on stderr only (ignored by the fuzz comparison)
         cerr << "d=" << lastDepth << " n=" << nodes << " ms="
              << chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - t0).count() << endl;
         cout << out << endl;

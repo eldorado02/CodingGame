@@ -37,7 +37,7 @@ def make_case(rng):
             opp = bot.gen_moves(s)
             if not opp:
                 break
-            caps = [m for m in opp if s.cell[m[1]] != 0]
+            caps = [m for m in opp if (1 << m[1]) & (s.w | s.b)]
             m = rng.choice(caps) if caps and rng.random() < 0.6 else rng.choice(opp)
             lines.append(bot.name_of(m))
             s = bot.apply_move(s, m)

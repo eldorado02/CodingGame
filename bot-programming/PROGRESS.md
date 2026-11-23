@@ -107,7 +107,7 @@ soumission suivent, du plus ancien au plus récent.
 | 80 | `tower-dereference` | Tower Dereference | — | —/— | À FAIRE | Legend |
 | 81 | `onitama` | Onitama | — | —/— | À FAIRE | Legend |
 | 82 | `paper-soccer` | Paper soccer | — | —/— | À FAIRE | Legend |
-| 83 | `breakthrough` | Breakthrough | — | —/— | À FAIRE | Legend |
+| 83 | `breakthrough` | Breakthrough | Wood (unique) | en cours | Soumis `41795905` (v3 bitboards, fuzz 200/200, 4/4 vs rang 97) | rang |
 | 84 | `oware-abapa` | Oware Abapa | — | —/— | À FAIRE | Legend |
 | 85 | `bandas` | Bandas | — | —/— | À FAIRE | Legend |
 | 86 | `bit-runner-2048` | Bit Runner 2048 | — | —/— | À FAIRE | Legend |

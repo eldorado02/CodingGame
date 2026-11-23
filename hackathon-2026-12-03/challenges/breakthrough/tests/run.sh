@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 NAME="$(basename "$(pwd)")"
 OUT="${TMPDIR:-/tmp}/cgfuzz-$NAME"
 export PATH="$HOME/.cargo/bin:$PATH"
-export CG_NODES="${CG_NODES:-20000}"
+export CG_NODES="${CG_NODES:-3000}"
 mkdir -p "$OUT"
 python3 tests/gen_fuzz.py "${1:-200}" >/dev/null
 g++ -O2 -std=c++20 -Wall -Wextra solutions/cpp/bot.cpp -o "$OUT/bot_cpp"

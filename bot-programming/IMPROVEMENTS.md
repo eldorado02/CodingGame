@@ -534,3 +534,27 @@ quota gratuit.
   profondeur 6 conservée (`41787653`).
 - Leçon : garder ≥2× de marge sous la limite de temps officielle ; une
   optimisation de 20 % ne rend pas un budget serré sûr.
+
+### 2026-11-23 — Infra (session Claude Code)
+- Constat : la campagne reprend sous Claude Code ; 3/100 jeux sont dans leur ligue maximale ; aucun outil ne savait mesurer « ligue max existante ».
+- Hypothèse : beaucoup de jeux communautaires ont une ligue unique `Wood` ou un plafond Wood 1 ; une soumission notée suffit à les « finir ».
+- Sources : `GET /puzzles/<id>/leaderboard?limit=1` (ligue du rang 1), `/progress`.
+- Action : `tools/status.py` (statut des 100 jeux → `status.json`), `tools/bench.py` (N test games → victoires), `tools/research.sh` (recherche via opencode), `ALGO.md`, template `board-2p` 4 langages, skills `.claude/skills/cg-*`.
+- Résultat : 23 jeux à ligue unique sans soumission, ~30 jeux communautaires plafonnés à Wood 1, 31 concours à amener en Legend.
+- Leçon : la « Légende » n'existe pas pour beaucoup de jeux communautaires : cible = ligue du rang 1.
+
+### 2026-11-23 — CodinGame compile le C++ sans -O2
+- Constat : Breakthrough v1 déclenche le garde-temps à chaque tour ; 600k nœuds = 494 ms sur CG contre 114 ms en local -O2.
+- Hypothèse : pas d'optimisation côté serveur.
+- Sources : logs `breakthrough/logs/diag-*.log` ; build local sans flag : 601 ms (identique au serveur).
+- Action : `#pragma GCC optimize("O3,unroll-loops")` avant les includes (pas de `target` : casse g++ 13), tri par insertion maison.
+- Résultat : 33/34 bots C++ du dépôt n'ont pas le pragma → tous tournent ~2–4× plus lentement que prévu.
+- Leçon : ajouter le pragma à chaque bot et re-soumettre les jeux bloqués près du boss (CodeBusters, Troll Farm, Olymbits, Green Circle, Shobu).
+
+### 2026-11-23 — Breakthrough — v3 soumise
+- Constat : v1/v2 perdent contre le rang 97 sur des percées à 5 plis.
+- Hypothèse : règle exacte des coureurs + bitboards.
+- Sources : énoncé, logs de test games.
+- Action : v3 4 langages, fuzz 200/200 (flux auto-générés), bench.
+- Résultat : 4/4 contre le rang 97, 0/4 contre le rang 33. Soumission `41795905`.
+- Leçon : voir `challenges/breakthrough/critique.md`.

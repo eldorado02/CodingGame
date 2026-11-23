@@ -1,69 +1,83 @@
 #!/usr/bin/env python3
-"""Breakthrough 8x8 — Python reference (template board-2p).
+"""Breakthrough 8x8 — Python reference (template board-2p), v3 bitboards.
 
-Board: index = rank * 8 + file, rank 0 = "1", file 0 = "a".
-Cell: 0 empty, 1 White (moves to rank 7), 2 Black (moves to rank 0).
+Bit index = rank * 8 + file (rank 0 = "1", file 0 = "a").
+White (1) moves to rank 7, Black (2) moves to rank 0.
+v3: bitboards + exact runner rule at every node (see plan.md):
+  * side to move owns a piece one step from goal -> wins next move;
+  * opponent owns >=2 such runners, or 1 we cannot capture -> lost in 2 plies.
 The bot tracks the board from the opponent's move and its own moves, and only
 prints a move present in the legal-move list given by the referee.
 """
 import os
 import sys
 
-# ------------------------------------------------------------- GAME: state
 WHITE, BLACK = 1, 2
-DIR = (0, 1, -1)          # rank step per colour
-GOAL = (0, 7, 0)          # rank to reach per colour
-# advancement bonus by progress (0 = own home row, 7 = goal row)
-ADV = (0, 4, 10, 20, 36, 60, 110, 0)
+M64 = (1 << 64) - 1
+FILE_A = 0x0101010101010101
+FILE_H = 0x8080808080808080
+RANK = [0xFF << (8 * r) for r in range(8)]
+ADV = (0, 4, 10, 20, 36, 60, 110, 0)   # by progress (0 = own home row)
 PIECE = 1000
 DEFENDED = 12
 HOME_GUARD = 18
 
 
-class State:
-    __slots__ = ("cell", "to_move")
+def popcount(x):
+    return bin(x).count("1")
 
-    def __init__(self, cell, to_move):
-        self.cell = cell
+
+class State:
+    __slots__ = ("w", "b", "to_move")
+
+    def __init__(self, w, b, to_move):
+        self.w = w
+        self.b = b
         self.to_move = to_move
+
+    def own(self, p):
+        return self.w if p == WHITE else self.b
 
 
 def initial_state():
-    cell = [0] * 64
-    for i in range(16):
-        cell[i] = WHITE
-        cell[63 - i] = BLACK
-    return State(cell, WHITE)
+    return State(0xFFFF, 0xFFFF << 48, WHITE)
+
+
+def attacks(p, x):
+    """Squares diagonally in front of the pieces x of colour p."""
+    if p == WHITE:
+        return (((x << 7) & ~FILE_H) | ((x << 9) & ~FILE_A)) & M64
+    return ((x >> 9) & ~FILE_H) | ((x >> 7) & ~FILE_A)
+
+
+def runners(p, x):
+    """Pieces of colour p one step from their goal row."""
+    return x & (RANK[6] if p == WHITE else RANK[1])
 
 
 def winner(s):
-    """0 none, else winning colour (goal row reached or no piece left)."""
-    w = b = 0
-    for i in range(8):
-        if s.cell[56 + i] == WHITE:
-            return WHITE
-        if s.cell[i] == BLACK:
-            return BLACK
-    for v in s.cell:
-        if v == WHITE:
-            w += 1
-        elif v == BLACK:
-            b += 1
-    if w == 0:
+    if s.w & RANK[7]:
+        return WHITE
+    if s.b & RANK[0]:
         return BLACK
-    if b == 0:
+    if not s.w:
+        return BLACK
+    if not s.b:
         return WHITE
     return 0
 
 
 def gen_moves(s):
-    """Moves (from, to) in square order, then targets file-1, file, file+1."""
+    """(from, to) by ascending square, then target file-1, file, file+1."""
     p = s.to_move
-    d = DIR[p]
+    mine = s.own(p)
+    d = 1 if p == WHITE else -1
     out = []
-    for sq in range(64):
-        if s.cell[sq] != p:
-            continue
+    x = mine
+    while x:
+        low = x & -x
+        sq = low.bit_length() - 1
+        x ^= low
         r, f = sq >> 3, sq & 7
         nr = r + d
         if nr < 0 or nr > 7:
@@ -73,52 +87,46 @@ def gen_moves(s):
             if nf < 0 or nf > 7:
                 continue
             t = nr * 8 + nf
-            v = s.cell[t]
-            if v == 0 or (df != 0 and v != p):
-                out.append((sq, t))
+            tb = 1 << t
+            if tb & mine:
+                continue
+            if df == 0 and tb & (s.w | s.b):
+                continue
+            out.append((sq, t))
     return out
 
 
 def apply_move(s, m):
-    cell = s.cell[:]
-    cell[m[1]] = cell[m[0]]
-    cell[m[0]] = 0
-    return State(cell, 3 - s.to_move)
+    fb, tb = 1 << m[0], 1 << m[1]
+    if s.to_move == WHITE:
+        return State((s.w ^ fb) | tb, s.b & ~tb, BLACK)
+    return State(s.w & ~tb, (s.b ^ fb) | tb, WHITE)
 
 
-def progress(p, sq):
-    r = sq >> 3
-    return r if p == WHITE else 7 - r
-
-
-def side_score(s, p):
-    d = DIR[p]
-    sc = 0
-    for sq in range(64):
-        if s.cell[sq] != p:
-            continue
-        pr = progress(p, sq)
-        sc += PIECE + ADV[pr]
-        if pr == 0:
-            sc += HOME_GUARD
-        r, f = sq >> 3, sq & 7
-        br = r - d
-        if 0 <= br <= 7:
-            if (f > 0 and s.cell[br * 8 + f - 1] == p) or (f < 7 and s.cell[br * 8 + f + 1] == p):
-                sc += DEFENDED
+def side_score(p, x):
+    sc = PIECE * popcount(x)
+    for r in range(8):
+        c = popcount(x & RANK[r])
+        if c:
+            sc += c * ADV[r if p == WHITE else 7 - r]
+    home = RANK[0] if p == WHITE else RANK[7]
+    sc += HOME_GUARD * popcount(x & home)
+    sc += DEFENDED * popcount(x & attacks(p, x))
     return sc
 
 
 def evaluate(s):
     p = s.to_move
-    return side_score(s, p) - side_score(s, 3 - p)
+    o = 3 - p
+    return side_score(p, s.own(p)) - side_score(o, s.own(o))
 
 
 def order_key(s, m):
     k = 0
-    if (m[1] >> 3) == GOAL[s.to_move]:
+    goal = 7 if s.to_move == WHITE else 0
+    if (m[1] >> 3) == goal:
         k += 4
-    if s.cell[m[1]] != 0:
+    if (1 << m[1]) & (s.w | s.b):
         k += 2
     return k
 
@@ -127,7 +135,20 @@ def order_key(s, m):
 WIN = 1000000
 INF = 1 << 30
 MAX_DEPTH = 64
-NODE_LIMIT = int(os.environ.get("CG_NODES", "120000"))
+NODE_LIMIT = int(os.environ.get("CG_NODES", "60000"))
+
+
+def runner_rule(s, ply):
+    """Exact short-term outcome or 0. Called on non-terminal positions."""
+    p = s.to_move
+    o = 3 - p
+    if runners(p, s.own(p)):
+        return WIN - (ply + 1)
+    r = runners(o, s.own(o))
+    if r:
+        if r & (r - 1) or not (r & attacks(p, s.own(p))):
+            return -(WIN - (ply + 2))
+    return 0
 
 
 class Aborted(Exception):
@@ -145,6 +166,9 @@ class Search:
         w = winner(s)
         if w:
             return WIN - ply if w == s.to_move else -(WIN - ply)
+        q = runner_rule(s, ply)
+        if q:
+            return q
         if depth == 0:
             return evaluate(s)
         mv = gen_moves(s)
@@ -167,6 +191,7 @@ class Search:
         mv.sort(key=lambda m: -order_key(root, m))
         best = mv[0]
         self.nodes = 0
+        self.depth = 0
         for depth in range(1, MAX_DEPTH + 1):
             alpha, best_v, cur, cur_idx = -INF, -INF, mv[0], 0
             try:
@@ -179,6 +204,7 @@ class Search:
             except Aborted:
                 break
             best = cur
+            self.depth = depth
             mv.insert(0, mv.pop(cur_idx))
             if best_v >= WIN - MAX_DEPTH or best_v <= -(WIN - MAX_DEPTH):
                 break
@@ -224,7 +250,8 @@ def main():
         if me == 0:
             me = WHITE if opp == "None" else BLACK
         if valid_move_text(opp):
-            s = apply_move(State(s.cell, 3 - me), move_of(opp))
+            s.to_move = 3 - me
+            s = apply_move(s, move_of(opp))
         s.to_move = me
         legal_set = set(legal)
         mine = [m for m in gen_moves(s) if name_of(m) in legal_set]
