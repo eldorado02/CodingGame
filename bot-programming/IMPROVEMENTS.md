@@ -630,3 +630,11 @@ quota gratuit.
 - Action : réécriture 4 langages bitboards, fuzz 200/200 ; budget 15k puis 120k nœuds (CG 26–38 ms)
 - Résultat : 2/4 puis 3/4 contre le boss `6649970` ; soumission `41796475`
 - Leçon : la profondeur compte plus que l'éval dans Ataxx : budget ×8 = +1 victoire / 4
+
+### 2026-11-23 — Clobber — v1 αβ mobilité soumise
+- Constat : jeu jamais joué ; pas de liste de coups fournie
+- Hypothèse : αβ + éval de mobilité (classique Clobber) bat le boss Wood 2
+- Sources : énoncé, referee darkhorse64/CG_Clobber, GitHub TidyMaze/clobber (MCTS + minimax mobilité), dépôts αβ académiques (gh_search.sh)
+- Action : 4 langages ; comptage de mobilité par décalages/popcount (×2,6) ; budget 60k nœuds
+- Résultat : 3/4 contre le boss `3835619` mais grâce à ses timeouts ; soumission `41796537`
+- Leçon : un boss qui dépasse le temps gonfle les résultats : compter les parties complètes séparément

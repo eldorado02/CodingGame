@@ -1,0 +1,11 @@
+[package]
+name = "clobber_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "clobber_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 3
