@@ -1,0 +1,11 @@
+[package]
+name = "yavalath_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "yavalath_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 3

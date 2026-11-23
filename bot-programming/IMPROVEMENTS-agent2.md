@@ -7,3 +7,11 @@
 - Action : 4 langages (tableaux statiques, RNG xorshift64 + multiplication-décalage), fuzz 200/200 ; budget 2600 itérations après mesure CG (3000 = 44 ms).
 - Résultat : 3/3 contre le rang 61 ; soumission `41796234` (rang 57 provisoire à 14 %).
 - Leçon : vérifier la géométrie par une partie réelle ; en MCTS, expansion après k visites, sinon la création de nœuds domine.
+
+### 2026-11-23 — Yavalath — v1 αβ + coups forcés soumise
+- Constat : jeu jamais joué (ligue unique Wood, 256 joueurs).
+- Hypothèse : αβ + extension des blocages forcés + éval fenêtres de 4 suffit pour le milieu de tableau.
+- Sources : referee MultiStruct/Yavalath (lu), sonde protocole (vol autorisé seulement au 1er tour du joueur 2).
+- Action : 4 langages, fuzz 200/200, 14000 nœuds/tour.
+- Résultat : 3/3 rang 133, 3/3 rang 61 ; soumission `41796345`.
+- Leçon : lire le referee quand le dépôt est cité dans l'énoncé (règle « ligne la plus longue » ; vol à `turn == 1`).

@@ -14,3 +14,6 @@
 
 ## Classe de problème (ALGO.md) et approche retenue
 Connexion (BL/C), branching ~120 → MCTS + RAVE (pas d'αβ). Prochaine amélioration : réponse « sauvegarde de pont » dans les playouts.
+
+## Recherche OpenCode (2026-11-23)
+- `research.sh hex` : les 3 modèles de la chaîne ont échoué (« all models failed ») → recherche manuelle uniquement.
