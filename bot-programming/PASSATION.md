@@ -179,3 +179,22 @@ print(d['limits']['test_games'])   # quota du jeu
 - CodeBusters `cb_bustrange`, `cb_v2`, `cb_rel`, `cb_pos`, `cb_dual`, `cb_v7`.
 - Chain Reaction / Ataxx / Brandubh / Shobu Wood 2 sans nouvelle hypothèse issue d'une recherche.
 - Divulguer le token ; committer des artifacts de build.
+
+## 9. Session Claude Code du 2026-11-23 (reprise après OpenCode)
+
+### Outils ajoutés
+- `tools/status.py` : statut des 100 jeux (ligue, ligue du rang 1 = ligue max existante, boss, écart) → `status.json`. **Cible = ligue du rang 1** (Legend pour les concours ; souvent Wood 1 ou ligue unique `Wood` pour les jeux communautaires).
+- `tools/bench.py` : N test games → victoires (gère 429 et coupures réseau). `tools/research.sh` : deep search via opencode (deepseek → hy4 → nemotron). `tools/gh_search.sh` : recherche GitHub + GitLab. `tools/log_attempt.py` : entrée IMPROVEMENTS + critique + ligne PROGRESS. `tools/push.sh` : push avec retries.
+- `hackathon-2026-12-03/templates/board-2p` (moteur αβ 4 langages, fuzz) + `new_challenge.sh`. `ALGO.md` (classes de problèmes → approche, budgets, pièges). Skills `.claude/skills/cg-*`.
+
+### Leçons majeures
+- **CodinGame compile le C++ sans -O2** : `#pragma GCC optimize("O3,unroll-loops")` obligatoire (33/34 anciens bots ne l'avaient pas → à re-soumettre pour les jeux à recherche).
+- Calibrer `TURN_NODES` sur les logs serveur `d= n= ms=` ; TIMEGUARD = coups dégradés.
+- Les test games nous placent toujours en siège 0 : Oware v1 jouait des coups illégaux en joueur 1 (le referee ajoute 6). Lire le parsing de sortie du referee.
+
+### Soumis pendant la session (C++, fuzz 200/200 en 4 langages)
+breakthrough, brandubh, checkers, chain-reaction-1, mad-knights, impasse, minishogi, dice-shogi (ligue unique : DONE) ; isola (Wood 2), ataxx (Wood 1 = DONE), clobber, oware-abapa (v1.1), counting-tictactoe, onitama, amazons, lines-of-action, dots-and-boxes, penguins (Wood 2/3, promotions en cours).
+Un sous-agent Opus (effort high) traite : hex, yavalath, twixt-pp, paper-soccer, domain-expansion, bandas, tower-dereference, code-keeper---the-hero, 6-nimmt, back-to-the-code (journal : `IMPROVEMENTS-agent2.md`, `ALGO-agent2.md` à fusionner).
+
+### Suite prévue
+nine-mens-morris, atari-go(-9x9), abalone, volcanoes, tulips-and-daisies, blocking, night-of-war, tryangle-catch, yinsh, clash-of-bots, start-up, locm-constructed, platinum-rift-2 ; puis améliorations (penguins v3, lines-of-action éval Winands, clobber, brandubh) et re-soumission avec pragma des bots des concours proches du boss (CodeBusters, Troll Farm, Olymbits, Green Circle, Shobu).
