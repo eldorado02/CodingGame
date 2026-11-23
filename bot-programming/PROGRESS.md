@@ -62,7 +62,7 @@ soumission suivent, du plus ancien au plus récent.
 | 35 | `domain-expansion` | Domain Expansion | — | —/— | À FAIRE | Legend |
 | 36 | `gargoyles-versus-santas` | Gargoyles versus Santas | — | —/— | À FAIRE | Legend |
 | 37 | `hex` | Hex | — | —/— | À FAIRE | Legend |
-| 38 | `dice-shogi` | Dice Shogi | — | —/— | À FAIRE | Legend |
+| 38 | `dice-shogi` | Dice Shogi | Wood (unique) | en cours | Soumis `41796284` (v1 gloutonne, fuzz 200/200, 1/3 vs rang 40) | rang |
 | 39 | `minishogi` | Minishogi | Wood (unique) | en cours | Soumis `41796267` (v1 gloutonne, fuzz 200/200, 3/3 vs rang 61) | rang |
 | 40 | `seabed-security` | Seabed Security - Fall Challenge 2023 | — | — | À FAIRE | Legend |
 | 41 | `poker` | Poker | — | —/— | À FAIRE | Legend |

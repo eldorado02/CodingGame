@@ -606,3 +606,11 @@ quota gratuit.
 - Action : 4 langages, fuzz 200/200 (plateaux/actions aléatoires)
 - Résultat : 3/3 contre le rang 61 ; soumission `41796267`
 - Leçon : toujours sonder l'orientation des coordonnées (ici colonne 1 = droite) avant d'écrire l'éval
+
+### 2026-11-23 — Dice Shogi — v1 gloutonne soumise
+- Constat : jeu jamais joué ; minishogi + dé imposant la colonne
+- Hypothèse : le glouton de minishogi suffit pour une 1re soumission
+- Sources : énoncé, referee jdermont/DiceShogi cité
+- Action : copie de minishogi avec ligne de dé, fuzz 200/200
+- Résultat : 1/3 contre le rang 40 ; soumission `41796284` (1re soumission autorisée sous 3/5)
+- Leçon : le hasard du dé demande une anticipation des réponses adverses (expectimax), le glouton ne suffit pas
