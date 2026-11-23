@@ -23,3 +23,11 @@
 - Action : 4 langages, fuzz 200/200, 30 ms au pire sur CG.
 - Résultat : 6/6 contre rangs 65/49 (bots stub invalides), 0/5 contre rangs 25/9 ; soumission `41796478`.
 - Leçon : éval de connexion plate → égalités départagées par l'index → agglutinement au bord ; ajouter un départage central.
+
+### 2026-11-23 — Paper Soccer — v1b αβ tours complets soumise
+- Constat : jeu jamais joué (ligue unique Wood, 241 joueurs).
+- Hypothèse : αβ sur tours complets (DFS des rebonds) + éval rangs/distance BFS (Lecorbio, rang 2) bat le milieu de tableau.
+- Sources : referee jdermont/CodinGame-paper-soccer (lu), Lecorbio/paper-soccer-strategy-engine `docs/algorithms.md`, rapport OpenCode (37 URL).
+- Action : 4 langages, fuzz 200/200 (flux multi-tours, réponses par la référence Python) ; garde-temps 150 → 80 ms vérifié à chaque nœud après 153 ms observés.
+- Résultat : 9/9 contre rangs 97, 49, 33 ; soumission `41796586`.
+- Leçon : coups composés = coût par nœud très variable → garde-temps à chaque nœud.
