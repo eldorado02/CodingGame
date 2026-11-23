@@ -15,3 +15,11 @@
 - Action : 4 langages, fuzz 200/200, 14000 nœuds/tour.
 - Résultat : 3/3 rang 133, 3/3 rang 61 ; soumission `41796345`.
 - Leçon : lire le referee quand le dépôt est cité dans l'énoncé (règle « ligne la plus longue » ; vol à `turn == 1`).
+
+### 2026-11-23 — TwixT-PP — v1 distance de cavalier + 2 plis soumise
+- Constat : jeu jamais joué (ligue unique Wood, 128 joueurs), referee introuvable.
+- Hypothèse : éval distance en pegs (BFS 0-1, segments coupés par les liens adverses) + 2 plis.
+- Sources : énoncé, bot public TidyMaze/Twixt-PP (protocole), test games.
+- Action : 4 langages, fuzz 200/200, 30 ms au pire sur CG.
+- Résultat : 6/6 contre rangs 65/49 (bots stub invalides), 0/5 contre rangs 25/9 ; soumission `41796478`.
+- Leçon : éval de connexion plate → égalités départagées par l'index → agglutinement au bord ; ajouter un départage central.
