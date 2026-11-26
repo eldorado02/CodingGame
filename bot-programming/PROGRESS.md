@@ -83,7 +83,7 @@ soumission suivent, du plus ancien au plus récent.
 | 56 | `space-shooter` | Space Shooter | — | —/— | À FAIRE | Legend |
 | 57 | `abalone` | Abalone | — | —/— | À FAIRE | Legend |
 | 58 | `volcanoes` | Volcanoes | — | —/— | À FAIRE | Legend |
-| 59 | `dice-duel` | Dice Duel | — | —/— | À FAIRE | Legend |
+| 59 | `dice-duel` | Dice Duel | Wood 2 | en cours | soumis v1 (41820534) | Wood 1 |
 | 60 | `amazons` | Amazons | Wood 2 | en cours | Soumis `41796775` (v1 territoire 2 étages, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 61 | `night-of-war` | Night Of War | — | —/— | À FAIRE | Legend |
 | 62 | `clobber` | Clobber | Wood 2 | en cours | Soumis `41796537` (v1 αβ mobilité, fuzz 200/200, 3/4 vs boss dont timeouts) | Wood 1 |

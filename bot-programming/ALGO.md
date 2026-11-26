@@ -188,6 +188,8 @@ MCTS, `C` = connexion, `P` = partition, `S` = stochastique/caché,
 | Boss qui dépasse le temps | Clobber Wood 2 | compter à part les victoires « timeout adverse » ; elles ne prouvent pas la force du bot |
 | Test games = toujours siège 0 | Oware v1 (coups illégaux en joueur 1, score 2,63) | lire le parsing de sortie du referee pour chaque siège ; vérifier le score dans l'heure qui suit la soumission |
 | Prédire la règle adverse déterministe | Elemental Wars v6 (+2 rangs) | simuler le bot boss si son code/règle est connu |
+| Nœud coûteux (génération de coups lourde) | Dice Duel : 1024 nœuds = 41 ms, garde testée tous les 64 nœuds = dépassement 13 ms | tester l'horloge à chaque nœud quand un nœud coûte > 10 µs |
+| `sed` qui ajoute un commentaire en fin de ligne | Dice Duel v1d : `// ...` a commenté la fin d'instruction → 3 timeouts | commentaire sur sa propre ligne ; recompiler avant tout bench |
 | Ordre d'entrée de l'énoncé faux | Othello (id 2 tours), 6 nimmt (phase en dernier) | 1er test = sonde stdin brut ; ne coder le parsing qu'après |
 | Brouillard + monstres qui ne bougent qu'en nous voyant | Code Keeper v2 (oscillation entre 2 cases) | mémoriser les entités hors vue : leur dernière position reste vraie |
 
