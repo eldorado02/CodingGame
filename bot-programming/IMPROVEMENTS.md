@@ -818,3 +818,11 @@ quota gratuit.
 - Action : bench.py lit le bloc agents: où qu'il soit ; bot règles BFS QG ennemi
 - Résultat : fuzz 200/200 ; 5/7 contre rang 500/1000 ; soumis
 - Leçon : outil : ne jamais supposer une position fixe dans l'en-tête du log
+
+### 2026-11-26 — Legends of Code & Magic: Constructed — v1 deck valeur/mana + combat glouton
+- Constat : jeu non soumis
+- Hypothèse : un deck à bonne courbe + gardes puis tête bat le milieu
+- Sources : referee1.5 ConstructPhase.java (CHOOSE = baseId)
+- Action : deck 15x2, sac à dos des invocations, objets, attaques
+- Résultat : fuzz 200/200 ; 4/4 contre rang 57/114 ; soumis
+- Leçon : lire le parsing du referee pour l'identifiant attendu (baseId vs instanceId)
