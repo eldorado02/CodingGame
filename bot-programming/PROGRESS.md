@@ -81,7 +81,7 @@ soumission suivent, du plus ancien au plus récent.
 | 54 | `counting-tictactoe` | Counting TicTacToe | Wood 3 | en cours | Soumis `41796704` (v2 αβ sélectif, fuzz 200/200, 3/4 vs boss Wood 3) | Wood 1 |
 | 55 | `clash-of-bots` | Clash of Bots | Wood | en cours | soumis v1 (41820366) | Wood (ligue unique) |
 | 56 | `space-shooter` | Space Shooter | — | —/— | À FAIRE | Legend |
-| 57 | `abalone` | Abalone | — | —/— | À FAIRE | Legend |
+| 57 | `abalone` | Abalone | Wood 2 | en cours | soumis v1 (41820618) | Wood 1 |
 | 58 | `volcanoes` | Volcanoes | — | —/— | À FAIRE | Legend |
 | 59 | `dice-duel` | Dice Duel | Wood 2 | en cours | soumis v1 (41820534) | Wood 1 |
 | 60 | `amazons` | Amazons | Wood 2 | en cours | Soumis `41796775` (v1 territoire 2 étages, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
