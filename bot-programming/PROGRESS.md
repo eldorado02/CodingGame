@@ -79,7 +79,7 @@ soumission suivent, du plus ancien au plus récent.
 | 52 | `nine-mens-morris` | nine men's morris | Wood 2 | en cours | Soumis `41796948` (v1 αβ, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 53 | `lines-of-action` | Lines Of Action | Wood 2 | en cours | Soumis `41796817` (v1 αβ, fuzz 200/200, 3 nuls vs boss Wood 2) | Wood 1 |
 | 54 | `counting-tictactoe` | Counting TicTacToe | Wood 3 | en cours | Soumis `41796704` (v2 αβ sélectif, fuzz 200/200, 3/4 vs boss Wood 3) | Wood 1 |
-| 55 | `clash-of-bots` | Clash of Bots | — | —/— | À FAIRE | Legend |
+| 55 | `clash-of-bots` | Clash of Bots | Wood | en cours | soumis v1 (41820366) | Wood (ligue unique) |
 | 56 | `space-shooter` | Space Shooter | — | —/— | À FAIRE | Legend |
 | 57 | `abalone` | Abalone | — | —/— | À FAIRE | Legend |
 | 58 | `volcanoes` | Volcanoes | — | —/— | À FAIRE | Legend |

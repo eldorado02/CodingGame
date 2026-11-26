@@ -786,3 +786,11 @@ quota gratuit.
 - Action : phase lue en dernière ligne du tour (4 langages + gen_fuzz)
 - Résultat : fuzz 200/200 ; 4/4 parties 2e place (bat 2 joueurs rang ~108, perd contre rang 2) ; soumis
 - Leçon : sonder le stdin brut avant d'écrire le parsing ; piste v2 : Monte-Carlo sur les mains adverses
+
+### 2026-11-26 — Clash of Bots — v1 règles locales par robot
+- Constat : jeu non soumis ; vision 5x5 sans position absolue
+- Hypothèse : les mouvements précèdent les attaques : l'embuscade sur la case d'approche punit l'adversaire
+- Sources : referee stivens/Clash-of-Bots (Interpreter.kt, MoveGraph.kt)
+- Action : règles : explosion >=2 tués, attaque adjacente, embuscade distance 2, approche, dérive
+- Résultat : fuzz 200/200 ; 4/4 contre rang 276/550 ; soumis
+- Leçon : lire MoveGraph avant toute règle de déplacement groupé
