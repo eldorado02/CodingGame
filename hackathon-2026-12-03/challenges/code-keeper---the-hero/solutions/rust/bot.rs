@@ -1,7 +1,7 @@
 // Code Keeper - The Hero — Rust port of cpp/bot.cpp (same rules, same tie-breaks).
 // Build: cargo build --release
 use std::collections::VecDeque;
-use std::io::{self, BufWriter, Read, Write};
+use std::io::{self, BufWriter, Write};
 
 const WIDTH: i32 = 16;
 const HEIGHT: i32 = 12;
@@ -235,10 +235,16 @@ fn decide(m: &Memory, hero: i32, health: i32, charges: &[i32; 4], monsters: &[Mo
     move_to(if step != NONE { step } else { hero })
 }
 
+/// Integers as they arrive, line by line (reading all stdin at once would block the game).
+fn tokens() -> impl Iterator<Item = i32> {
+    io::stdin()
+        .lines()
+        .map_while(Result::ok)
+        .flat_map(|line| line.split_ascii_whitespace().map(|t| t.parse::<i32>().unwrap_or(0)).collect::<Vec<_>>())
+}
+
 fn main() {
-    let mut input = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-    let mut tokens = input.split_ascii_whitespace().map(|t| t.parse::<i32>().unwrap_or(0));
+    let mut tokens = tokens();
     let mut next = move || tokens.next();
     let stdout = io::stdout();
     let mut out = BufWriter::new(stdout.lock());

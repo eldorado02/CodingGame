@@ -1,6 +1,6 @@
 // Clash of Bots — Rust port of cpp/bot.cpp (same rules, same tie-breaks).
 // Build: cargo build --release
-use std::io::{self, Read, Write};
+use std::io::{self, Write};
 
 const SIZE: usize = 5;
 const CENTER: i32 = 2;
@@ -76,10 +76,16 @@ fn decide(g: &Grid) -> String {
     "GUARD".to_string()
 }
 
+/// Integers as they arrive, line by line (reading all stdin at once would block the game).
+fn tokens() -> impl Iterator<Item = i32> {
+    io::stdin()
+        .lines()
+        .map_while(Result::ok)
+        .flat_map(|line| line.split_ascii_whitespace().map(|t| t.parse::<i32>().unwrap_or(0)).collect::<Vec<_>>())
+}
+
 fn main() {
-    let mut input = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-    let mut tokens = input.split_ascii_whitespace().map(|t| t.parse::<i32>().unwrap_or(0));
+    let mut tokens = tokens();
     let stdout = io::stdout();
     let mut out = stdout.lock();
     while let Some(count) = tokens.next() {
