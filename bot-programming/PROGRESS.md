@@ -114,7 +114,7 @@ soumission suivent, du plus ancien au plus récent.
 | 87 | `yavalath` | Yavalath | — | —/— | À FAIRE | Legend |
 | 88 | `checkers` | Checkers | Wood (unique) | en cours | Soumis `41796035` (v1 αβ, fuzz 200/200, 3/3 vs rangs 177 et 89) | rang |
 | 89 | `langton-s-ant` | Langton s Ant | — | —/— | À FAIRE | Legend |
-| 90 | `vindinium` | Vindinium | — | —/— | À FAIRE | Legend |
+| 90 | `vindinium` | Vindinium | Wood 2 | en cours | soumis v2 (41820711) | Wood 1 |
 | 91 | `legends-of-code-magic` | Legends of Code & Magic | — | —/— | À FAIRE | Legend |
 | 92 | `tic-tac-toe` | Ultimate Tic-Tac-Toe | — | —/— | À FAIRE | Legend |
 | 93 | `code4life` | Code4Life | — | —/— | À FAIRE | Legend |
