@@ -74,10 +74,13 @@ def run_one(game, code, lang, opps, seed, tag):
 
 def parse(log):
     me = None
-    for line in log.splitlines()[:12]:
+    # the agents block follows the game options, which can be long (maps)
+    agents = log.split("agents:", 1)[1] if "agents:" in log else log
+    for line in agents.splitlines()[:8]:
         m = re.match(r"\s+(\d+) .*\(me", line)
         if m:
             me = int(m.group(1))
+            break
     rk = re.findall(r"ranking \(agent indexes, winner first\): ([\d ]+)", log)
     sc = re.findall(r"scores: (.*)", log)
     summ = re.findall(r"summary: (.*)", log)

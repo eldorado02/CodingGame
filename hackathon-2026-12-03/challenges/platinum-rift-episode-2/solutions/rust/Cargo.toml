@@ -1,0 +1,11 @@
+[package]
+name = "platinum_rift_episode_2_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "platinum_rift_episode_2_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 3
