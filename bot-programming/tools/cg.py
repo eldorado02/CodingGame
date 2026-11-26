@@ -48,7 +48,12 @@ def request(method, path, body=None, raw=False):
             try:
                 with urllib.request.urlopen(req) as resp:
                     payload = resp.read().decode()
-                break
+                if raw or payload.strip():
+                    break
+                # an empty 200 body happens under load: same treatment as a blip
+                sys.stderr.write("empty response, retry in 15s\n")
+                time.sleep(15)
+                continue
             except urllib.error.HTTPError:
                 raise
             except (urllib.error.URLError, OSError) as e:
