@@ -65,7 +65,7 @@ soumission suivent, du plus ancien au plus récent.
 | 38 | `dice-shogi` | Dice Shogi | Wood (unique) | en cours | Soumis `41796284` (v1 gloutonne, fuzz 200/200, 1/3 vs rang 40) | rang |
 | 39 | `minishogi` | Minishogi | Wood (unique) | en cours | Soumis `41796267` (v1 gloutonne, fuzz 200/200, 3/3 vs rang 61) | rang |
 | 40 | `seabed-security` | Seabed Security - Fall Challenge 2023 | — | — | À FAIRE | Legend |
-| 41 | `poker` | Poker | — | —/— | À FAIRE | Legend |
+| 41 | `poker` | Poker | Wood 2 | en cours | soumis v2 (41820824) | Wood 1 |
 | 42 | `mad-knights` | Mad Knights | Wood (unique) | en cours | Soumis `41796137` (v1 paranoïde αβ, fuzz 200/200, 3/3 vs rangs 69+86) | rang |
 | 43 | `spring-challenge-2023-ants` | Spring Challenge 2023 - Fourmis | — | —/— | À FAIRE | Legend |
 | 44 | `keep-off-the-grass-fall-challenge-2022` | Keep Off The Grass | — | —/— | À FAIRE | Legend |
