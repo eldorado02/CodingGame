@@ -802,3 +802,11 @@ quota gratuit.
 - Action : embauche max, +1 manager/tour, vendeurs dès 10 features, moitié des devs en maintenance
 - Résultat : fuzz 200/200 ; v2 3/3 (80 % de part) contre 3 joueurs de milieu ; soumis
 - Leçon : dans un jeu de course au marché, lire les actions du gagnant dans le log avant d'optimiser une formule
+
+### 2026-11-26 — Back to the Code — v1 boucles rectangulaires
+- Constat : jeu non soumis
+- Hypothèse : rectangles sûrs au meilleur ratio gain/périmètre suffisent pour être classé
+- Sources : énoncé (règles d'encerclement, déplacement case par case)
+- Action : sommes préfixes 2D, rectangles <= 12x12 avec nous sur le bord, rejet si adversaire à < coût/2
+- Résultat : fuzz 200/200 ; 1/4 contre rang 500/1000 (scores serrés 264-412) ; soumis (premier envoi)
+- Leçon : piste v2 : BACK pour annuler une boucle coupée, rectangles appuyés sur nos cellules existantes
