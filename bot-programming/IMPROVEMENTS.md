@@ -850,3 +850,11 @@ quota gratuit.
 - Action : v2 sans copie (case surchargée), réserve d'or ; v3 potentiel trou
 - Résultat : fuzz 200/200 ; v3 1/3 (victoire = timeout du boss), 21-43 vs 281-374 ; soumis (premier envoi)
 - Leçon : Fibonacci : la valeur est dans les grandes jonctions, pas les 4 ; prévoir une éval de plateau v4
+
+### 2026-11-26 — Blocking — v1 plus grande pièce + centre
+- Constat : jeu non soumis ; coups valides fournis par le referee
+- Hypothèse : les grosses pièces d'abord suffisent contre le boss Wood 2
+- Sources : énoncé
+- Action : score = taille x 200 - distance doublée au centre
+- Résultat : fuzz 200/200 ; 0/4 (1 nul) contre boss, écarts 0 à 5 points ; soumis (premier envoi)
+- Leçon : v2 : géométrie des orientations pour compter les coins (heuristique Blokus classique)
