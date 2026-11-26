@@ -16,7 +16,7 @@
 using namespace std;
 
 constexpr int SIZE = 8;
-constexpr bool SUM_RULE = false;  // true from Wood 1 on (capture only when tops sum to 7)
+constexpr bool SUM_RULE = true;  // Wood 1 rule (Wood 2: false): capture only when tops sum to 7
 constexpr int CAPTURE_SUM = 7;
 constexpr int DIE_VALUE = 100;
 constexpr long long TURN_NODES = 4000;  // node cost varies x4 with the dice count

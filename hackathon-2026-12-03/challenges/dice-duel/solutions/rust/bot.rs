@@ -5,7 +5,7 @@ use std::io::{self, BufRead, Write};
 use std::time::Instant;
 
 const SIZE: i32 = 8;
-const SUM_RULE: bool = false; // true from Wood 1 on (capture only when tops sum to 7)
+const SUM_RULE: bool = true; // Wood 1 rule (Wood 2: false): capture only when tops sum to 7
 const CAPTURE_SUM: i32 = 7;
 const DIE_VALUE: i32 = 100;
 const TURN_NODES: i64 = 4000; // node cost varies x4 with the dice count

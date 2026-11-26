@@ -9,7 +9,7 @@
 #include <time.h>
 
 enum { SIZE = 8, FACES = 6, MAX_DICE = 16, MAX_PATH = 8, MAX_ORIENT = 24 };
-static const bool SUM_RULE = false;  /* true from Wood 1 on (capture only when tops sum to 7) */
+static const bool SUM_RULE = true;  /* Wood 1 rule (Wood 2: false): capture only when tops sum to 7 */
 enum { CAPTURE_SUM = 7, DIE_VALUE = 100, NONE = -1 };
 enum { TURN_NODES = 4000, TURN_MS = 30 };  /* node cost varies x4 with the dice count */
 typedef struct { char name; int dx, dy; int roll[FACES]; } Step;

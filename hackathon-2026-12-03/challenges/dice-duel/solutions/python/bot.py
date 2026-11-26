@@ -16,7 +16,7 @@ import os
 import sys
 
 SIZE = 8
-SUM_RULE = False          # True from Wood 1 on (capture only when tops sum to 7)
+SUM_RULE = True           # Wood 1 rule (Wood 2: False): capture only when tops sum to 7
 CAPTURE_SUM = 7
 DIE_VALUE = 100
 STEPS = (("U", 0, 1), ("D", 0, -1), ("R", 1, 0), ("L", -1, 0))
