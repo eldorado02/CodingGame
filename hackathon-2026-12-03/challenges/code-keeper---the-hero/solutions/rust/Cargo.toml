@@ -1,0 +1,11 @@
+[package]
+name = "code_keeper___the_hero_bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "code_keeper___the_hero_bot"
+path = "bot.rs"
+
+[profile.release]
+opt-level = 3

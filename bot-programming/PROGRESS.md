@@ -75,7 +75,7 @@ soumission suivent, du plus ancien au plus récent.
 | 48 | `isola` | Isola | Wood 4 | en cours | Soumis `41796400` (v1 αβ Voronoi, fuzz 200/200, 6/6 vs boss Wood 4) | Wood 1 |
 | 49 | `legends-of-code-magic-constructed` | Legends of Code & Magic: Constructed | — | —/— | À FAIRE | Legend |
 | 50 | `start-up` | Start-up! | — | —/— | À FAIRE | Legend |
-| 51 | `code-keeper---the-hero` | Code Keeper - The Hero | — | —/— | À FAIRE | Legend |
+| 51 | `code-keeper---the-hero` | Code Keeper - The Hero | Wood | en cours | soumis v3 (41820322) | Wood (ligue unique) |
 | 52 | `nine-mens-morris` | nine men's morris | Wood 2 | en cours | Soumis `41796948` (v1 αβ, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 53 | `lines-of-action` | Lines Of Action | Wood 2 | en cours | Soumis `41796817` (v1 αβ, fuzz 200/200, 3 nuls vs boss Wood 2) | Wood 1 |
 | 54 | `counting-tictactoe` | Counting TicTacToe | Wood 3 | en cours | Soumis `41796704` (v2 αβ sélectif, fuzz 200/200, 3/4 vs boss Wood 3) | Wood 1 |
