@@ -97,7 +97,7 @@ soumission suivent, du plus ancien au plus récent.
 | 70 | `dots-and-boxes` | Dots and Boxes | Wood 2 | en cours | Soumis `41796861` (v1 αβ, fuzz 200/200, 4/4 vs boss Wood 2) | Wood 1 |
 | 71 | `atari-go` | Atari Go | — | —/— | À FAIRE | Legend |
 | 72 | `othello-1` | Othello | Wood 1 | ~127/— | Promu Wood 1 via `41787653` (bitboard profondeur 6, fuzz 200/200, 5/5 boss) ; pas de boss | Legend |
-| 73 | `yinsh` | Yinsh | — | —/— | À FAIRE | Legend |
+| 73 | `yinsh` | Yinsh | Wood | en cours | soumis v1 (41820495) | Wood (ligue unique) |
 | 74 | `spring-challenge-2020` | Spring Challenge 2020 | Wood 1 | 1220/1290 | À FAIRE | Legend |
 | 75 | `tulips-and-daisies` | Tulips and Daisies | — | —/— | À FAIRE | Legend |
 | 76 | `crystal-rush` | Crystal Rush | — | —/— | À FAIRE | Legend |
