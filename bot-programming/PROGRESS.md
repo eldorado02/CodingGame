@@ -82,7 +82,7 @@ soumission suivent, du plus ancien au plus récent.
 | 55 | `clash-of-bots` | Clash of Bots | Wood | en cours | soumis v1 (41820366) | Wood (ligue unique) |
 | 56 | `space-shooter` | Space Shooter | — | —/— | À FAIRE | Legend |
 | 57 | `abalone` | Abalone | Wood 2 | en cours | soumis v1 (41820618) | Wood 1 |
-| 58 | `volcanoes` | Volcanoes | — | —/— | À FAIRE | Legend |
+| 58 | `volcanoes` | Volcanoes | Wood 3 | en cours | soumis v1 (41820855) | Wood 1 |
 | 59 | `dice-duel` | Dice Duel | Wood 1 | en cours | DONE, v1.1 (41820741) | Wood 1 (max) |
 | 60 | `amazons` | Amazons | Wood 2 | en cours | Soumis `41796775` (v1 territoire 2 étages, fuzz 200/200, 3/3 vs boss Wood 2) | Wood 1 |
 | 61 | `night-of-war` | Night Of War | — | —/— | À FAIRE | Legend |
