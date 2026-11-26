@@ -88,7 +88,7 @@ soumission suivent, du plus ancien au plus récent.
 | 61 | `night-of-war` | Night Of War | — | —/— | À FAIRE | Legend |
 | 62 | `clobber` | Clobber | Wood 2 | en cours | Soumis `41796537` (v1 αβ mobilité, fuzz 200/200, 3/4 vs boss dont timeouts) | Wood 1 |
 | 63 | `connect-4` | Connect 4 | Wood 1 | 521/— | Soumis `41786612` (5/5 boss `6797564`) ; promu Wood 1, pas de boss | Legend |
-| 64 | `fireworks` | Fireworks | — | —/— | À FAIRE | Legend |
+| 64 | `fireworks` | Fireworks | Wood 2 | en cours | soumis v1 (41820676) | Wood 1 |
 | 65 | `tryangle-catch` | TryAngle Catch | — | —/— | À FAIRE | Legend |
 | 66 | `chess` | Chess | — | —/— | À FAIRE | Legend |
 | 67 | `blocking` | Blocking | Wood 2 | en cours | soumis v1 (41820595) | Wood 1 |
