@@ -90,7 +90,7 @@ soumission suivent, du plus ancien au plus récent.
 | 63 | `connect-4` | Connect 4 | Wood 1 | 521/— | Soumis `41786612` (5/5 boss `6797564`) ; promu Wood 1, pas de boss | Legend |
 | 64 | `fireworks` | Fireworks | Wood 2 | en cours | soumis v1 (41820676) | Wood 1 |
 | 65 | `tryangle-catch` | TryAngle Catch | — | —/— | À FAIRE | Legend |
-| 66 | `chess` | Chess | — | —/— | À FAIRE | Legend |
+| 66 | `chess` | Chess | Wood 2 | en cours | soumis v1 (41820771) | Wood 1 |
 | 67 | `blocking` | Blocking | Wood 2 | en cours | soumis v1 (41820595) | Wood 1 |
 | 68 | `penguins` | Penguins | Wood 3 | en cours | Soumis `41796912` (v2 gloutonne, fuzz 200/200, 0/4 vs boss Wood 3) | Wood 1 |
 | 69 | `atari-go-9x9` | Atari Go 9x9 | — | —/— | À FAIRE | Legend |

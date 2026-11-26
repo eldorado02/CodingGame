@@ -890,3 +890,11 @@ quota gratuit.
 - Action : SUM_RULE=true dans les 4 langages
 - Résultat : fuzz 200/200 ; 5/5 contre le milieu de Wood 1 ; re-soumis
 - Leçon : préparer les constantes de règle de la ligue suivante dès la v1, les basculer à la promotion
+
+### 2026-11-26 — Chess — v1 1 pli sur coups légaux + pièces en prise
+- Constat : jeu non soumis ; coups légaux fournis (input moves)
+- Hypothèse : éviter les pièces en prise et prendre le matériel suffit contre le boss Wood 2
+- Sources : énoncé (protocole fen/moves, roque Chess960)
+- Action : simulation du coup sur la FEN, cartes d'attaque, perte maximale adverse
+- Résultat : fuzz 200/200 ; 1 victoire 2 nuls contre boss ; soumis
+- Leçon : les nuls viennent du manque de mat : v2 alpha-bêta Chess960
