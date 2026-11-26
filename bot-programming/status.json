@@ -2,17 +2,17 @@
  {
   "game": "6-nimmt-6-qui-prend-take-5",
   "league": "Wood",
-  "score": null,
-  "rank": null,
-  "league_total": null,
+  "score": 29.37,
+  "rank": 68,
+  "league_total": 216,
   "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "percentage": 100,
+  "submission_id": 41820348,
   "boss_id": null,
   "boss_score": null,
   "top_league": "Wood",
   "top_score": 39.69,
-  "done": false
+  "done": true
  },
  {
   "game": "a-code-of-ice-and-fire",
@@ -108,17 +108,17 @@
  {
   "game": "back-to-the-code",
   "league": null,
-  "score": null,
+  "score": 21.4,
   "rank": null,
   "league_total": null,
-  "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "in_progress": true,
+  "percentage": 46,
+  "submission_id": 41820424,
   "boss_id": null,
   "boss_score": null,
   "top_league": "NONE",
   "top_score": 46.48,
-  "done": false
+  "done": true
  },
  {
   "game": "bandas",
@@ -274,17 +274,17 @@
  {
   "game": "clash-of-bots",
   "league": "Wood",
-  "score": null,
-  "rank": null,
-  "league_total": null,
+  "score": 31.55,
+  "rank": 169,
+  "league_total": 551,
   "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "percentage": 100,
+  "submission_id": 41820366,
   "boss_id": null,
   "boss_score": null,
   "top_league": "Wood",
   "top_score": 55.91,
-  "done": false
+  "done": true
  },
  {
   "game": "clobber",
@@ -321,17 +321,17 @@
  {
   "game": "code-keeper---the-hero",
   "league": "Wood",
-  "score": null,
-  "rank": null,
-  "league_total": null,
+  "score": 15.97,
+  "rank": 93,
+  "league_total": 188,
   "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "percentage": 100,
+  "submission_id": 41820322,
   "boss_id": null,
   "boss_score": null,
   "top_league": "Wood",
   "top_score": 38.84,
-  "done": false
+  "done": true
  },
  {
   "game": "code-of-kutulu",
@@ -843,17 +843,17 @@
  {
   "game": "legends-of-code-magic-constructed",
   "league": "Wood",
-  "score": null,
-  "rank": null,
-  "league_total": null,
-  "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "score": 22.02,
+  "rank": 45,
+  "league_total": 115,
+  "in_progress": true,
+  "percentage": 13,
+  "submission_id": 41820463,
   "boss_id": null,
   "boss_score": null,
   "top_league": "Wood",
   "top_score": 43.21,
-  "done": false
+  "done": true
  },
  {
   "game": "lines-of-action",
@@ -1072,17 +1072,17 @@
  {
   "game": "platinum-rift-episode-2",
   "league": null,
-  "score": null,
+  "score": 27.25,
   "rank": null,
   "league_total": null,
-  "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "in_progress": true,
+  "percentage": 54,
+  "submission_id": 41820443,
   "boss_id": null,
   "boss_score": null,
   "top_league": "NONE",
   "top_score": 46.29,
-  "done": false
+  "done": true
  },
  {
   "game": "poker",
@@ -1273,17 +1273,17 @@
  {
   "game": "start-up",
   "league": "Wood",
-  "score": null,
-  "rank": null,
-  "league_total": null,
+  "score": 31.64,
+  "rank": 134,
+  "league_total": 308,
   "in_progress": false,
-  "percentage": null,
-  "submission_id": null,
+  "percentage": 100,
+  "submission_id": 41820396,
   "boss_id": null,
   "boss_score": null,
   "top_league": "Wood",
   "top_score": 54.72,
-  "done": false
+  "done": true
  },
  {
   "game": "summer-challenge-2024-olymbits",
